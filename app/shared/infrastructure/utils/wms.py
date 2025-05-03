@@ -7,7 +7,7 @@ from pandas import DataFrame
 from pydantic import BaseModel
 from pydantic import HttpUrl
 
-from app.shared.domain.exceptions.wms_exception import WmsException
+from app.shared.domain.exceptions.application_exception import ApplicationException
 from app.shared.domain.utils.constants import EMPTY_STRING, COORDINATE_SYSTEM, OUTPUT_HTML, WMS_FORMAT_LABELS, \
     WMS_TRANSPARENCY_SUPPORTED_FORMATS
 from app.shared.infrastructure.utils.ogc_reader import WebMapService111, web_map_service
@@ -238,7 +238,7 @@ def get_wms_info(url: HttpUrl, filters: Optional[str]) -> WebMapServiceInfoModel
         if not wms:
             raise Exception()
     except Exception as e:
-        raise WmsException("No se pudo conectar con el servicio WMS") from e
+        raise ApplicationException("No se pudo conectar con el servicio WMS") from e
 
     layers: list[LayerModel] = []
 

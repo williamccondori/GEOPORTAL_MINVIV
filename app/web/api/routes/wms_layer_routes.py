@@ -5,10 +5,7 @@ from app.web.api.dependencies import get_wms_layer_service
 from app.web.application.dtos.wms_layer_dto import WebMapServiceResponseDTO, WebMapServiceFeatureRequestDTO, \
     WebMapServiceRequestDTO, FeatureWebMapServiceResponseDTO
 
-# noinspection DuplicatedCode
-wms_layer_router = APIRouter(
-    dependencies=[Depends(get_wms_layer_service)]
-)
+wms_layer_router = APIRouter()
 
 
 @wms_layer_router.get("/", response_model=Response[WebMapServiceResponseDTO])

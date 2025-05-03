@@ -6,10 +6,7 @@ from app.shared.models.response import Response
 from app.web.api.dependencies import get_base_layer_service
 from app.web.application.dtos.base_layer_dto import BaseLayerDTO
 
-# noinspection DuplicatedCode
-base_layer_router = APIRouter(
-    dependencies=[Depends(get_base_layer_service)]
-)
+base_layer_router = APIRouter()
 
 
 @base_layer_router.get("/", response_model=Response[List[BaseLayerDTO]])
