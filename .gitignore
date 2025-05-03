@@ -1,0 +1,45 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.pyd
+*.db
+*.sqlite3
+
+# Entornos virtuales
+.venv/
+env/
+venv/
+
+static/
+
+# Archivos de configuraciones locales
+*.env
+*.local
+
+# Pytest
+.cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# Dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
+dist/
+build/
+
+# MongoDB
+*.bson
+*.json
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
