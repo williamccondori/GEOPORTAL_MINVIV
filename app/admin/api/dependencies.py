@@ -91,6 +91,12 @@ def get_user_service(
     return UserService(user_repository, user_authenticated)
 
 
+def get_user_administrator_service(
+        user_repository: UserRepository = Depends(UserRepositoryImpl),
+):
+    return UserService(user_repository)
+
+
 def get_publication_use_case(
         publication_repository: PublicationRepository = Depends(PublicationRepositoryImpl),
         user_authenticated: str = Depends(get_authenticated_user),

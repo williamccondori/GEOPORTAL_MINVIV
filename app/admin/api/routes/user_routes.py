@@ -2,19 +2,22 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from app.admin.api.dependencies import get_user_service
-from app.shared.models.response import Response
+from app.admin.api.dependencies import get_user_service, get_user_administrator_service
 from app.admin.application.dtos.user_dto import UserDTO, UserCreateDTO
+from app.shared.models.response import Response
 
 # noinspection DuplicatedCode
-user_router = APIRouter(
-    dependencies=[Depends(get_user_service)]
-)
+user_router = APIRouter()
 
 
 @user_router.get("/", response_model=Response[List[UserDTO]])
 async def get_all(service=Depends(get_user_service)) -> Response[List[UserDTO]]:
     return Response.correct(await service.get_all())
+
+
+@user_router.post("/administrator", response_model=Response[str])
+async def create(service=Depends(get_user_administrator_service)) -> Response[str]:
+    return Response.correct(await service.generate_administrator())
 
 
 @user_router.post("/", response_model=Response[str])

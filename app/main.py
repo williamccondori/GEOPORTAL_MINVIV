@@ -63,7 +63,7 @@ def create_app():
         allow_headers=["*"],
     )
 
-    application.mount("/static", StaticFiles(directory="../static"), name="static")
+    application.mount("/static", StaticFiles(directory="static"), name="static")
 
     api_prefix = settings.API_V1_STR
 
@@ -113,8 +113,3 @@ def create_app():
 
 
 app = create_app()
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

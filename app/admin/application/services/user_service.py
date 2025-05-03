@@ -20,6 +20,25 @@ class UserService:
         self.user_repository = user_repository
         self.user_authenticated = user_authenticated
 
+    async def generate_administrator(self) -> str:
+        exists = await self.user_repository.exists({"username": "admin"})
+        if exists:
+            return "admin"
+
+        user = User(
+            name="admin",
+            last_name="admin",
+            email="admin@admin.com",
+            username="admin",
+            password_hash=encrypt_password("ficticio"),
+            is_active=True,
+            status=True,
+            user_created="ADMIN",
+            created_at=datetime.now()
+        )
+        user = await self.user_repository.save(user)
+        return user.id
+
     async def create(self, user_dto: UserCreateDTO) -> str:
         exists = await self.user_repository.exists({
             "$or": [
