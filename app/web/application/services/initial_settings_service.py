@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from app.admin.application.dtos.base_layer_dto import BaseLayerDTO
 from app.admin.application.dtos.wms_layer_dto import WmsLayerDTO
-from app.admin.domain.exceptions.not_found_exception import NotFoundException
 from app.web.application.dtos.initial_settings_dto import InitialSettingsDTO
+from app.web.domain.models.initial_settings import InitialSettings
 from app.web.domain.repositories.initial_settings_repository import InitialSettingsRepository
 
 
@@ -12,7 +14,18 @@ class InitialSettingsService:
     async def get(self) -> InitialSettingsDTO:
         initial_settings = await self.initial_settings_repository.get()
         if initial_settings is None:
-            raise NotFoundException("Configuración inicial")
+            initial_settings = InitialSettings(
+                lat_long=[0, 0],
+                zoom=0,
+                has_attribution=False,
+                base_layers=[],
+                default_base_layer_id=None,
+                wms_layers=[],
+                default_wms_layer_ids=[],
+                user_created="SYSTEM",
+                status=True,
+                created_at=datetime.now(),
+            )
 
         base_layers_dto = []
         for base_layer in initial_settings.base_layers:
@@ -37,7 +50,7 @@ class InitialSettingsService:
             )
 
         return InitialSettingsDTO(
-            latLng=initial_settings.latLng,
+            lat_long=initial_settings.lat_long,
             zoom=initial_settings.zoom,
             has_attribution=initial_settings.has_attribution,
             base_layers=base_layers_dto,
