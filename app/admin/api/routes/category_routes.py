@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.admin.api.dependencies import get_category_use_case
-from app.shared.models.response import Response
 from app.admin.application.dtos.category_dto import CategoryDTO, CategoryCreateDTO
+from app.shared.models.response import Response
 
 # noinspection DuplicatedCode
 category_router = APIRouter(

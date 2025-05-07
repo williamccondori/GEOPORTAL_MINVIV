@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.admin.api.dependencies import get_publication_use_case
-from app.shared.models.response import Response
 from app.admin.application.dtos.publication_dto import PublicationDTO, PublicationCreateDTO
+from app.shared.models.response import Response
 
 # noinspection DuplicatedCode
 publication_router = APIRouter(

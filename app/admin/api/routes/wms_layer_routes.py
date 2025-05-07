@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.admin.api.dependencies import get_wms_layer_service
-from app.shared.models.response import Response
 from app.admin.application.dtos.wms_layer_dto import WmsLayerDTO, WmsLayerCreateDTO
+from app.shared.models.response import Response
 
 # noinspection DuplicatedCode
 wms_layer_router = APIRouter(

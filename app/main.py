@@ -19,6 +19,7 @@ from app.admin.domain.exceptions.not_found_exception import NotFoundException
 from app.config import settings
 from app.shared.models.response import Response
 from app.web.api.routes.base_layer_routes import base_layer_router as public_base_layer_router
+from app.web.api.routes.initial_settings_routes import initial_settings_router as public_initial_settings_routes
 from app.web.api.routes.location_routes import location_router as public_location_router
 from app.web.api.routes.wms_layer_routes import wms_layer_router as public_wms_layer_router
 
@@ -114,6 +115,12 @@ def create_app():
         public_location_router,
         prefix=f"{api_prefix}/locations",
         tags=["public-locations"]
+    )
+
+    application.include_router(
+        public_initial_settings_routes,
+        prefix=f"{api_prefix}/initial-settings",
+        tags=["public-initial-settings"],
     )
 
     return application

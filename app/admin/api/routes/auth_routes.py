@@ -5,12 +5,12 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 
-from app.shared.models.response import Response
 from app.admin.application.dtos.token_dto import TokenDTO
 from app.admin.application.dtos.user_dto import UserToValidateDTO
 from app.admin.application.services.user_service import UserService
 from app.admin.domain.exceptions.not_authenticated_exception import NotAuthenticatedException
 from app.admin.infrastructure.persistence.repositories.user_repository_impl import UserRepositoryImpl
+from app.shared.models.response import Response
 
 auth_router = APIRouter()
 

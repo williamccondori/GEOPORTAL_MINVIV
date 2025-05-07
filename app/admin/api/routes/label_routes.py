@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.admin.api.dependencies import get_label_use_case
-from app.shared.models.response import Response
 from app.admin.application.dtos.label_dto import LabelDTO, LabelCreateDTO
+from app.shared.models.response import Response
 
 # noinspection DuplicatedCode
 label_router = APIRouter(

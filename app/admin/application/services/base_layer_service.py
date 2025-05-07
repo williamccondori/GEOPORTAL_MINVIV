@@ -60,7 +60,7 @@ class BaseLayerService:
         )
 
     async def update(self, base_layer_id: str, base_layer_dto: BaseLayerCreateDTO) -> str:
-        base_layer: BaseLayer = await self.base_layer_repository.get(base_layer_id)
+        base_layer = await self.base_layer_repository.get(base_layer_id)
         if not base_layer:
             raise NotFoundException("capa base")
 
