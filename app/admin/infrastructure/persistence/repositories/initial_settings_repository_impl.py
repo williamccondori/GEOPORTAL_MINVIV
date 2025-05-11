@@ -3,18 +3,17 @@ from typing import Optional, Dict, Any
 
 from motor.motor_asyncio import AsyncIOMotorCollection
 
+from app.admin.domain.models.initial_settings import InitialSettings
+from app.admin.domain.repositories.initial_settings_repository import InitialSettingsRepository
 from app.shared.db.base import database
-from app.web.domain.models.initial_settings import InitialSettings
-from app.web.domain.repositories.initial_settings_repository import (
-    InitialSettingsRepository,
-)
+from app.shared.infrastructure.persistence.repository.base_repository import BaseRepository
 
 collection: AsyncIOMotorCollection = database.get_collection("initial_settings")
 
 
-class InitialSettingsRepositoryImpl(InitialSettingsRepository):
+class InitialSettingsRepositoryImpl(BaseRepository, InitialSettingsRepository):
     def __init__(self):
-        self.collection = collection
+        super().__init__(collection, InitialSettings)
 
     async def get_unique(self) -> InitialSettings:
         initial_settings: Optional[Dict[str, Any]] = await self.collection.find_one({})

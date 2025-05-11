@@ -25,6 +25,7 @@ def get_location_service():
 
 
 def get_initial_settings_service(
-        initial_settings_repository: InitialSettingsRepository = Depends(InitialSettingsRepositoryImpl)
+        initial_settings_repository: InitialSettingsRepository = Depends(InitialSettingsRepositoryImpl),
+        base_layer_repository: BaseLayerRepository = Depends(BaseLayerRepositoryImpl)
 ):
-    return InitialSettingsService(initial_settings_repository)
+    return InitialSettingsService(initial_settings_repository, base_layer_repository)

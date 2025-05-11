@@ -30,7 +30,10 @@ class BaseRepository:
 
     async def save(self, document: T) -> T:
         document_dict = document.model_dump()
-        if document.id:
+        document_id = document.id
+
+        if document_id:
+            document_dict.pop("id", None)
             await self.collection.update_one({"_id": ObjectId(document.id)}, {"$set": document_dict})
             return document
         else:

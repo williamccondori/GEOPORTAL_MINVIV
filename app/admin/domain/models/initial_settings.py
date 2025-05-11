@@ -1,22 +1,22 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from app.shared.domain.entities.base import Base
 
 
 class InitialSettings(Base):
-    lat_long: List[float]
+    lat_long: list[float]
     zoom: int
     has_attribution: bool
     default_base_layer_id: Optional[str]
-    default_wms_layer_ids: List[str]
+    default_wms_layer_ids: list[str]
 
     def update(self,
-               lat_long: List[float],
+               lat_long: list[float],
                zoom: int,
                has_attribution: bool,
                default_base_layer_id: Optional[str],
-               default_wms_layer_ids: List[str],
+               default_wms_layer_ids: list[str],
                user_updated: str):
         self.lat_long = lat_long
         self.zoom = zoom

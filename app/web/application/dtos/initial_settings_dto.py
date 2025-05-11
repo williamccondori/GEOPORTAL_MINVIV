@@ -1,8 +1,8 @@
 from typing import Optional
 
-from app.admin.application.dtos.base_dto import BaseDTO
-from app.admin.application.dtos.base_layer_dto import BaseLayerDTO
-from app.admin.application.dtos.wms_layer_dto import WmsLayerDTO
+from app.web.application.dtos.base_dto import BaseDTO
+from app.web.application.dtos.base_layer_dto import BaseLayerDTO
+from app.web.application.dtos.wms_layer_dto import WmsLayerDTO
 
 
 class InitialSettingsDTO(BaseDTO):

@@ -3,6 +3,7 @@ from fastapi import Depends, Security
 from fastapi.security import OAuth2PasswordBearer
 
 from app.admin.application.services.base_layer_service import BaseLayerService
+from app.admin.application.services.initial_settings_service import InitialSettingsService
 from app.admin.application.services.rol_service import RoleService
 from app.admin.application.services.user_service import UserService
 from app.admin.application.services.wms_layer_service import WmsLayerService
@@ -16,6 +17,7 @@ from app.admin.domain.repositories.base_layer_repository import BaseLayerReposit
 from app.admin.domain.repositories.category_repository import CategoryRepository
 from app.admin.domain.repositories.dataset_repository import DatasetRepository
 from app.admin.domain.repositories.dataset_type_repository import DatasetTypeRepository
+from app.admin.domain.repositories.initial_settings_repository import InitialSettingsRepository
 from app.admin.domain.repositories.label_repository import LabelRepository
 from app.admin.domain.repositories.publication_repository import PublicationRepository
 from app.admin.domain.repositories.role_repository import RoleRepository
@@ -25,6 +27,8 @@ from app.admin.infrastructure.persistence.repositories.base_layer_repository_imp
 from app.admin.infrastructure.persistence.repositories.category_repository_impl import CategoryRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.dataset_repository_impl import DatasetRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.dataset_type_repository_impl import DatasetTypeRepositoryImpl
+from app.admin.infrastructure.persistence.repositories.initial_settings_repository_impl import \
+    InitialSettingsRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.label_repository_impl import LabelRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.publication_repository_impl import PublicationRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.role_repository_impl import RoleRepositoryImpl
@@ -116,3 +120,10 @@ def get_wms_layer_service(
         user_authenticated: str = Depends(get_authenticated_user),
 ):
     return WmsLayerService(wms_layer_repository, user_authenticated)
+
+
+def get_initial_settings_service(
+        initial_settings_repository: InitialSettingsRepository = Depends(InitialSettingsRepositoryImpl),
+        user_authenticated: str = Depends(get_authenticated_user),
+):
+    return InitialSettingsService(initial_settings_repository, user_authenticated)

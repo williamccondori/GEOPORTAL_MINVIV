@@ -2,7 +2,11 @@ from typing import Optional
 
 from pydantic import HttpUrl
 
-from app.admin.application.dtos.base_dto import BaseDTO
+from app.web.application.dtos.base_dto import BaseDTO
+
+
+class WmsLayerDTO(BaseDTO):
+    id: str
 
 
 class StyleResponseDTO(BaseDTO):

@@ -11,6 +11,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.admin.api.routes.auth_routes import auth_router
 from app.admin.api.routes.base_layer_routes import base_layer_router
+from app.admin.api.routes.initial_settings_routes import initial_settings_router
 from app.admin.api.routes.role_routes import role_router
 from app.admin.api.routes.user_routes import user_router
 from app.admin.api.routes.wms_layer_routes import wms_layer_router
@@ -95,6 +96,12 @@ def create_app():
         auth_router,
         prefix=f"{api_prefix}/auth",
         tags=["auth"]
+    )
+
+    application.include_router(
+        initial_settings_router,
+        prefix=f"{api_prefix}/admin/initial-settings",
+        tags=["initial-settings"]
     )
 
     # PUBLIC ROUTES
