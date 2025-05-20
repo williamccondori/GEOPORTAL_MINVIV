@@ -2,37 +2,34 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from app.admin.api.dependencies import get_category_use_case
-from app.admin.application.dtos.category_dto import CategoryDTO, CategoryCreateDTO
+from app.admin.api.dependencies import get_category_service
+from app.admin.application.dtos.category_dto import CategoryDTO, CategoryCreateDTO, CategoryNodeDTO
 from app.shared.models.response import Response
 
-# noinspection DuplicatedCode
-category_router = APIRouter(
-    dependencies=[Depends(get_category_use_case)]
-)
+category_router = APIRouter()
 
 
-@category_router.get("/", response_model=Response[List[CategoryDTO]])
-async def get_all(use_case=Depends(get_category_use_case)) -> Response[List[CategoryDTO]]:
-    return Response.correct(await use_case.get_all())
+@category_router.get("/structure", response_model=Response[List[CategoryNodeDTO]])
+async def get_all(service=Depends(get_category_service)) -> Response[List[CategoryNodeDTO]]:
+    return Response.correct(await service.get_structure())
 
 
 @category_router.post("/", response_model=Response[str])
-async def create(category_dto: CategoryCreateDTO, use_case=Depends(get_category_use_case)) -> Response[str]:
-    return Response.correct(await use_case.create(category_dto))
+async def create(category_dto: CategoryCreateDTO, service=Depends(get_category_service)) -> Response[str]:
+    return Response.correct(await service.create(category_dto))
 
 
 @category_router.get("/{category_id}", response_model=Response[CategoryDTO])
-async def get_by_id(category_id: str, use_case=Depends(get_category_use_case)) -> Response[CategoryDTO]:
-    return Response.correct(await use_case.get_by_id(category_id))
+async def get_by_id(category_id: str, service=Depends(get_category_service)) -> Response[CategoryDTO]:
+    return Response.correct(await service.get_by_id(category_id))
 
 
 @category_router.put("/{category_id}", response_model=Response[str])
-async def update(category_id: str, category_dto: CategoryCreateDTO, use_case=Depends(get_category_use_case)) -> \
+async def update(category_id: str, category_dto: CategoryCreateDTO, service=Depends(get_category_service)) -> \
         Response[str]:
-    return Response.correct(await use_case.update(category_id, category_dto))
+    return Response.correct(await service.update(category_id, category_dto))
 
 
 @category_router.delete("/{category_id}", response_model=Response[str])
-async def delete(category_id: str, use_case=Depends(get_category_use_case)) -> Response[str]:
-    return Response.correct(await use_case.delete(category_id))
+async def delete(category_id: str, service=Depends(get_category_service)) -> Response[str]:
+    return Response.correct(await service.delete(category_id))

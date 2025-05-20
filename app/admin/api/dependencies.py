@@ -3,11 +3,11 @@ from fastapi import Depends, Security
 from fastapi.security import OAuth2PasswordBearer
 
 from app.admin.application.services.base_layer_service import BaseLayerService
+from app.admin.application.services.category_service import CategoryService
 from app.admin.application.services.initial_settings_service import InitialSettingsService
 from app.admin.application.services.rol_service import RoleService
 from app.admin.application.services.user_service import UserService
 from app.admin.application.services.wms_layer_service import WmsLayerService
-from app.admin.application.use_cases.category_use_case import CategoryUseCase
 from app.admin.application.use_cases.dataset_type_use_case import DatasetTypeUseCase
 from app.admin.application.use_cases.dataset_use_case import DatasetUseCase
 from app.admin.application.use_cases.get_publication_use_case import PublicationUseCase
@@ -51,13 +51,6 @@ def get_authenticated_user(token: str = Security(oauth2_scheme)) -> str:
         return sub
     except Exception:
         raise NotAuthenticatedException()
-
-
-def get_category_use_case(
-        category_repository: CategoryRepository = Depends(CategoryRepositoryImpl),
-        user_authenticated: str = Depends(get_authenticated_user),
-):
-    return CategoryUseCase(category_repository, user_authenticated)
 
 
 def get_label_use_case(
@@ -127,3 +120,10 @@ def get_initial_settings_service(
         user_authenticated: str = Depends(get_authenticated_user),
 ):
     return InitialSettingsService(initial_settings_repository, user_authenticated)
+
+
+def get_category_service(
+        category_repository: CategoryRepository = Depends(CategoryRepositoryImpl),
+        user_authenticated: str = Depends(get_authenticated_user),
+):
+    return CategoryService(category_repository, user_authenticated)
