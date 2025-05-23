@@ -1,4 +1,4 @@
-FROM osgeo/gdal:ubuntu-small-latest
+FROM ghcr.io/osgeo/gdal:ubuntu-small-3.11.0
 
 EXPOSE 8000
 
