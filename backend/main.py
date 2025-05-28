@@ -5,7 +5,6 @@ from typing import Any, Callable
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -67,7 +66,7 @@ def create_app():
         allow_headers=["*"],
     )
 
-    application.mount("/static", StaticFiles(directory="static"), name="static")
+    # application.mount("/static", StaticFiles(directory="static"), name="static")
 
     api_prefix = settings.API_V1_STR
 
