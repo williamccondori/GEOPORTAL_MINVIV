@@ -54,9 +54,17 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
             return JSONResponse(status_code=status_code, content=content)
 
 
-# noinspection PyTypeChecker
 def create_app():
+
+    # Configuracion de la zona horaria.
+
     os.environ["TZ"] = "America/Lima"
+
+    # Configuracion de CORS.
+
+    ALLOW_METHODS_AND_HEADERS = ["*"]
+
+    ORIGINS = settings.ORIGENES_PERMITIDOS.split(",")
 
     application = FastAPI(
         title="MINISTERIO DE VIVIENDA - PNVR API",
@@ -65,17 +73,13 @@ def create_app():
         docs_url="/docs",
         redoc_url="/redoc",
     )
-    application.add_middleware(CatchAllMiddleware)  # type: ignore[arg-type]
-    application.add_middleware(
+
+    app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "https://ministerioviviendageoportal.mooo.com",
-            "https://ministerioviviendageoportal.netlify.app",
-            "http://localhost:4200",
-        ],
+        allow_origins=ORIGINS,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=ALLOW_METHODS_AND_HEADERS,
+        allow_headers=ALLOW_METHODS_AND_HEADERS,
     )
 
     # application.mount("/static", StaticFiles(directory="static"), name="static")
