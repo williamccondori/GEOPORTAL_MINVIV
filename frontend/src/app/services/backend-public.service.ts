@@ -16,18 +16,18 @@ export class BackendPublicService {
   private readonly apiService = inject(ApiService);
 
   getInitialSettings(): Observable<InitialSettings> {
-    return this.apiService.get<InitialSettings>(`initial-settings`);
+    return this.apiService.get<InitialSettings>(`initial-settings/`);
   }
 
   // Base layers
 
   getAllBaseLayers(): Observable<BaseLayer[]> {
-    return this.apiService.get<BaseLayer[]>(`base-layers`);
+    return this.apiService.get<BaseLayer[]>(`base-layers/`);
   }
 
   getWmsInformation(url: string): Observable<WebMapServiceInformation> {
     return this.apiService.get<WebMapServiceInformation>(
-      `wms-layers?url=${encodeURIComponent(url)}`
+      `wms-layers/?url=${encodeURIComponent(url)}`
     );
   }
 
@@ -35,7 +35,7 @@ export class BackendPublicService {
     locationRequest: LocationRequest
   ): Observable<LocationResponse[]> {
     return this.apiService.get<LocationResponse[]>(
-      `locations?query=${encodeURIComponent(locationRequest.query)}`
+      `locations/?query=${encodeURIComponent(locationRequest.query)}`
     );
   }
 }

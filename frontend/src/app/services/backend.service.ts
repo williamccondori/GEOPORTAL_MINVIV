@@ -18,7 +18,7 @@ export class BackendService {
   private readonly apiService = inject(ApiService);
 
   getInitialSettings(): Observable<InitialSettings> {
-    return this.apiService.get<InitialSettings>(`admin/initial-settings`);
+    return this.apiService.get<InitialSettings>(`admin/initial-settings/`);
   }
 
   updateInitialSettings(initialSettings: InitialSettings): Observable<string> {
@@ -45,15 +45,15 @@ export class BackendService {
   }
 
   getAllBaseLayers(): Observable<BaseLayer[]> {
-    return this.apiService.get<BaseLayer[]>(`admin/base-layers`);
+    return this.apiService.get<BaseLayer[]>(`admin/base-layers/`);
   }
 
   getBaseLayerById(userId: string): Observable<BaseLayer> {
-    return this.apiService.get<BaseLayer>(`admin/base-layers/${userId}`);
+    return this.apiService.get<BaseLayer>(`admin/base-layers/${userId}/`);
   }
 
   deleteBaseLayer(baseLayerId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/base-layers/${baseLayerId}`);
+    return this.apiService.delete<string>(`admin/base-layers/${baseLayerId}/`);
   }
 
   // WMS layers
@@ -70,15 +70,15 @@ export class BackendService {
   }
 
   getAllWmsLayers(): Observable<WmsLayer[]> {
-    return this.apiService.get<BaseLayer[]>(`admin/wms-layers`);
+    return this.apiService.get<BaseLayer[]>(`admin/wms-layers/`);
   }
 
   getWmsLayerById(wmsLayerId: string): Observable<WmsLayer> {
-    return this.apiService.get<BaseLayer>(`admin/wms-layers/${wmsLayerId}`);
+    return this.apiService.get<BaseLayer>(`admin/wms-layers/${wmsLayerId}/`);
   }
 
   deleteWmsLayer(wmsLayerId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/wms-layers/${wmsLayerId}`);
+    return this.apiService.delete<string>(`admin/wms-layers/${wmsLayerId}/`);
   }
 
   // Roles
@@ -92,15 +92,15 @@ export class BackendService {
   }
 
   getAllRoles(): Observable<Role[]> {
-    return this.apiService.get<Role[]>(`admin/roles`);
+    return this.apiService.get<Role[]>(`admin/roles/`);
   }
 
   getRoleById(roleId: string): Observable<Role> {
-    return this.apiService.get<Role>(`admin/roles/${roleId}`);
+    return this.apiService.get<Role>(`admin/roles/${roleId}/`);
   }
 
   deleteRole(roleId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/roles/${roleId}`);
+    return this.apiService.delete<string>(`admin/roles/${roleId}/`);
   }
 
   // Users
@@ -114,15 +114,15 @@ export class BackendService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.apiService.get<User[]>(`admin/users`);
+    return this.apiService.get<User[]>(`admin/users/`);
   }
 
   getUserById(userId: string): Observable<User> {
-    return this.apiService.get<User>(`admin/users/${userId}`);
+    return this.apiService.get<User>(`admin/users/${userId}/`);
   }
 
   deleteUser(userId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/users/${userId}`);
+    return this.apiService.delete<string>(`admin/users/${userId}/`);
   }
 
   // Categories
@@ -132,7 +132,7 @@ export class BackendService {
   }
 
   deleteCategory(categoryId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/categories/${categoryId}`);
+    return this.apiService.delete<string>(`admin/categories/${categoryId}/`);
   }
 
   updateCategory(categoryId: string, category: Category): Observable<string> {
@@ -143,16 +143,16 @@ export class BackendService {
   }
 
   getCatalogStructure(): Observable<CategoryNode[]> {
-    return this.apiService.get<CategoryNode[]>(`admin/categories/structure`);
+    return this.apiService.get<CategoryNode[]>(`admin/categories/structure/`);
   }
 
   getCategoryById(categoryId: string): Observable<Category> {
-    return this.apiService.get<Category>(`admin/categories/${categoryId}`);
+    return this.apiService.get<Category>(`admin/categories/${categoryId}/`);
   }
 
   // Layers
 
   deleteLayer(layerId: string): Observable<string> {
-    return this.apiService.delete<string>(`admin/layers/${layerId}`);
+    return this.apiService.delete<string>(`admin/layers/${layerId}/`);
   }
 }
