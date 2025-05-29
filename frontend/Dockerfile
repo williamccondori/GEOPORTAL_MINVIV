@@ -1,28 +1,29 @@
-FROM node:19-alpine AS builder
+FROM node:22 AS build
 
-WORKDIR /src
+WORKDIR /app
+
+ARG API_URL
+
+ENV TZ=America/Lima
+ENV API_URL=${API_URL}
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
 
-ARG BASE_URL
+RUN sed -i "s|#{API_URL}#|${API_URL}|g" /app/src/environments/environment.ts
 
-ENV BASE_URL=$BASE_URL
-ENV NODE_OPTIONS=--openssl-legacy-provider
+RUN npm run build -- --output-path=dist --configuration=production
 
-RUN npm run generate
+FROM nginx:1.17.1-alpine
 
-FROM node:lts-alpine AS runner
+ENV TZ=America/Lima
 
-RUN npm install -g http-server
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 
-WORKDIR /app
-
-COPY --from=builder /src/dist /app/dist
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-CMD [ "http-server", "dist", "-p", "80" ]
+CMD ["nginx", "-g", "daemon off;"]
