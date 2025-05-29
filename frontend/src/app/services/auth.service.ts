@@ -17,7 +17,7 @@ export class AuthService {
     const formData = new FormData();
     formData.append('username', login.username);
     formData.append('password', login.password);
-    return this.apiService.post<AccessToken>('auth', formData);
+    return this.apiService.post<AccessToken>('auth/', formData);
   }
 
   setToken(token: string): void {
