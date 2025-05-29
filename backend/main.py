@@ -74,7 +74,7 @@ def create_app():
         redoc_url="/redoc",
     )
 
-    app.add_middleware(
+    application.add_middleware(
         CORSMiddleware,
         allow_origins=ORIGINS,
         allow_credentials=True,
