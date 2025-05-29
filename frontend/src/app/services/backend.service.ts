@@ -23,7 +23,7 @@ export class BackendService {
 
   updateInitialSettings(initialSettings: InitialSettings): Observable<string> {
     return this.apiService.put<string>(
-      `admin/initial-settings`,
+      `admin/initial-settings/`,
       initialSettings
     );
   }
@@ -31,7 +31,7 @@ export class BackendService {
   // Base layers
 
   createBaseLayer(baseLayer: BaseLayer): Observable<string> {
-    return this.apiService.post<string>(`admin/base-layers`, baseLayer);
+    return this.apiService.post<string>(`admin/base-layers/`, baseLayer);
   }
 
   updateBaseLayer(
@@ -39,7 +39,7 @@ export class BackendService {
     baseLayer: BaseLayer
   ): Observable<string> {
     return this.apiService.put<string>(
-      `admin/base-layers/${baseLayerId}`,
+      `admin/base-layers/${baseLayerId}/`,
       baseLayer
     );
   }
@@ -59,12 +59,12 @@ export class BackendService {
   // WMS layers
 
   createWmsLayer(wmsLayer: WmsLayer): Observable<string> {
-    return this.apiService.post<string>(`admin/wms-layers`, wmsLayer);
+    return this.apiService.post<string>(`admin/wms-layers/`, wmsLayer);
   }
 
   updateWmsLayer(wmsLayerId: string, wmsLayer: WmsLayer): Observable<string> {
     return this.apiService.put<string>(
-      `admin/wms-layers/${wmsLayerId}`,
+      `admin/wms-layers/${wmsLayerId}/`,
       wmsLayer
     );
   }
@@ -84,11 +84,11 @@ export class BackendService {
   // Roles
 
   createRole(role: Role): Observable<string> {
-    return this.apiService.post<string>(`admin/roles`, role);
+    return this.apiService.post<string>(`admin/roles/`, role);
   }
 
   updateRole(roleId: string, role: Role): Observable<string> {
-    return this.apiService.put<string>(`admin/roles/${roleId}`, role);
+    return this.apiService.put<string>(`admin/roles/${roleId}/`, role);
   }
 
   getAllRoles(): Observable<Role[]> {
@@ -106,11 +106,11 @@ export class BackendService {
   // Users
 
   createUser(user: User): Observable<string> {
-    return this.apiService.post<string>(`admin/users`, user);
+    return this.apiService.post<string>(`admin/users/`, user);
   }
 
   updateUser(userId: string, user: User): Observable<string> {
-    return this.apiService.put<string>(`admin/users/${userId}`, user);
+    return this.apiService.put<string>(`admin/users/${userId}/`, user);
   }
 
   getAllUsers(): Observable<User[]> {
@@ -128,7 +128,7 @@ export class BackendService {
   // Categories
 
   createCategory(category: Category): Observable<string> {
-    return this.apiService.post<string>(`admin/categories`, category);
+    return this.apiService.post<string>(`admin/categories/`, category);
   }
 
   deleteCategory(categoryId: string): Observable<string> {
@@ -137,7 +137,7 @@ export class BackendService {
 
   updateCategory(categoryId: string, category: Category): Observable<string> {
     return this.apiService.put<string>(
-      `admin/categories/${categoryId}`,
+      `admin/categories/${categoryId}/`,
       category
     );
   }
