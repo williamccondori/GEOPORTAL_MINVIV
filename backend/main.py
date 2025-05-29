@@ -69,8 +69,8 @@ def create_app():
     application.add_middleware(
         CORSMiddleware,
         allow_origins=[
-            "https://ministerioviviendageoportal.mooo.com/",
-            "https://ministerioviviendageoportal.netlify.app/",
+            "https://ministerioviviendageoportal.mooo.com",
+            "https://ministerioviviendageoportal.netlify.app",
             "http://localhost:4200",
         ],
         allow_credentials=True,
