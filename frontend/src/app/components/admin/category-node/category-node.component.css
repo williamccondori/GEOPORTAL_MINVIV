@@ -1,0 +1,17 @@
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+}
+.category-item {
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.category-item i {
+  color: orange;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}

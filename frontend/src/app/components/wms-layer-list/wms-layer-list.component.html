@@ -1,0 +1,187 @@
+<p-table
+  #table
+  dataKey="name"
+  size="small"
+  showGridlines
+  stripedRows
+  paginator
+  [rows]="10"
+  [value]="layers"
+  [rowsPerPageOptions]="[10, 20, 50, 100]"
+  [globalFilterFields]="['name', 'title']"
+  [expandedRowKeys]="expandedRows"
+>
+  <ng-template pTemplate="caption">
+    <div class="app-right">
+      <p-iconfield iconPosition="left">
+        <p-inputicon>
+          <i class="pi pi-search"></i>
+        </p-inputicon>
+        <input
+          pInputText
+          type="text"
+          placeholder="Buscar"
+          (input)="onSearch($event, table)"
+        />
+      </p-iconfield>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem"></th>
+      <th pSortableColumn="name">
+        Nombre
+        <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="title">
+        Título
+        <p-sortIcon field="title"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-layer
+    let-expanded="expanded"
+  >
+    <tr>
+      <td>
+        <p-button
+          type="button"
+          variant="text"
+          text
+          rounded
+          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          [pRowToggler]="layer"
+        />
+      </td>
+      <td>
+        {{ layer.name }}
+      </td>
+      <td>
+        {{ layer.title }}
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template
+    pTemplate="expandedrow"
+    let-layer
+  >
+    <tr>
+      <td colspan="100">
+        <p-button
+          label="Agregar a mis capas"
+          icon="pi pi-plus"
+          severity="success"
+          (click)="onAdd(layer.name)"
+        ></p-button>
+        <p-fieldset legend="Detalles generales">
+          <div class="row">
+            <div class="col-12 col-lg-8">
+              <ul class="app-list-description">
+                <li>
+                  <div>Identificador</div>
+                  <div>{{ layer.name }}</div>
+                </li>
+                <li>
+                  <div>Título</div>
+                  <div>{{ layer.title }}</div>
+                </li>
+
+                <li>
+                  <div>Resumen</div>
+                  <div>{{ layer.abstract || 'No definido' }}</div>
+                </li>
+                <li>
+                  <div>Exportar / Visualizar</div>
+                  <div>
+                    <p-select
+                      [(ngModel)]="layer.selectedExport"
+                      [options]="layer.exports"
+                      optionValue="url"
+                      optionLabel="type"
+                      filterBy="label"
+                      appendTo="body"
+                      [fluid]="true"
+                      [filter]="true"
+                      [showClear]="true"
+                      [virtualScroll]="true"
+                      [virtualScrollItemSize]="38"
+                      [style]="{ marginBottom: '0.25rem' }"
+                      placeholder="Seleccione un formato"
+                    ></p-select>
+                    <p-button
+                      [disabled]="!layer.selectedExport"
+                      label="Exportar / Visualizar"
+                      icon="pi pi-download"
+                      severity="info"
+                      (click)="onExport(layer.selectedExport)"
+                    ></p-button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="app-background-for-thumbnail">
+                <p-image
+                  [src]="layer.thumbnail"
+                  [alt]="layer.title"
+                  width="100%"
+                ></p-image>
+              </div>
+            </div>
+          </div>
+        </p-fieldset>
+        <p-fieldset
+          legend="Palabras clave"
+          styleClass="p-fieldset-sm"
+        >
+          <ul>
+            @for (keyword of layer.keywords; track keyword) {
+              <li>
+                {{ keyword }}
+              </li>
+            }
+          </ul>
+        </p-fieldset>
+        <p-fieldset
+          legend="Estilos"
+          styleClass="p-fieldset-sm"
+        >
+          <ul class="app-list-description">
+            @for (style of layer.styles; track style.title) {
+              <li>
+                <div>{{ style.title }}</div>
+                <div>
+                  <a
+                    class="wrap-cell"
+                    href="{{ style.legend }}"
+                    target="_blank"
+                  >
+                    {{ style.legend }}
+                  </a>
+                </div>
+                <div class="p-1">
+                  <p-image
+                    [src]="style.legend"
+                    [alt]="style.title"
+                  />
+                </div>
+              </li>
+            }
+          </ul>
+        </p-fieldset>
+        <p-fieldset legend="Extensión de la capa">
+          <app-wms-layer-extension-map
+            [layerName]="layer.name"
+            [boundingBox]="layer.boundingBox"
+          ></app-wms-layer-extension-map>
+          <small>
+            {{ layer.boundingBox }}
+          </small>
+        </p-fieldset>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

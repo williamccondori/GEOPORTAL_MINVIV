@@ -1,0 +1,107 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Servicios externos WMS"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+>
+  <div class="app-space-vertical">
+    <form
+      [formGroup]="formGroup"
+      (ngSubmit)="onSubmit()"
+    >
+      <p-inputgroup>
+        <input
+          pInputText
+          formControlName="url"
+          placeholder="Ingrese la URL"
+        />
+        <p-button
+          label="Obtener"
+          type="submit"
+        />
+      </p-inputgroup>
+    </form>
+    @if (wmsInformationTable.length > 0) {
+      <p-fieldset legend="Información del servicio">
+        <p-table
+          [value]="wmsInformationTable"
+          autoLayout
+          stripedRows
+          showGridlines
+          [tableStyle]="{ width: '100%' }"
+          size="small"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th colspan="2">Resumen</th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-wmsInformation
+          >
+            <tr>
+              <td>
+                <b>
+                  {{ wmsInformation.key }}
+                </b>
+              </td>
+              <td class="wrap-cell">
+                {{ wmsInformation.value }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <p-divider></p-divider>
+        <p-button
+          [label]="`Ver capas (${wmsInformation.layers.length})`"
+          fluid
+          icon="pi pi-eye"
+          (click)="onShowLayers()"
+        />
+      </p-fieldset>
+    }
+    <p-fieldset legend="Mis capas">
+      <p-table
+        [value]="layerService.userWmslayers()"
+        stripedRows
+        showGridlines
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-layer
+        >
+          <tr>
+            <td>{{ layer.title }}</td>
+            <td>
+              <div class="app-space-horizontal">
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  rounded
+                  text
+                  (click)="onDelete(layer.id)"
+                ></p-button>
+                <p-button
+                  [icon]="getLayerIcon(layer.id)"
+                  severity="success"
+                  rounded
+                  text
+                  (click)="onShowLayer(layer.id)"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-fieldset>
+  </div>
+</p-drawer>
+<p-toast></p-toast>

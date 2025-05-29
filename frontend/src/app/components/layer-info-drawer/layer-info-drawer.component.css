@@ -1,0 +1,41 @@
+/* Layer info table styling */
+::ng-deep .layer-info-table {
+  width: 100% !important;
+}
+
+::ng-deep .layer-info-table .p-datatable-tbody > tr > td {
+  padding: 0.5rem 0.25rem !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  white-space: normal !important;
+  vertical-align: top !important;
+}
+
+::ng-deep .layer-info-table .property-column {
+  width: 30% !important;
+  min-width: 80px !important;
+  max-width: 120px !important;
+}
+
+::ng-deep .layer-info-table .value-column {
+  width: 70% !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  white-space: normal !important;
+}
+
+/* Legend container styling */
+.legend-container {
+  width: 100%;
+  text-align: center;
+}
+
+::ng-deep .legend-container .p-image {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+::ng-deep .legend-container .p-image img {
+  max-width: 100% !important;
+  height: auto !important;
+}

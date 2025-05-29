@@ -1,0 +1,59 @@
+.app-space-vertical > * + * {
+  margin-top: 1rem;
+}
+
+.app-space-horizontal > * + * {
+  margin-left: 0.5rem;
+}
+
+.app-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.app-form-group label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.upload-area {
+  text-align: center;
+  padding: 2rem;
+  border: 2px dashed var(--surface-border);
+  border-radius: var(--border-radius);
+  background: var(--surface-ground);
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-50);
+}
+
+.upload-hint {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+}
+
+.file-size {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.p-error {
+  color: var(--red-500);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

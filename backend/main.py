@@ -47,6 +47,7 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
             )
 
 
+# noinspection PyTypeChecker
 def create_app():
     os.environ["TZ"] = "America/Lima"
 
@@ -59,7 +60,7 @@ def create_app():
     )
     application.add_middleware(CatchAllMiddleware)  # type: ignore[arg-type]
     application.add_middleware(
-        CORSMiddleware,  # type: ignore[arg-type]
+        CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],

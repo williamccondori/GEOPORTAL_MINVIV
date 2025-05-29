@@ -1,0 +1,128 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-space-vertical">
+    <div class="app-form-group">
+      <label for="name">Nombre:</label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        pInputText
+        placeholder="Ingrese el nombre de la capa"
+        fluid
+      />
+      @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
+        <small class="p-error">El nombre es requerido</small>
+      }
+    </div>
+
+    <div class="app-form-group">
+      <label for="layerName">Nombre de capa (sin espacios):</label>
+      <input
+        id="layerName"
+        formControlName="layerName"
+        type="text"
+        pInputText
+        placeholder="nombre_de_capa"
+        fluid
+      />
+      @if (
+        formGroup.get('layerName')?.hasError('required') &&
+        formGroup.get('layerName')?.touched
+      ) {
+        <small class="p-error">El nombre de capa es requerido</small>
+      }
+      @if (
+        formGroup.get('layerName')?.hasError('noSpaces') &&
+        formGroup.get('layerName')?.touched
+      ) {
+        <small class="p-error">
+          El nombre de capa no puede contener espacios
+        </small>
+      }
+    </div>
+
+    <div class="app-form-group">
+      <label for="description">Descripción:</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        pTextarea
+        placeholder="Ingrese la descripción de la capa"
+        rows="4"
+        fluid
+      ></textarea>
+      @if (
+        formGroup.get('description')?.invalid &&
+        formGroup.get('description')?.touched
+      ) {
+        <small class="p-error">La descripción es requerida</small>
+      }
+    </div>
+
+    <div class="app-form-group">
+      <label for="categoryId">Categoría:</label>
+      <p-treeSelect
+        id="categoryId"
+        formControlName="categoryId"
+        [options]="categoryNodes"
+        placeholder="Seleccione una categoría"
+        selectionMode="single"
+        appendTo="body"
+        fluid
+      ></p-treeSelect>
+      @if (
+        formGroup.get('categoryId')?.invalid &&
+        formGroup.get('categoryId')?.touched
+      ) {
+        <small class="p-error">La categoría es requerida</small>
+      }
+    </div>
+
+    <div class="app-form-group">
+      <label for="shapeFile">Archivo Shapefile (ZIP - máx. 5MB):</label>
+      <app-file-upload
+        formControlName="shapeFile"
+        accept=".zip"
+        [maxFileSize]="5242880"
+        [multiple]="false"
+        [required]="true"
+        label="Seleccionar archivo"
+        placeholder="Arrastre y suelte un archivo ZIP aquí o haga clic para seleccionar"
+        hint="Solo archivos ZIP hasta 5MB"
+      ></app-file-upload>
+      @if (
+        formGroup.get('shapeFile')?.invalid &&
+        formGroup.get('shapeFile')?.touched
+      ) {
+        <small class="p-error">
+          @if (formGroup.get('shapeFile')?.hasError('required')) {
+            <span>El archivo shapefile es requerido</span>
+          }
+          @if (formGroup.get('shapeFile')?.hasError('invalidFileType')) {
+            <span>
+              Tipo de archivo no válido. Solo se permiten archivos ZIP
+            </span>
+          }
+          @if (formGroup.get('shapeFile')?.hasError('maxFileSize')) {
+            <span>El archivo excede el tamaño máximo de 5MB</span>
+          }
+        </small>
+      }
+    </div>
+
+    <div class="app-form-group">
+      <p-button
+        type="submit"
+        label="Guardar Capa"
+        icon="pi pi-save"
+        [disabled]="formGroup.invalid"
+        styleClass="w-full"
+      />
+    </div>
+  </div>
+</form>
+
+<p-toast></p-toast>

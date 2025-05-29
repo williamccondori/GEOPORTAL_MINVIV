@@ -1,0 +1,87 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Localización"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+  (onShow)="onDrawerOpen()"
+>
+  <div class="app-space-vertical">
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">Buscar por nombre</p-tab>
+        <p-tab value="1">Buscar por coordenadas</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <form
+            [formGroup]="formGroup"
+            (submit)="onSubmit()"
+          >
+            <p-inputgroup>
+              <input
+                pInputText
+                formControlName="query"
+                placeholder="Ingrese el término de búsqueda"
+              />
+              <p-button
+                label="Buscar"
+                type="submit"
+                icon="pi pi-search"
+              ></p-button>
+            </p-inputgroup>
+          </form>
+          <p-divider></p-divider>
+          @if (locations.length > 0) {
+            <div class="app-space-vertical">
+              <div>
+                <p-button
+                  label="Limpiar"
+                  severity="danger"
+                  type="button"
+                  icon="pi pi-trash"
+                  fluid
+                  (click)="onClear()"
+                />
+              </div>
+              <p-table
+                [value]="locations"
+                [stripedRows]="true"
+                [showGridlines]="true"
+                size="small"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Ver</th>
+                  </tr>
+                </ng-template>
+                <ng-template
+                  pTemplate="body"
+                  let-location
+                >
+                  <tr>
+                    <td>{{ location.name }}</td>
+                    <td>
+                      <p-button
+                        icon="pi pi-eye"
+                        type="button"
+                        (click)="onView(location)"
+                      ></p-button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          }
+        </p-tabpanel>
+        <p-tabpanel value="1">
+          <form
+            [formGroup]="formGroupCoordinate"
+            (submit)="onSubmitCoordinate()"
+          ></form>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</p-drawer>
+<p-toast></p-toast>

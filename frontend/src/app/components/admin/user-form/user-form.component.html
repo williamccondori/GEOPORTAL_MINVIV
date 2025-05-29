@@ -1,0 +1,68 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Ingrese el nombre"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="lastName">Apellidos:</label>
+    <input
+      id="lastName"
+      type="text"
+      pInputText
+      formControlName="lastName"
+      placeholder="Ingrese los apellidos"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="email">Correo electrónico:</label>
+    <input
+      id="email"
+      type="email"
+      pInputText
+      formControlName="email"
+      placeholder="Ingrese el correo electrónico"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="username">Nombre de usuario:</label>
+    <input
+      id="username"
+      type="text"
+      pInputText
+      formControlName="username"
+      placeholder="Ingrese el nombre de usuario"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="password">Contraseña:</label>
+    <input
+      id="password"
+      type="text"
+      pInputText
+      formControlName="password"
+      placeholder="Ingrese la contraseña"
+      [fluid]="true"
+    />
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    type="submit"
+    size="large"
+    [disabled]="formGroup.invalid"
+    [fluid]="true"
+  ></p-button>
+</form>

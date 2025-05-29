@@ -1,0 +1,55 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Marcadores"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+>
+  <div class="app-space-vertical">
+    <p-button
+      label="Agregar marcador"
+      icon="pi pi-plus"
+      (click)="onAdd()"
+      [fluid]="true"
+    ></p-button>
+    <p-table
+      [value]="views"
+      [paginator]="true"
+      [rows]="5"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [stripedRows]="true"
+      [showGridlines]="true"
+      size="small"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-view
+      >
+        <tr>
+          <td>{{ view.name }}</td>
+          <td class="app-space-horizontal">
+            <p-button
+              icon="pi pi-eye"
+              (click)="onView(view)"
+              class="p-button-rounded p-button-outlined"
+              [style]="{ width: '2rem', height: '2rem' }"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              (click)="onDelete(view)"
+              class="p-button-rounded p-button-outlined"
+              [style]="{ width: '2rem', height: '2rem' }"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-drawer>
+<p-confirm-dialog></p-confirm-dialog>

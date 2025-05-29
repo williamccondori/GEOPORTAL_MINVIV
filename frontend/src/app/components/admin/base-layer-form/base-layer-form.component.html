@@ -1,0 +1,46 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="url">URL:</label>
+    <input
+      id="url"
+      type="text"
+      pInputText
+      formControlName="url"
+      placeholder="Ingrese el url"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Ingrese el nombre"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="attribution">Atribución:</label>
+    <input
+      id="attribution"
+      type="text"
+      pInputText
+      formControlName="attribution"
+      placeholder="Ingrese la atribución"
+      [fluid]="true"
+    />
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    type="submit"
+    size="large"
+    [disabled]="formGroup.invalid"
+    [fluid]="true"
+  ></p-button>
+</form>

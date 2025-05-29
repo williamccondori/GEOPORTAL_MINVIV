@@ -1,0 +1,24 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Ingrese el nombre"
+      [fluid]="true"
+    />
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    type="submit"
+    size="large"
+    [disabled]="formGroup.invalid"
+    [fluid]="true"
+  ></p-button>
+</form>

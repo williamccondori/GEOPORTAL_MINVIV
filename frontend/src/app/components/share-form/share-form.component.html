@@ -1,0 +1,55 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="path">Enlace del mapa:</label>
+    <input
+      id="path"
+      type="text"
+      pInputText
+      formControlName="path"
+      fluid
+      readonly
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="insert">Código para incrustar:</label>
+    <textarea
+      id="insert"
+      pTextarea
+      formControlName="insert"
+      rows="3"
+      fluid
+      readonly
+    ></textarea>
+  </div>
+  <p-button
+    label="Copiar ruta y cerrar ventana"
+    icon="pi pi-share-alt"
+    severity="success"
+    type="submit"
+    size="large"
+    [disabled]="formGroup.invalid"
+    fluid
+  ></p-button>
+</form>
+
+<p-fieldset legend="Compartir en redes sociales">
+  <div class="app-space-horizontal">
+    <p-button
+      icon="pi pi-facebook"
+      severity="contrast"
+      fluid
+      (onClick)="onShareFacebook()"
+    />
+    <p-button
+      icon="pi pi-twitter"
+      severity="contrast"
+      fluid
+      (onClick)="onShareTwitter()"
+    />
+  </div>
+</p-fieldset>
+
+<p-toast></p-toast>

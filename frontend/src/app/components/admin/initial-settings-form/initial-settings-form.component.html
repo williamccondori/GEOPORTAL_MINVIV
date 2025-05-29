@@ -1,0 +1,113 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <p-fieldset legend="Configuración">
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="hasAttribution">Mostrar atribuciones en el mapa:</label>
+          <p-toggleswitch
+            formControlName="hasAttribution"
+            [trueValue]="true"
+            [falseValue]="false"
+          />
+        </div>
+      </div>
+    </div>
+  </p-fieldset>
+  <p-fieldset legend="Ubicación incicial">
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="latitude">Latitud:</label>
+          <input
+            id="latitude"
+            type="number"
+            pInputText
+            formControlName="latitude"
+            placeholder="Ingrese la latitud"
+            fluid
+          />
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="longitude">Longitud:</label>
+          <input
+            id="longitude"
+            type="number"
+            pInputText
+            formControlName="longitude"
+            placeholder="Ingrese la longitud"
+            fluid
+          />
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="zoom">Zoom:</label>
+          <input
+            id="zoom"
+            type="number"
+            pInputText
+            formControlName="zoom"
+            placeholder="Ingrese el zoom"
+            fluid
+          />
+        </div>
+      </div>
+    </div>
+  </p-fieldset>
+  <p-fieldset legend="Capa base">
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="defaultBaseLayerId">Capa base por defecto:</label>
+          <p-select
+            formControlName="defaultBaseLayerId"
+            [options]="baseLayers"
+            optionValue="id"
+            optionLabel="name"
+            filterBy="label"
+            appendTo="body"
+            fluid
+            filter
+            showClear
+            placeholder="Seleccione"
+          />
+        </div>
+      </div>
+    </div>
+  </p-fieldset>
+  <p-fieldset legend="Capas WMS">
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="app-form-group">
+          <label for="wmsLayerIds">Capas WMS por defecto:</label>
+          <p-multiselect
+            [options]="wmsLayers"
+            formControlName="wmsLayerIds"
+            optionValue="id"
+            optionLabel="name"
+            fluid
+            filter
+            showClear
+            placeholder="Seleccione"
+          />
+        </div>
+      </div>
+    </div>
+  </p-fieldset>
+  <div class="mt-1">
+    <p-button
+      label="Guardar"
+      icon="pi pi-save"
+      type="submit"
+      severity="success"
+      size="large"
+      [disabled]="formGroup.invalid"
+    ></p-button>
+  </div>
+</form>
+<p-toast></p-toast>

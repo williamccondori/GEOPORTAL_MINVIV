@@ -1,0 +1,50 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="categoryParent">Categoría padre:</label>
+    <p-tree-select
+      id="categoryParent"
+      formControlName="categoryParent"
+      [options]="categoryTree"
+      appendTo="body"
+      fluid
+      showClear
+      placeholder="SIN CATEGORÍA PADRE"
+    ></p-tree-select>
+  </div>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      formControlName="name"
+      type="text"
+      pInputText
+      placeholder="Ingrese el nombre"
+      fluid
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="description">Descripción:</label>
+    <textarea
+      rows="5"
+      cols="1"
+      pTextarea
+      id="description"
+      formControlName="description"
+      placeholder="Ingrese la descripción"
+      autoResize
+      fluid
+    ></textarea>
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    type="submit"
+    size="large"
+    severity="success"
+    fluid
+    [disabled]="formGroup.invalid"
+  ></p-button>
+</form>

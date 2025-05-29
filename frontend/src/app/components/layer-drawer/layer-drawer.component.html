@@ -1,0 +1,9 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Capas"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+  (onShow)="onDrawerOpen()"
+>
+  <div class="app-space-vertical"></div>
+</p-drawer>

@@ -1,0 +1,29 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Capas base"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+  (onShow)="onDrawerOpen()"
+>
+  <div class="app-space-vertical">
+    <div class="row">
+      @for (baseLayer of baseLayers; track baseLayer.id) {
+        <div class="col-sm-6">
+          <p-card
+            (click)="onSelect(baseLayer)"
+            [style]="{ cursor: 'pointer' }"
+          >
+            <ng-template pTemplate="header">
+              <app-base-layer-map [baseLayer]="baseLayer"></app-base-layer-map>
+            </ng-template>
+            <ng-template pTemplate="title">{{ baseLayer.name }}</ng-template>
+            <ng-template pTemplate="subtitle">
+              {{ baseLayer.attribution }}
+            </ng-template>
+          </p-card>
+        </div>
+      }
+    </div>
+  </div>
+</p-drawer>
+<p-toast></p-toast>

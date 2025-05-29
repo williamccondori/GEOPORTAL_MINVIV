@@ -1,0 +1,74 @@
+<div class="app-space-horizontal">
+  <p-button
+    icon="pi pi-search"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Búsqueda avanzada"
+    severity="danger"
+    (onClick)="onOpenSearchDrawer()"
+  />
+  <p-button
+    icon="pi pi-table"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Búsqueda tabular"
+    severity="danger"
+    (onClick)="onOpenSearchTabularDrawer()"
+  />
+  <p-button
+    icon="pi pi-sitemap"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Capas"
+    severity="danger"
+    (onClick)="onOpenLayerDrawer()"
+  />
+  <p-button
+    icon="pi pi-globe"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Servicios externos"
+    severity="danger"
+    (onClick)="onOpenWmsLayerDrawer()"
+  />
+  <p-button
+    icon="pi pi-map"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Capas base"
+    severity="danger"
+    (onClick)="onOpenBaseLayerDrawer()"
+  />
+  <p-button
+    icon="pi pi-compass"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Localización"
+    severity="danger"
+    (onClick)="onOpenLocationDrawer()"
+  />
+  <p-button
+    icon="pi pi-thumbtack"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Vistas"
+    severity="danger"
+    (onClick)="onOpenViewDrawer()"
+  />
+  <p-button
+    icon="pi pi-comments"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Asistente virtual"
+    severity="danger"
+    (onClick)="onOpenChatbotDrawer()"
+  />
+  <p-button
+    icon="pi pi-share-alt"
+    [rounded]="true"
+    [raised]="true"
+    pTooltip="Compartir"
+    severity="danger"
+    (onClick)="onShare()"
+  />
+</div>

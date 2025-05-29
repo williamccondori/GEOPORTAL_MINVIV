@@ -1,0 +1,63 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="app-form-group">
+    <label for="latitude">Coordenadas:</label>
+    <p-inputgroup>
+      <p-inputgroup-addon>
+        <span>Latitud:</span>
+      </p-inputgroup-addon>
+      <input
+        id="latitude"
+        type="number"
+        pInputText
+        formControlName="latitude"
+        placeholder="Latitud"
+        [fluid]="true"
+      />
+      <p-inputgroup-addon>
+        <span>Longitud:</span>
+      </p-inputgroup-addon>
+      <input
+        id="longitude"
+        type="number"
+        pInputText
+        formControlName="longitude"
+        placeholder="Longitud"
+        [fluid]="true"
+      />
+    </p-inputgroup>
+  </div>
+  <div class="app-form-group">
+    <label for="zoom">Zoom:</label>
+    <input
+      id="zoom"
+      type="number"
+      pInputText
+      formControlName="zoom"
+      placeholder="Ingrese el nivel de zoom"
+      [fluid]="true"
+    />
+  </div>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Ingrese el nombre de la vista"
+      [fluid]="true"
+    />
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    severity="success"
+    type="submit"
+    size="large"
+    [disabled]="formGroup.invalid"
+    [fluid]="true"
+  ></p-button>
+</form>

@@ -1,0 +1,72 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Búsqueda avanzada"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+>
+  <div class="app-space-vertical">
+    <form
+      [formGroup]="formGroup"
+      (ngSubmit)="onSubmit()"
+    >
+      <div class="app-form-group">
+        <label for="department">Departamento:</label>
+        <p-select
+          id="department"
+          [fluid]="true"
+          formControlName="departmentId"
+          placeholder="Seleccione"
+        ></p-select>
+      </div>
+      <div class="app-form-group">
+        <label for="province">Provincia:</label>
+        <p-select
+          id="province"
+          [fluid]="true"
+          formControlName="provinceId"
+          placeholder="Seleccione"
+        ></p-select>
+      </div>
+      <div class="app-form-group">
+        <label for="district">Distrito:</label>
+        <p-select
+          id="district"
+          [fluid]="true"
+          formControlName="districtId"
+          placeholder="Seleccione"
+        ></p-select>
+      </div>
+      <div class="app-form-group">
+        <label for="zoom">Zoom:</label>
+        <input
+          id="zoom"
+          type="text"
+          pInputText
+          formControlName="zoom"
+          placeholder="Ingrese el nivel de zoom"
+          readonly
+          [fluid]="true"
+        />
+      </div>
+      <div class="app-form-group">
+        <label for="name">Nombre:</label>
+        <input
+          id="name"
+          type="text"
+          pInputText
+          formControlName="name"
+          placeholder="Ingrese el nombre de la vista"
+          [fluid]="true"
+        />
+      </div>
+      <p-button
+        label="Guardar"
+        icon="pi pi-save"
+        type="submit"
+        size="large"
+        [disabled]="formGroup.invalid"
+        [fluid]="true"
+      ></p-button>
+    </form>
+  </div>
+</p-drawer>

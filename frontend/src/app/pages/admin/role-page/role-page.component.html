@@ -1,0 +1,69 @@
+<div class="app-space-vertical">
+  <p-button
+    label="Agregar rol"
+    icon="pi pi-plus"
+    (click)="onOpenForm()"
+  ></p-button>
+  <p-table
+    #table
+    dataKey="id"
+    size="small"
+    showGridlines
+    stripedRows
+    paginator
+    [value]="roles"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    [globalFilterFields]="['name']"
+  >
+    <ng-template pTemplate="caption">
+      <div class="app-right">
+        <p-iconfield iconPosition="left">
+          <p-inputicon>
+            <i class="pi pi-search"></i>
+          </p-inputicon>
+          <input
+            pInputText
+            type="text"
+            placeholder="Buscar"
+            (input)="onSearch($event, table)"
+          />
+        </p-iconfield>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nombre</th>
+        <th [style]="{ width: '10rem' }">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-role
+    >
+      <tr>
+        <td>{{ role.name }}</td>
+        <td
+          class="app-space-horizontal"
+          [style]="{ width: '10rem' }"
+        >
+          <p-button
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-outlined"
+            [style]="{ width: '2rem', height: '2rem' }"
+            (click)="onOpenForm(role.id)"
+          ></p-button>
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            class="p-button-rounded p-button-outlined"
+            [style]="{ width: '2rem', height: '2rem' }"
+            (click)="onDelete(role.id)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<p-toast></p-toast>
+<p-confirm-dialog></p-confirm-dialog>

@@ -1,0 +1,54 @@
+<p-card
+  [style]="{
+    width: '25rem',
+    fontSize: '1rem',
+    maxHeight: '50vh',
+    overflowY: 'auto',
+  }"
+  styleClass="app-card-small"
+>
+  <p-accordion
+    [multiple]="true"
+    styleClass="app-accordion-small"
+  >
+    <p-accordion-panel value="0">
+      <p-accordion-header>Resumen</p-accordion-header>
+      <p-accordion-content [style]="{ padding: '0' }">
+        <div class="app-space-vertical">
+          <p-card styleClass="app-card-small">
+            <p>7109</p>
+            <p>TOTAL</p>
+          </p-card>
+          <p-card styleClass="app-card-small">
+            <p>7109</p>
+            <p>ACTOS PREVIOS</p>
+          </p-card>
+          <p-card styleClass="app-card-small">
+            <p>7109</p>
+            <p>ACTOS PREVIOS</p>
+          </p-card>
+          <p-card styleClass="app-card-small">
+            <p>7109</p>
+            <p>ACTOS PREVIOS</p>
+          </p-card>
+          <p-card styleClass="app-card-small">
+            <p>7109</p>
+            <p>ACTOS PREVIOS</p>
+          </p-card>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+    <p-accordion-panel value="1">
+      <p-accordion-header>Leyenda</p-accordion-header>
+      <p-accordion-content>
+        <div class="app-space-vertical">
+          <img
+            src="assets/images/leyenda.png"
+            alt="Leyenda"
+            style="width: 100%; height: auto"
+          />
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+</p-card>

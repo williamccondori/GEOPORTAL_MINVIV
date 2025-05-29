@@ -1,0 +1,45 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  position="bottom"
+  [style]="{ height: '28rem' }"
+  (onHide)="onHide()"
+>
+  <div class="app-space-vertical">
+    <p-table
+      [value]="houses"
+      [paginator]="true"
+      [rows]="5"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [stripedRows]="true"
+      [showGridlines]="true"
+      size="small"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-view
+      >
+        <tr>
+          <td>{{ view.name }}</td>
+          <td>
+            <p-button
+              icon="pi pi-eye"
+              class="p-button-rounded p-button-outlined"
+              [style]="{ width: '2rem', height: '2rem' }"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-outlined"
+              [style]="{ width: '2rem', height: '2rem' }"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-drawer>

@@ -1,0 +1,10 @@
+<div class="app-loading-container">
+  <router-outlet></router-outlet>
+  @if (isLoading$ | async) {
+    <div class="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+  }
+</div>
+<p-toast></p-toast>
+<p-confirm-dialog></p-confirm-dialog>

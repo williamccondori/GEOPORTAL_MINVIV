@@ -1,0 +1,42 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Asistente virtual"
+  [style]="{ width: '28rem' }"
+  position="right"
+  (onHide)="onHide()"
+>
+  <div class="app-space-vertical">
+    <div class="chat-messages">
+      <div class="message-user">
+        <div class="message-content">
+          <p>Hola</p>
+        </div>
+      </div>
+      <div class="message-me">
+        <div class="message-content">
+          <p>Hola, ¿en qué puedo ayudarte?</p>
+        </div>
+      </div>
+      <div class="message-user">
+        <div class="message-content">
+          <p>Hola</p>
+        </div>
+      </div>
+      <div class="message-me">
+        <div class="message-content">
+          <p>Hola, ¿en qué puedo ayudarte?</p>
+        </div>
+      </div>
+      <div class="message-user">
+        <div class="message-content">
+          <p>Hola</p>
+        </div>
+      </div>
+      <div class="message-me">
+        <div class="message-content">
+          <p>Hola, ¿en qué puedo ayudarte?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-drawer>
