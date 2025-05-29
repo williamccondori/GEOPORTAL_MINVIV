@@ -15,14 +15,22 @@ from app.admin.api.routes.initial_settings_routes import initial_settings_router
 from app.admin.api.routes.role_routes import role_router
 from app.admin.api.routes.user_routes import user_router
 from app.admin.api.routes.wms_layer_routes import wms_layer_router
-from app.admin.domain.exceptions.not_authenticated_exception import NotAuthenticatedException
+from app.admin.domain.exceptions.not_authenticated_exception import (
+    NotAuthenticatedException,
+)
 from app.admin.domain.exceptions.not_found_exception import NotFoundException
 from app.config import settings
 from app.shared.models.response import Response
-from app.web.api.routes.base_layer_routes import base_layer_router as public_base_layer_router
-from app.web.api.routes.initial_settings_routes import initial_settings_router as public_initial_settings_routes
+from app.web.api.routes.base_layer_routes import (
+    base_layer_router as public_base_layer_router,
+)
+from app.web.api.routes.initial_settings_routes import (
+    initial_settings_router as public_initial_settings_routes,
+)
 from app.web.api.routes.location_routes import location_router as public_location_router
-from app.web.api.routes.wms_layer_routes import wms_layer_router as public_wms_layer_router
+from app.web.api.routes.wms_layer_routes import (
+    wms_layer_router as public_wms_layer_router,
+)
 
 
 class CatchAllMiddleware(BaseHTTPMiddleware):
@@ -39,12 +47,11 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
             else:
                 status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
                 trace = "".join(traceback.format_exception(type(e), e, e.__traceback__))
-                content = Response.error(f"app.internal_server_error:{str(e)}", trace).dict()
+                content = Response.error(
+                    f"app.internal_server_error:{str(e)}", trace
+                ).dict()
 
-            return JSONResponse(
-                status_code=status_code,
-                content=content
-            )
+            return JSONResponse(status_code=status_code, content=content)
 
 
 # noinspection PyTypeChecker
@@ -56,12 +63,16 @@ def create_app():
         description="API para acceso a datos abiertos del PNVR",
         version="1.0.0",
         docs_url="/docs",
-        redoc_url="/redoc"
+        redoc_url="/redoc",
     )
     application.add_middleware(CatchAllMiddleware)  # type: ignore[arg-type]
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=[
+            "https://ministerioviviendageoportal.mooo.com/",
+            "https://ministerioviviendageoportal.netlify.app/",
+            "http://localhost:4200",
+        ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -72,43 +83,31 @@ def create_app():
     api_prefix = settings.API_V1_STR
 
     application.include_router(
-        role_router,
-        prefix=f"{api_prefix}/admin/roles",
-        tags=["roles"]
+        role_router, prefix=f"{api_prefix}/admin/roles", tags=["roles"]
     )
     application.include_router(
-        user_router,
-        prefix=f"{api_prefix}/admin/users",
-        tags=["users"]
+        user_router, prefix=f"{api_prefix}/admin/users", tags=["users"]
     )
     application.include_router(
         base_layer_router,
         prefix=f"{api_prefix}/admin/base-layers",
-        tags=["base-layers"]
+        tags=["base-layers"],
     )
     application.include_router(
-        wms_layer_router,
-        prefix=f"{api_prefix}/admin/wms-layers",
-        tags=["wms-layers"]
+        wms_layer_router, prefix=f"{api_prefix}/admin/wms-layers", tags=["wms-layers"]
     )
 
     # Auth routes
-    application.include_router(
-        auth_router,
-        prefix=f"{api_prefix}/auth",
-        tags=["auth"]
-    )
+    application.include_router(auth_router, prefix=f"{api_prefix}/auth", tags=["auth"])
 
     application.include_router(
         initial_settings_router,
         prefix=f"{api_prefix}/admin/initial-settings",
-        tags=["initial-settings"]
+        tags=["initial-settings"],
     )
 
     application.include_router(
-        category_router,
-        prefix=f"{api_prefix}/admin/categories",
-        tags=["categories"]
+        category_router, prefix=f"{api_prefix}/admin/categories", tags=["categories"]
     )
 
     # PUBLIC ROUTES
@@ -116,19 +115,19 @@ def create_app():
     application.include_router(
         public_base_layer_router,
         prefix=f"{api_prefix}/base-layers",
-        tags=["public-base-layers"]
+        tags=["public-base-layers"],
     )
 
     application.include_router(
         public_wms_layer_router,
         prefix=f"{api_prefix}/wms-layers",
-        tags=["public-wms-layers"]
+        tags=["public-wms-layers"],
     )
 
     application.include_router(
         public_location_router,
         prefix=f"{api_prefix}/locations",
-        tags=["public-locations"]
+        tags=["public-locations"],
     )
 
     application.include_router(
