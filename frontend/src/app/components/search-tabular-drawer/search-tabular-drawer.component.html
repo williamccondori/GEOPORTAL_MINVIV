@@ -3,8 +3,50 @@
   position="bottom"
   [style]="{ height: '28rem' }"
   (onHide)="onHide()"
+  (onShow)="onDrawerOpen()"
 >
   <div class="app-space-vertical">
+    <p-fieldset
+      legend="Categorización"
+      [toggleable]="true"
+    >
+      <form
+        class="row"
+        [formGroup]="formGroup"
+      >
+        <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+          <div class="app-form-group">
+            <label for="categoryParent">Categoría:</label>
+            <p-tree-select
+              id="categoryParent"
+              formControlName="categoryParent"
+              [options]="categoryTree"
+              appendTo="body"
+              fluid
+              showClear
+              placeholder="Seleccione una categoría"
+            ></p-tree-select>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+          <div class="app-form-group">
+            <label for="layerId">Capa:</label>
+            <p-select
+              formControlName="layerId"
+              [options]="layers"
+              optionValue="id"
+              optionLabel="title"
+              filterBy="label"
+              appendTo="body"
+              fluid
+              filter
+              showClear
+              placeholder="Seleccione"
+            />
+          </div>
+        </div>
+      </form>
+    </p-fieldset>
     <p-table
       [value]="houses"
       [paginator]="true"

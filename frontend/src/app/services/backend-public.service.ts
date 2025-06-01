@@ -7,6 +7,8 @@ import { InitialSettings } from '../models/initial-settings.model';
 import { LocationRequest, LocationResponse } from '../models/location.model';
 import { WebMapServiceInformation } from '../models/wms-info.model';
 
+import { CategoryNode } from '../models/category.model';
+import { InternalLayer } from '../models/layer.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -36,6 +38,19 @@ export class BackendPublicService {
   ): Observable<LocationResponse[]> {
     return this.apiService.get<LocationResponse[]>(
       `locations/?query=${encodeURIComponent(locationRequest.query)}`
+    );
+  }
+
+  getCatalogStructure(): Observable<CategoryNode[]> {
+    return this.apiService.get<CategoryNode[]>(`categories/structure/`);
+  }
+
+  getLayersByCategoryId(
+    categoryId: string,
+    includeWmsLayers: boolean
+  ): Observable<InternalLayer[]> {
+    return this.apiService.get<InternalLayer[]>(
+      `layers/?categoryId=${encodeURIComponent(categoryId)}&includeWmsLayers=${includeWmsLayers}`
     );
   }
 }

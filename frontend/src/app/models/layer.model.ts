@@ -22,6 +22,16 @@ export interface UserWmsLayer {
   url: string;
 }
 
+export interface InternalLayer {
+  id: string;
+  categoryName: string;
+  name: string;
+  title: string;
+  description: string;
+  url: string;
+  downloadUrl: string;
+}
+
 export interface ActiveWmsLayer {
   id: string;
   name: string;

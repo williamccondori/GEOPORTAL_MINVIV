@@ -3,70 +3,54 @@
   header="Búsqueda avanzada"
   [style]="{ width: '28rem' }"
   (onHide)="onHide()"
+  (onShow)="onDrawerOpen()"
 >
   <div class="app-space-vertical">
-    <form
-      [formGroup]="formGroup"
-      (ngSubmit)="onSubmit()"
-    >
-      <div class="app-form-group">
-        <label for="department">Departamento:</label>
-        <p-select
-          id="department"
+    <p-fieldset legend="Categorización">
+      <form
+        [formGroup]="formGroup"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="app-form-group">
+          <label for="categoryParent">Categoría:</label>
+          <p-tree-select
+            id="categoryParent"
+            formControlName="categoryParent"
+            [options]="categoryTree"
+            appendTo="body"
+            fluid
+            showClear
+            placeholder="Seleccione una categoría"
+          ></p-tree-select>
+        </div>
+        <div class="app-form-group">
+          <label for="layer">Capa:</label>
+          <p-select
+            formControlName="layerId"
+            [options]="layers"
+            optionValue="id"
+            optionLabel="title"
+            filterBy="label"
+            appendTo="body"
+            fluid
+            filter
+            showClear
+            placeholder="Seleccione"
+          />
+        </div>
+        <p-button
+          label="Buscar"
+          icon="pi pi-search"
+          type="submit"
+          severity="success"
+          size="large"
+          [disabled]="formGroup.invalid"
           [fluid]="true"
-          formControlName="departmentId"
-          placeholder="Seleccione"
-        ></p-select>
-      </div>
-      <div class="app-form-group">
-        <label for="province">Provincia:</label>
-        <p-select
-          id="province"
-          [fluid]="true"
-          formControlName="provinceId"
-          placeholder="Seleccione"
-        ></p-select>
-      </div>
-      <div class="app-form-group">
-        <label for="district">Distrito:</label>
-        <p-select
-          id="district"
-          [fluid]="true"
-          formControlName="districtId"
-          placeholder="Seleccione"
-        ></p-select>
-      </div>
-      <div class="app-form-group">
-        <label for="zoom">Zoom:</label>
-        <input
-          id="zoom"
-          type="text"
-          pInputText
-          formControlName="zoom"
-          placeholder="Ingrese el nivel de zoom"
-          readonly
-          [fluid]="true"
-        />
-      </div>
-      <div class="app-form-group">
-        <label for="name">Nombre:</label>
-        <input
-          id="name"
-          type="text"
-          pInputText
-          formControlName="name"
-          placeholder="Ingrese el nombre de la vista"
-          [fluid]="true"
-        />
-      </div>
-      <p-button
-        label="Guardar"
-        icon="pi pi-save"
-        type="submit"
-        size="large"
-        [disabled]="formGroup.invalid"
-        [fluid]="true"
-      ></p-button>
+        ></p-button>
+      </form>
+    </p-fieldset>
+    <form>
+      <p-fieldset legend="Filtros avanzados"></p-fieldset>
     </form>
   </div>
 </p-drawer>

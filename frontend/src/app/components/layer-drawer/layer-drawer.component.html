@@ -5,5 +5,109 @@
   (onHide)="onHide()"
   (onShow)="onDrawerOpen()"
 >
-  <div class="app-space-vertical"></div>
+  <div class="app-space-vertical">
+    <p-fieldset legend="Categorización">
+      <form [formGroup]="formGroup">
+        <div class="app-form-group">
+          <label for="categoryParent">Categoría:</label>
+          <p-tree-select
+            id="categoryParent"
+            formControlName="categoryParent"
+            [options]="categoryTree"
+            appendTo="body"
+            fluid
+            showClear
+            placeholder="Seleccione una categoría"
+          ></p-tree-select>
+        </div>
+      </form>
+    </p-fieldset>
+    <p-fieldset legend="Todas las capas">
+      <p-table
+        [value]="layers"
+        stripedRows
+        showGridlines
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-layer
+        >
+          <tr>
+            <td>
+              <span
+                [pTooltip]="layer.description"
+                class="wrap-cell"
+              >
+                {{ layer.categoryName }} / {{ layer.title }}
+              </span>
+            </td>
+            <td>
+              <div class="app-space-horizontal">
+                <p-button
+                  icon="pi pi-plus"
+                  size="small"
+                  (click)="onAddLayer(layer.id)"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-fieldset>
+    <p-fieldset legend="Espacio de trabajo">
+      <p-table
+        [value]="selectedLayers"
+        stripedRows
+        showGridlines
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-layer
+        >
+          <tr>
+            <td>
+              <span
+                [pTooltip]="layer.description"
+                class="wrap-cell"
+              >
+                {{ layer.categoryName }} / {{ layer.title }}
+              </span>
+            </td>
+            <td>
+              <div class="app-space-horizontal">
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  rounded
+                  text
+                  (click)="onDelete(layer.id)"
+                ></p-button>
+                <p-button
+                  [icon]="getLayerIcon(layer.id)"
+                  severity="success"
+                  rounded
+                  text
+                  (click)="onShowLayer(layer.id)"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-fieldset>
+  </div>
 </p-drawer>

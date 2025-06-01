@@ -1,5 +1,13 @@
 <div class="app-space-horizontal">
   <p-button
+    icon="pi pi-images"
+    [rounded]="true"
+    [raised]="true"
+    severity="danger"
+    pTooltip="Leyenda"
+    (click)="onOpenLegendDrawer()"
+  />
+  <p-button
     icon="pi pi-list"
     [rounded]="true"
     [raised]="true"
@@ -8,18 +16,10 @@
     (click)="onOpenLayerInfoDrawer()"
   />
   <p-button
-    icon="pi pi-eye"
+    icon="pi pi-palette"
     [rounded]="true"
     [raised]="true"
     severity="danger"
-    pTooltip="Búsqueda avanzada"
-    (click)="onOpenLegendDrawer()"
-  />
-  <p-button
-    icon="pi pi-share-alt"
-    [rounded]="true"
-    [raised]="true"
-    severity="danger"
-    pTooltip="Búsqueda avanzada"
+    pTooltip="Herramientas de dibujo"
   />
 </div>
