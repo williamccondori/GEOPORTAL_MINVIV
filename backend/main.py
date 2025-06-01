@@ -4,14 +4,16 @@ from typing import Any, Callable
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 
 from app.admin.api.routes.auth_routes import auth_router
 from app.admin.api.routes.base_layer_routes import base_layer_router
 from app.admin.api.routes.category_routes import category_router
+from app.admin.api.routes.file_router import file_router
 from app.admin.api.routes.initial_settings_routes import initial_settings_router
+from app.admin.api.routes.layer_routes import layer_router
 from app.admin.api.routes.role_routes import role_router
 from app.admin.api.routes.user_routes import user_router
 from app.admin.api.routes.wms_layer_routes import wms_layer_router
@@ -51,11 +53,14 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
                     f"app.internal_server_error:{str(e)}", trace
                 ).dict()
 
-            return JSONResponse(status_code=status_code, content=content)
+            # Crear respuesta manual con CORS
+            response = JSONResponse(status_code=status_code, content=content)
+            response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            return response
 
 
 def create_app():
-
     # Configuracion de la zona horaria.
 
     os.environ["TZ"] = "America/Lima"
@@ -64,7 +69,7 @@ def create_app():
 
     ALLOW_METHODS_AND_HEADERS = ["*"]
 
-    ORIGINS = settings.ORIGENES_PERMITIDOS.split(",")
+    ORIGINS = settings.ALLOWED_ORIGINS.split(",")
 
     application = FastAPI(
         title="MINISTERIO DE VIVIENDA - PNVR API",
@@ -74,13 +79,17 @@ def create_app():
         redoc_url="/redoc",
     )
 
+    # Add CORS middleware first
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=ORIGINS,
+        allow_origins=["http://localhost:4200"],
         allow_credentials=True,
-        allow_methods=ALLOW_METHODS_AND_HEADERS,
-        allow_headers=ALLOW_METHODS_AND_HEADERS,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
+
+    # Then add the catch-all middleware
+    application.add_middleware(CatchAllMiddleware)
 
     # application.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -111,7 +120,21 @@ def create_app():
     )
 
     application.include_router(
-        category_router, prefix=f"{api_prefix}/admin/categories", tags=["categories"]
+        category_router,
+        prefix=f"{api_prefix}/admin/categories",
+        tags=["categories"]
+    )
+
+    application.include_router(
+        file_router,
+        prefix=f"{api_prefix}/admin/files",
+        tags=["files"]
+    )
+
+    application.include_router(
+        layer_router,
+        prefix=f"{api_prefix}/admin/layers",
+        tags=["layers"]
     )
 
     # PUBLIC ROUTES

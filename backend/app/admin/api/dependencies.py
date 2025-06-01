@@ -4,7 +4,9 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.admin.application.services.base_layer_service import BaseLayerService
 from app.admin.application.services.category_service import CategoryService
+from app.admin.application.services.file_service import FileService
 from app.admin.application.services.initial_settings_service import InitialSettingsService
+from app.admin.application.services.layer_service import LayerService
 from app.admin.application.services.rol_service import RoleService
 from app.admin.application.services.user_service import UserService
 from app.admin.application.services.wms_layer_service import WmsLayerService
@@ -19,6 +21,7 @@ from app.admin.domain.repositories.dataset_repository import DatasetRepository
 from app.admin.domain.repositories.dataset_type_repository import DatasetTypeRepository
 from app.admin.domain.repositories.initial_settings_repository import InitialSettingsRepository
 from app.admin.domain.repositories.label_repository import LabelRepository
+from app.admin.domain.repositories.layer_repository import LayerRepository
 from app.admin.domain.repositories.publication_repository import PublicationRepository
 from app.admin.domain.repositories.role_repository import RoleRepository
 from app.admin.domain.repositories.user_repository import UserRepository
@@ -30,6 +33,7 @@ from app.admin.infrastructure.persistence.repositories.dataset_type_repository_i
 from app.admin.infrastructure.persistence.repositories.initial_settings_repository_impl import \
     InitialSettingsRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.label_repository_impl import LabelRepositoryImpl
+from app.admin.infrastructure.persistence.repositories.layer_repository_impl import LayerRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.publication_repository_impl import PublicationRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.role_repository_impl import RoleRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.user_repository_impl import UserRepositoryImpl
@@ -127,3 +131,14 @@ def get_category_service(
         user_authenticated: str = Depends(get_authenticated_user),
 ):
     return CategoryService(category_repository, user_authenticated)
+
+
+def get_file_service(user_authenticated: str = Depends(get_authenticated_user)) -> FileService:
+    return FileService(user_authenticated)
+
+
+def get_layer_service(
+        layer_repository: LayerRepository = Depends(LayerRepositoryImpl),
+        user_authenticated: str = Depends(get_authenticated_user),
+):
+    return LayerService(layer_repository, user_authenticated)
