@@ -21,6 +21,7 @@ from app.admin.domain.repositories.dataset_repository import DatasetRepository
 from app.admin.domain.repositories.dataset_type_repository import DatasetTypeRepository
 from app.admin.domain.repositories.initial_settings_repository import InitialSettingsRepository
 from app.admin.domain.repositories.label_repository import LabelRepository
+from app.admin.domain.repositories.layer_information_repository import LayerInformationRepository
 from app.admin.domain.repositories.layer_repository import LayerRepository
 from app.admin.domain.repositories.publication_repository import PublicationRepository
 from app.admin.domain.repositories.role_repository import RoleRepository
@@ -33,6 +34,8 @@ from app.admin.infrastructure.persistence.repositories.dataset_type_repository_i
 from app.admin.infrastructure.persistence.repositories.initial_settings_repository_impl import \
     InitialSettingsRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.label_repository_impl import LabelRepositoryImpl
+from app.admin.infrastructure.persistence.repositories.layer_information_repository_impl import \
+    LayerInformationRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.layer_repository_impl import LayerRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.publication_repository_impl import PublicationRepositoryImpl
 from app.admin.infrastructure.persistence.repositories.role_repository_impl import RoleRepositoryImpl
@@ -139,6 +142,8 @@ def get_file_service(user_authenticated: str = Depends(get_authenticated_user)) 
 
 def get_layer_service(
         layer_repository: LayerRepository = Depends(LayerRepositoryImpl),
+        category_repository: CategoryRepository = Depends(CategoryRepositoryImpl),
+        layer_information_repository: LayerInformationRepository = Depends(LayerInformationRepositoryImpl),
         user_authenticated: str = Depends(get_authenticated_user),
 ):
-    return LayerService(layer_repository, user_authenticated)
+    return LayerService(layer_repository, category_repository, layer_information_repository, user_authenticated)

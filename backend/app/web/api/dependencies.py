@@ -1,6 +1,7 @@
 from fastapi import Depends
 
 from app.web.application.services.base_layer_service import BaseLayerService
+from app.web.application.services.chat_service import ChatService
 from app.web.application.services.initial_settings_service import InitialSettingsService
 from app.web.application.services.location_service import LocationService
 from app.web.application.services.wms_layer_service import WmsLayerService
@@ -29,3 +30,7 @@ def get_initial_settings_service(
         base_layer_repository: BaseLayerRepository = Depends(BaseLayerRepositoryImpl)
 ):
     return InitialSettingsService(initial_settings_repository, base_layer_repository)
+
+
+def get_chat_service():
+    return ChatService()

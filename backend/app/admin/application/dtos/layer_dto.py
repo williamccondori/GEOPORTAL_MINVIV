@@ -8,6 +8,7 @@ class LayerDTO(BaseDTO):
     category_name: str
     code: str
     name: str
+    is_visible: bool
 
 
 class LayerFormDTO(BaseDTO):
@@ -20,5 +21,6 @@ class LayerFormDTO(BaseDTO):
 
 
 class RegisteredLayerDTO(BaseDTO):
+    layer_information_name: str
     schema_name: str
     table_name: str

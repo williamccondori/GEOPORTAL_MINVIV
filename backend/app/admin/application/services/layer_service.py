@@ -8,17 +8,94 @@ from geo.Geoserver import Geoserver
 from psycopg2.extras import RealDictCursor
 from sqlalchemy import make_url, create_engine
 
-from app.admin.application.dtos.layer_dto import LayerFormDTO, RegisteredLayerDTO
+from app.admin.application.dtos.layer_dto import LayerFormDTO, RegisteredLayerDTO, LayerDTO
 from app.admin.domain.models.layer import Layer
+from app.admin.domain.repositories.category_repository import CategoryRepository
+from app.admin.domain.repositories.layer_information_repository import LayerInformationRepository
 from app.admin.domain.repositories.layer_repository import LayerRepository
 from app.config import settings
 from app.shared.domain.exceptions.application_exception import ApplicationException
 
 
 class LayerService:
-    def __init__(self, layer_repository: LayerRepository, user_authenticated: str):
+    def __init__(self, layer_repository: LayerRepository, category_repository: CategoryRepository,
+                 layer_information_repository: LayerInformationRepository,
+                 user_authenticated: str):
         self.layer_repository = layer_repository
+        self.category_repository = category_repository
+        self.layer_information_repository = layer_information_repository
         self.user_authenticated = user_authenticated
+
+    async def get_all(self) -> list[LayerDTO]:
+        layers: list[Layer] = await self.layer_repository.get_all()
+        result = []
+        for x in layers:
+            category = await self.category_repository.get(x.category_id)
+            if category:
+                category_name = category.name
+            else:
+                category_name = "Sin categoría"
+
+            result.append(LayerDTO(
+                id=x.id,
+                category_name=category_name,
+                code=x.code,
+                name=x.name,
+                is_visible=x.is_visible,
+            ))
+        return result
+
+    async def create(self, layer_form_dto: LayerFormDTO) -> str:
+        exists = await self.layer_repository.exists({
+            "$or": [
+                {"code": layer_form_dto.code},
+            ],
+            "status": True
+        })
+        if exists:
+            raise ApplicationException("El código de la capa ya existe.")
+
+        registered_layer_dto = await self.__register_in_geodatabase(
+            layer_form_dto.code,
+            layer_form_dto.shape_file_name
+        )
+
+        # Se registra en GEOSERVER.
+
+        self.__register_in_geoserver(
+            registered_layer_dto.table_name,
+            layer_form_dto.name
+        )
+
+        wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wms"
+        wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wfs"
+
+        layer = Layer(
+            # Campos principales.
+            category_id=layer_form_dto.categoryId,
+            code=layer_form_dto.code,
+            name=layer_form_dto.name,
+            description=layer_form_dto.description,
+            shape_file_name=layer_form_dto.shape_file_name,
+
+            # Campos de la publicación.
+            layer_information_name=registered_layer_dto.layer_information_name,
+            table_name=registered_layer_dto.table_name,
+            schema_name=registered_layer_dto.schema_name,
+
+            # Campos por defecto.
+            wms_url=wms_url,
+            wfs_url=wfs_url,
+            allow_download=False,
+            is_visible=True,
+
+            status=True,
+            user_created=self.user_authenticated,
+            created_at=datetime.now()
+        )
+
+        layer = await self.layer_repository.save(layer)
+        return layer.id
 
     @staticmethod
     async def get_cursor(database_name: str):
@@ -37,42 +114,6 @@ class LayerService:
             raise ApplicationException("No se pudo conectar a la base de datos")
 
         return cur, conn
-
-    async def create(self, layer_form_dto: LayerFormDTO) -> str:
-        exists = await self.layer_repository.exists({
-            "$or": [
-                {"code": layer_form_dto.code},
-            ],
-            "status": True
-        })
-        if exists:
-            raise ApplicationException("El código de la capa ya existe.")
-
-        registered_layer_dto = self.__register_in_geodatabase(
-            layer_form_dto.code,
-            layer_form_dto.shape_file_name
-        )
-
-        self.__register_in_geoserver(
-            registered_layer_dto.table_name,
-            layer_form_dto.name
-        )
-
-        layer = Layer(
-            # Campos principales.
-            name=layer_form_dto.name,
-
-            # Campos de la publicación.
-            table_name=registered_layer_dto.table_name,
-            schema_name=registered_layer_dto.schema_name,
-
-            status=True,
-            user_created=self.user_authenticated,
-            created_at=datetime.now()
-        )
-
-        layer = await self.layer_repository.save(layer)
-        return layer.id
 
     @staticmethod
     def __get_geo_dataframe(shape_file_name: Path) -> gpd.GeoDataFrame:
@@ -158,7 +199,21 @@ class LayerService:
             print(e)
             raise ApplicationException(f"Error al registrar la capa en Geoserver")
 
-    def __register_in_geodatabase(self, code: str, shape_file_name: str) -> RegisteredLayerDTO:
+    async def __save_to_mongo_db(self, code: str,
+                           gdf: gpd.GeoDataFrame):
+        try:
+            df = pd.DataFrame(gdf.drop(columns='geometry'))
+
+            df['geometry'] = gdf.geometry.apply(lambda geom: geom.__geo_interface__)
+
+            dictionary = df.to_dict(orient='records')
+
+            await self.layer_information_repository.save(code, dictionary)
+        except Exception as e:
+            print(e)
+            raise ApplicationException("Error al guardar los datos en MongoDB.")
+
+    async def __register_in_geodatabase(self, code: str, shape_file_name: str) -> RegisteredLayerDTO:
         try:
             # Lectura del archivo SHP.
             shape_file_path = Path(settings.STORAGE_PATH) / shape_file_name
@@ -173,7 +228,15 @@ class LayerService:
                 code
             )
 
+            layer_information_name = f"geo_{code}"
+
+            await self.__save_to_mongo_db(
+                layer_information_name,
+                gdf
+            )
+
             registered_layer = RegisteredLayerDTO(
+                layer_information_name=layer_information_name,
                 table_name=code,
                 schema_name="public",
             )

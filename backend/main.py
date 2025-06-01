@@ -26,6 +26,7 @@ from app.shared.models.response import Response
 from app.web.api.routes.base_layer_routes import (
     base_layer_router as public_base_layer_router,
 )
+from app.web.api.routes.chat_router import chat_router as public_chat_router
 from app.web.api.routes.initial_settings_routes import (
     initial_settings_router as public_initial_settings_routes,
 )
@@ -158,6 +159,12 @@ def create_app():
         public_initial_settings_routes,
         prefix=f"{api_prefix}/initial-settings",
         tags=["public-initial-settings"],
+    )
+
+    application.include_router(
+        public_chat_router,
+        prefix=f"{api_prefix}/chat",
+        tags=["public-chat"],
     )
 
     return application
