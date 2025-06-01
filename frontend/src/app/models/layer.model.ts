@@ -3,6 +3,7 @@ export interface Layer {
   categoryName: string;
   code: string;
   name: string;
+  isVisible: boolean;
 }
 
 export interface LayerForm {

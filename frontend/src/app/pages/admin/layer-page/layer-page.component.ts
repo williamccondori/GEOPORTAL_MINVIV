@@ -16,6 +16,7 @@ import { Constants } from '../../../models/constants';
 import { Layer, LayerForm } from '../../../models/layer.model';
 import { BackendService } from '../../../services/backend.service';
 import { StateService } from '../../../services/state.service';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-layer-page',
@@ -27,6 +28,7 @@ import { StateService } from '../../../services/state.service';
     InputTextModule,
     TableModule,
     ToastModule,
+    TagModule,
   ],
   templateUrl: './layer-page.component.html',
 })
