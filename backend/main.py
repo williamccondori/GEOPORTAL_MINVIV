@@ -26,10 +26,14 @@ from app.shared.models.response import Response
 from app.web.api.routes.base_layer_routes import (
     base_layer_router as public_base_layer_router,
 )
+from app.web.api.routes.category_router import (
+    category_router as public_category_router,
+)
 from app.web.api.routes.chat_router import chat_router as public_chat_router
 from app.web.api.routes.initial_settings_routes import (
     initial_settings_router as public_initial_settings_routes,
 )
+from app.web.api.routes.layer_router import layer_router as public_layer_router
 from app.web.api.routes.location_routes import location_router as public_location_router
 from app.web.api.routes.wms_layer_routes import (
     wms_layer_router as public_wms_layer_router,
@@ -165,6 +169,18 @@ def create_app():
         public_chat_router,
         prefix=f"{api_prefix}/chat",
         tags=["public-chat"],
+    )
+
+    application.include_router(
+        public_category_router,
+        prefix=f"{api_prefix}/categories",
+        tags=["public-categories"],
+    )
+
+    application.include_router(
+        public_layer_router,
+        prefix=f"{api_prefix}/layers",
+        tags=["public-layers"],
     )
 
     return application
