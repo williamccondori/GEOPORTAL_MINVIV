@@ -34,6 +34,8 @@ from app.web.api.routes.wms_layer_routes import (
     wms_layer_router as public_wms_layer_router,
 )
 
+ALLOW_METHODS_AND_HEADERS = ["*"]
+
 
 class CatchAllMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Any:
@@ -61,15 +63,7 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
 
 
 def create_app():
-    # Configuracion de la zona horaria.
-
     os.environ["TZ"] = "America/Lima"
-
-    # Configuracion de CORS.
-
-    ALLOW_METHODS_AND_HEADERS = ["*"]
-
-    ORIGINS = settings.ALLOWED_ORIGINS.split(",")
 
     application = FastAPI(
         title="MINISTERIO DE VIVIENDA - PNVR API",
@@ -82,10 +76,10 @@ def create_app():
     # Add CORS middleware first
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:4200"],
+        allow_origins=settings.ALLOWED_ORIGINS.split(","),
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=ALLOW_METHODS_AND_HEADERS,
+        allow_headers=ALLOW_METHODS_AND_HEADERS,
     )
 
     # Then add the catch-all middleware
