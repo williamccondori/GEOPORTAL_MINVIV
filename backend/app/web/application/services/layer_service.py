@@ -1,17 +1,25 @@
+from typing import Optional
+
+from app.shared.domain.exceptions.application_exception import ApplicationException
 from app.web.application.dtos.layer_dto import LayerSearchDTO, LayerDTO
+from app.web.application.dtos.layer_information_dto import LayerInformationTableDTO, LayerInformationFilterDTO, \
+    LayerInformationOptionDTO
 from app.web.domain.models.layer import Layer
+from app.web.domain.models.layer_information_table import LayerInformationTable
 from app.web.domain.models.wms_layer import WmsLayer
 from app.web.domain.repositories.category_repository import CategoryRepository
+from app.web.domain.repositories.layer_information_repository import LayerInformationRepository
 from app.web.domain.repositories.layer_repository import LayerRepository
 from app.web.domain.repositories.wms_layer_repository import WmsLayerRepository
 
 
 class LayerService:
     def __init__(self, layer_repository: LayerRepository, wms_layer_repository: WmsLayerRepository,
-                 category_repository: CategoryRepository):
+                 category_repository: CategoryRepository, layer_information_repository: LayerInformationRepository):
         self.layer_repository = layer_repository
         self.wms_layer_repository = wms_layer_repository
         self.category_repository = category_repository
+        self.layer_information_repository = layer_information_repository
 
     async def get_all(self, layer_search_dto: LayerSearchDTO) -> list[LayerDTO]:
         result: list[LayerDTO] = []
@@ -60,3 +68,25 @@ class LayerService:
                 ))
 
         return result
+
+    async def get_table(self, layer_id: str) -> LayerInformationTableDTO:
+        layer: Optional[Layer] = await self.layer_repository.get(layer_id)
+        if not layer:
+            raise ApplicationException("No se ha encontrado la capa solicitada")
+
+        table_information: Optional[LayerInformationTable] = await self.layer_information_repository.get_table(
+            layer.layer_information_name)
+        if not table_information:
+            raise ApplicationException("No se ha encontrado información tabular para la capa solicitada")
+
+        return LayerInformationTableDTO(
+            columns=table_information.columns,
+            data=table_information.data,
+            filters=[
+                LayerInformationFilterDTO(
+                    name=x.name,
+                    options=[LayerInformationOptionDTO(id=label.id, label=label.label) for label in x.options]
+                )
+                for x in table_information.filters
+            ]
+        )

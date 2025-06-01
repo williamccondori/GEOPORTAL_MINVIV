@@ -10,11 +10,14 @@ from app.web.application.services.wms_layer_service import WmsLayerService
 from app.web.domain.repositories.base_layer_repository import BaseLayerRepository
 from app.web.domain.repositories.category_repository import CategoryRepository
 from app.web.domain.repositories.initial_settings_repository import InitialSettingsRepository
+from app.web.domain.repositories.layer_information_repository import LayerInformationRepository
 from app.web.domain.repositories.layer_repository import LayerRepository
 from app.web.domain.repositories.wms_layer_repository import WmsLayerRepository
 from app.web.infrastructure.persistence.repository.base_layer_repository_impl import BaseLayerRepositoryImpl
 from app.web.infrastructure.persistence.repository.category_repository import CategoryRepositoryImpl
 from app.web.infrastructure.persistence.repository.initial_settings_repository_impl import InitialSettingsRepositoryImpl
+from app.web.infrastructure.persistence.repository.layer_information_repository_impl import \
+    LayerInformationRepositoryImpl
 from app.web.infrastructure.persistence.repository.layer_repository_impl import LayerRepositoryImpl
 from app.web.infrastructure.persistence.repository.wms_layer_repository_impl import WmsLayerRepositoryImpl
 
@@ -53,6 +56,7 @@ def get_category_service(
 def get_layer_service(
         layer_repository: LayerRepository = Depends(LayerRepositoryImpl),
         wms_layer_repository: WmsLayerRepository = Depends(WmsLayerRepositoryImpl),
-        category_repository: CategoryRepository = Depends(CategoryRepositoryImpl)
+        category_repository: CategoryRepository = Depends(CategoryRepositoryImpl),
+        layer_information_repository: LayerInformationRepository = Depends(LayerInformationRepositoryImpl)
 ):
-    return LayerService(layer_repository, wms_layer_repository, category_repository)
+    return LayerService(layer_repository, wms_layer_repository, category_repository, layer_information_repository)
