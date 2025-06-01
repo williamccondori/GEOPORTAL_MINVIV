@@ -9,10 +9,10 @@ from psycopg2.extras import RealDictCursor
 from sqlalchemy import make_url, create_engine
 
 from app.admin.application.dtos.layer_dto import LayerFormDTO, RegisteredLayerDTO
-from app.admin.domain.exceptions.application_exception import ApplicationException
 from app.admin.domain.models.layer import Layer
 from app.admin.domain.repositories.layer_repository import LayerRepository
 from app.config import settings
+from app.shared.domain.exceptions.application_exception import ApplicationException
 
 
 class LayerService:
@@ -63,8 +63,8 @@ class LayerService:
             name=layer_form_dto.name,
 
             # Campos de la publicación.
-            table=registered_layer_dto.table_name,
-            schema=registered_layer_dto.schema_name,
+            table_name=registered_layer_dto.table_name,
+            schema_name=registered_layer_dto.schema_name,
 
             status=True,
             user_created=self.user_authenticated,
@@ -142,22 +142,20 @@ class LayerService:
                 password=settings.GEOSERVER_PASSWORD,
             )
 
-            # Obtenemos el almacén de datos.
-            datastore = geoserver.get_datastore(settings.GEOSERVER_WORKSPACE, settings.GEOSERVER_DATASTORE)
-            if not datastore:
-                raise ApplicationException("No se pudo obtener el almacén de datos en Geoserver.")
-
             # Registramos la capa en Geoserver.
             geoserver.publish_featurestore(
-                store_name=datastore["name"],
+                store_name=settings.GEOSERVER_DATASTORE,
                 pg_table=table_name,
                 workspace=settings.GEOSERVER_WORKSPACE,
                 title=title,
                 advertised=True,
-                abstract="Capa registrada desde la API del Ministerio de vivienda.",
+                abstract="Capa registrada desde la API del Ministerio de Vivienda.",
                 keywords=["Ministerio de Vivienda", "Capa Geográfica"],
             )
-        except Exception:
+
+            geoserver.reload()
+        except Exception as e:
+            print(e)
             raise ApplicationException(f"Error al registrar la capa en Geoserver")
 
     def __register_in_geodatabase(self, code: str, shape_file_name: str) -> RegisteredLayerDTO:

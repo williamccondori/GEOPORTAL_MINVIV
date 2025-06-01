@@ -1,5 +1,4 @@
 import os
-import traceback
 from typing import Any, Callable
 
 from fastapi import FastAPI, Request
@@ -22,6 +21,7 @@ from app.admin.domain.exceptions.not_authenticated_exception import (
 )
 from app.admin.domain.exceptions.not_found_exception import NotFoundException
 from app.config import settings
+from app.shared.domain.exceptions.application_exception import ApplicationException
 from app.shared.models.response import Response
 from app.web.api.routes.base_layer_routes import (
     base_layer_router as public_base_layer_router,
@@ -42,6 +42,14 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
         try:
             return await call_next(request)
         except Exception as e:
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            content = Response.error(
+                "app.internal_server_error"
+            ).dict()
+
+            if isinstance(e, ApplicationException):
+                status_code = status.HTTP_400_BAD_REQUEST
+                content = Response.error(e.message).dict()
             if isinstance(e, NotAuthenticatedException):
                 status_code = status.HTTP_401_UNAUTHORIZED
                 content = Response.error(e.message).dict()
@@ -49,15 +57,10 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
                 status_code = status.HTTP_404_NOT_FOUND
                 content = Response.error(e.message).dict()
             else:
-                status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                trace = "".join(traceback.format_exception(type(e), e, e.__traceback__))
-                content = Response.error(
-                    f"app.internal_server_error:{str(e)}", trace
-                ).dict()
+                print(e)
 
-            # Crear respuesta manual con CORS
             response = JSONResponse(status_code=status_code, content=content)
-            response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"
+            response.headers["Access-Control-Allow-Origin"] = "*"
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response
 
