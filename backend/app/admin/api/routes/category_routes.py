@@ -9,7 +9,7 @@ from app.shared.models.response import Response
 category_router = APIRouter()
 
 
-@category_router.get("/structure", response_model=Response[List[CategoryNodeDTO]])
+@category_router.get("/structure/", response_model=Response[List[CategoryNodeDTO]])
 async def get_all(service=Depends(get_category_service)) -> Response[List[CategoryNodeDTO]]:
     return Response.correct(await service.get_structure())
 
