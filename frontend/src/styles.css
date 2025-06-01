@@ -28,6 +28,16 @@ body {
   height: 100vh;
 }
 
+html,
+body,
+app-root,
+.app-container,
+.container-main {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .p-1 {
   padding: 1rem;
 }
@@ -96,11 +106,20 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 6rem;
   z-index: 999;
-  background-color: #ef4444;
-  color: white;
+  background-color: white;
   display: flex;
   align-items: center;
   padding: 0 2rem;
+}
+
+.app-header .app-logo {
+  width: 15rem;
+}
+
+.app-header .app-header-divider {
+  border: 0.35rem solid #f44336;
+  margin-left: 2rem;
+  height: 60%;
 }
 
 .app-header h1 {
@@ -150,4 +169,8 @@ body {
 .app-list-description li div:nth-child(1) {
   font-weight: bold;
   margin-bottom: 0.25rem;
+}
+
+.app-description-error {
+  color: red;
 }

@@ -13,6 +13,7 @@ import { firstValueFrom, Subscription } from 'rxjs';
 
 import { LayerFormComponent } from '../../../components/admin/layer-form/layer-form.component';
 import { Constants } from '../../../models/constants';
+import { Layer, LayerForm } from '../../../models/layer.model';
 import { BackendService } from '../../../services/backend.service';
 import { StateService } from '../../../services/state.service';
 
@@ -38,25 +39,13 @@ export class LayerPageComponent implements OnInit, OnDestroy {
 
   private dialogSubscription?: Subscription;
 
-  layers: any[] = [];
+  layers: Layer[] = [];
 
-  async ngOnInit() {
-    try {
-      this.stateService.setIsLoadingState(true);
-      // await this.getAllOwners();
-    } catch (e) {
-      console.error(e);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'ERROR',
-        detail: Constants.ERROR_MESSAGE,
-      });
-    } finally {
-      this.stateService.setIsLoadingState(false);
-    }
+  ngOnInit(): void {
+    this.initComponent();
   }
 
-  onOpenForm(layerId?: string) {
+  onOpenForm(layerId?: string): void {
     const dialog = this.dialogService.open(LayerFormComponent, {
       header: layerId ? 'Actualizar capa' : 'Agregar capa',
       width: '30vw',
@@ -73,16 +62,45 @@ export class LayerPageComponent implements OnInit, OnDestroy {
         id: layerId,
       },
     });
+
+    this.dialogSubscription = dialog.onClose.subscribe(
+      async (layerForm: LayerForm) => {
+        if (layerForm) {
+          try {
+            this.stateService.setIsLoadingState(true);
+            const command = layerId
+              ? this.backendService.updateLayer(layerId, layerForm)
+              : this.backendService.createLayer(layerForm);
+            await firstValueFrom(command);
+            await this.getAllLayers();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'ÉXITO',
+              detail: Constants.SUCCESS_MESSAGE,
+            });
+          } catch (e) {
+            console.error(e);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'ERROR',
+              detail: Constants.ERROR_MESSAGE,
+            });
+          } finally {
+            this.stateService.setIsLoadingState(false);
+          }
+        }
+      }
+    );
   }
 
-  onSearch($event: Event, table: Table) {
+  onSearch($event: Event, table: Table): void {
     return table.filterGlobal(
       ($event.target as HTMLInputElement).value,
       'contains'
     );
   }
 
-  onDelete(layerId: string) {
+  onDelete(layerId: string): void {
     this.confirmationService.confirm({
       message: '¿Está seguro de que desea eliminar esta capa?',
       header: 'Eliminar capa',
@@ -94,7 +112,7 @@ export class LayerPageComponent implements OnInit, OnDestroy {
         try {
           this.stateService.setIsLoadingState(true);
           await firstValueFrom(this.backendService.deleteLayer(layerId));
-          // await this.getAllOwners();
+          await this.getAllLayers();
           this.messageService.add({
             severity: 'success',
             summary: 'ÉXITO',
@@ -114,9 +132,29 @@ export class LayerPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.dialogSubscription) {
       this.dialogSubscription.unsubscribe();
     }
+  }
+
+  private async initComponent(): Promise<void> {
+    try {
+      this.stateService.setIsLoadingState(true);
+      this.getAllLayers();
+    } catch (e) {
+      console.error(e);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'ERROR',
+        detail: Constants.ERROR_MESSAGE,
+      });
+    } finally {
+      this.stateService.setIsLoadingState(false);
+    }
+  }
+
+  private async getAllLayers(): Promise<void> {
+    this.layers = await firstValueFrom(this.backendService.getAllLayers());
   }
 }

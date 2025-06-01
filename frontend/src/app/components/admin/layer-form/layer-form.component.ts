@@ -1,132 +1,167 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
-  AbstractControl,
-  ValidationErrors,
 } from '@angular/forms';
 
-import { InputText } from 'primeng/inputtext';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { TextareaModule } from 'primeng/textarea';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { MessageService, TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { TreeSelectModule } from 'primeng/treeselect';
 
+import {
+  FileUploadErrorEvent,
+  FileUploadEvent,
+  FileUploadModule,
+} from 'primeng/fileupload';
+import { firstValueFrom } from 'rxjs';
 import { CategoryNode } from '../../../models/category.model';
-import { FileUploadComponent } from '../../shared/file-upload/file-upload.component';
+import { Response } from '../../../models/response.model';
+import { BackendService } from '../../../services/backend.service';
+import { StateService } from '../../../services/state.service';
+import { HttpResponse } from '@angular/common/http';
+import { LayerForm } from '../../../models/layer.model';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Constants } from '../../../models/constants';
 
 @Component({
   selector: 'app-layer-form',
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     InputText,
     TreeSelectModule,
     TextareaModule,
-    ToastModule,
     ButtonModule,
-    FileUploadComponent,
+    FileUploadModule,
   ],
   providers: [MessageService],
   templateUrl: './layer-form.component.html',
-  styleUrl: './layer-form.component.css',
+  styleUrls: ['./layer-form.component.css'],
 })
 export class LayerFormComponent implements OnInit {
   private readonly messageService = inject(MessageService);
+  private readonly backendService = inject(BackendService);
+  private readonly stateService = inject(StateService);
+  private readonly dialogRef = inject(DynamicDialogRef);
 
   formGroup: FormGroup = new FormGroup({
-    name: new FormControl<string>('', [Validators.required]),
-    layerName: new FormControl<string>('', [
+    categoryParent: new FormControl<TreeNode<string> | undefined>(
+      {
+        value: undefined,
+        disabled: false,
+      },
+      [Validators.required]
+    ),
+    code: new FormControl<string>('', [
       Validators.required,
-      this.noSpacesValidator,
+      Validators.pattern(/^[a-zA-Z0-9_-]+$/),
     ]),
+    name: new FormControl<string>('', [Validators.required]),
     description: new FormControl<string>('', [Validators.required]),
-    categoryId: new FormControl<string>('', [Validators.required]),
-    shapeFile: new FormControl<File | null>(null, [Validators.required]),
+    shapeFileName: new FormControl<string>('', [Validators.required]),
   });
 
   categoryNodes: CategoryNode[] = [];
+  categoryTree: TreeNode<string>[] = [];
+
+  files: File[] = [];
+
+  fileApiUrl = '';
 
   ngOnInit(): void {
-    this.loadCategories();
-    this.setupNameSync();
+    this.initComponent();
   }
 
-  private setupNameSync(): void {
-    this.formGroup.get('name')?.valueChanges.subscribe(name => {
-      if (name) {
-        const layerName = name
-          .toLowerCase()
-          .replace(/\s+/g, '_')
-          .replace(/[^a-z0-9_]/g, '');
-        this.formGroup
-          .get('layerName')
-          ?.setValue(layerName, { emitEvent: false });
-      }
-    });
-  }
-
-  private loadCategories(): void {
-    // Mock data for categories
-    this.categoryNodes = [
-      {
-        id: '1',
-        name: 'Categoría 1',
-        children: [
-          { id: '1-1', name: 'Subcategoría 1.1', children: [] },
-          { id: '1-2', name: 'Subcategoría 1.2', children: [] },
-        ],
-      },
-      {
-        id: '2',
-        name: 'Categoría 2',
-        children: [{ id: '2-1', name: 'Subcategoría 2.1', children: [] }],
-      },
-    ];
-  }
-
-  private noSpacesValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    if (value?.includes(' ')) {
-      return { noSpaces: true };
-    }
-    return null;
-  }
-
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.formGroup.valid) {
-      const formData = new FormData();
-      formData.append('name', this.formGroup.get('name')?.value);
-      formData.append('layerName', this.formGroup.get('layerName')?.value);
-      formData.append('description', this.formGroup.get('description')?.value);
-      formData.append('categoryId', this.formGroup.get('categoryId')?.value);
-
-      const file = this.formGroup.get('shapeFile')?.value;
-      if (file) {
-        formData.append('shapeFile', file);
-      }
-
-      this.submitForm(formData);
+      const formValues = this.formGroup.value;
+      const layerForm = {
+        id: null,
+        categoryId: formValues.categoryParent?.key,
+        code: formValues.code,
+        name: formValues.name,
+        description: formValues.description,
+        shapeFileName: formValues.shapeFileName,
+      } as LayerForm;
+      this.dialogRef.close(layerForm);
     } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Por favor complete todos los campos requeridos',
+      this.formGroup.markAllAsTouched();
+      this.formGroup.updateValueAndValidity();
+    }
+  }
+
+  onUpload(event: FileUploadEvent): void {
+    // Agregar el archivo al arreglo de archivos.
+    const { files } = event;
+    if (files && files.length > 0) {
+      this.files = files;
+    }
+
+    // Agregar al formulario el nombre del archivo guardado.
+    const { originalEvent } = event;
+    if (originalEvent instanceof HttpResponse) {
+      const responseAPI: Response<string> = originalEvent?.body;
+      this.formGroup.patchValue({
+        shapeFileName: responseAPI.data,
       });
     }
   }
 
-  private submitForm(formData: FormData): void {
-    // Implementation for sending formData to backend service
-    console.error('FormData ready for submission:', formData);
+  onUploadError(event: FileUploadErrorEvent): void {
+    const { error } = event;
+    const errorAPI: Response<string> | null = error?.error;
     this.messageService.add({
-      severity: 'info',
-      summary: 'Información',
-      detail: 'Formulario listo para envío al backend',
+      severity: 'error',
+      summary: 'ERROR',
+      detail: errorAPI?.message ?? 'Ocurrió un error al subir el archivo',
     });
+  }
+
+  onRemoveFile(): void {
+    this.files = [];
+    this.formGroup.patchValue({
+      shapeFileName: '',
+    });
+  }
+
+  private async initComponent(): Promise<void> {
+    try {
+      this.fileApiUrl = this.backendService.getApiUrl() + '/admin/files/';
+      this.stateService.setIsLoadingState(true);
+      await this.getCategoryStructure();
+    } catch (e) {
+      console.error(e);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'ERROR',
+        detail: Constants.ERROR_MESSAGE,
+      });
+    } finally {
+      this.stateService.setIsLoadingState(false);
+    }
+  }
+
+  private async getCategoryStructure(): Promise<void> {
+    const categoryList = await firstValueFrom(
+      this.backendService.getCatalogStructure()
+    );
+    this.categoryTree = this.convertToTree(categoryList);
+  }
+
+  private convertToTree(nodes: CategoryNode[]): TreeNode<string>[] {
+    return nodes.map(node => ({
+      key: node.id.toString(),
+      label: node.name,
+      data: node.id,
+      leaf: (node.children ?? []).length > 0,
+      children: this.convertToTree(node.children ?? []),
+    }));
   }
 }

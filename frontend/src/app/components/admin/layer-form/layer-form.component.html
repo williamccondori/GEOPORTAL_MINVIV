@@ -2,127 +2,132 @@
   [formGroup]="formGroup"
   (ngSubmit)="onSubmit()"
 >
-  <div class="app-space-vertical">
-    <div class="app-form-group">
-      <label for="name">Nombre:</label>
-      <input
-        id="name"
-        formControlName="name"
-        type="text"
-        pInputText
-        placeholder="Ingrese el nombre de la capa"
-        fluid
-      />
-      @if (formGroup.get('name')?.invalid && formGroup.get('name')?.touched) {
-        <small class="p-error">El nombre es requerido</small>
-      }
-    </div>
-
-    <div class="app-form-group">
-      <label for="layerName">Nombre de capa (sin espacios):</label>
-      <input
-        id="layerName"
-        formControlName="layerName"
-        type="text"
-        pInputText
-        placeholder="nombre_de_capa"
-        fluid
-      />
-      @if (
-        formGroup.get('layerName')?.hasError('required') &&
-        formGroup.get('layerName')?.touched
-      ) {
-        <small class="p-error">El nombre de capa es requerido</small>
-      }
-      @if (
-        formGroup.get('layerName')?.hasError('noSpaces') &&
-        formGroup.get('layerName')?.touched
-      ) {
-        <small class="p-error">
-          El nombre de capa no puede contener espacios
-        </small>
-      }
-    </div>
-
-    <div class="app-form-group">
-      <label for="description">Descripción:</label>
-      <textarea
-        id="description"
-        formControlName="description"
-        pTextarea
-        placeholder="Ingrese la descripción de la capa"
-        rows="4"
-        fluid
-      ></textarea>
-      @if (
-        formGroup.get('description')?.invalid &&
-        formGroup.get('description')?.touched
-      ) {
-        <small class="p-error">La descripción es requerida</small>
-      }
-    </div>
-
-    <div class="app-form-group">
-      <label for="categoryId">Categoría:</label>
-      <p-treeSelect
-        id="categoryId"
-        formControlName="categoryId"
-        [options]="categoryNodes"
-        placeholder="Seleccione una categoría"
-        selectionMode="single"
-        appendTo="body"
-        fluid
-      ></p-treeSelect>
-      @if (
-        formGroup.get('categoryId')?.invalid &&
-        formGroup.get('categoryId')?.touched
-      ) {
-        <small class="p-error">La categoría es requerida</small>
-      }
-    </div>
-
-    <div class="app-form-group">
-      <label for="shapeFile">Archivo Shapefile (ZIP - máx. 5MB):</label>
-      <app-file-upload
-        formControlName="shapeFile"
-        accept=".zip"
-        [maxFileSize]="5242880"
-        [multiple]="false"
-        [required]="true"
-        label="Seleccionar archivo"
-        placeholder="Arrastre y suelte un archivo ZIP aquí o haga clic para seleccionar"
-        hint="Solo archivos ZIP hasta 5MB"
-      ></app-file-upload>
-      @if (
-        formGroup.get('shapeFile')?.invalid &&
-        formGroup.get('shapeFile')?.touched
-      ) {
-        <small class="p-error">
-          @if (formGroup.get('shapeFile')?.hasError('required')) {
-            <span>El archivo shapefile es requerido</span>
-          }
-          @if (formGroup.get('shapeFile')?.hasError('invalidFileType')) {
-            <span>
-              Tipo de archivo no válido. Solo se permiten archivos ZIP
-            </span>
-          }
-          @if (formGroup.get('shapeFile')?.hasError('maxFileSize')) {
-            <span>El archivo excede el tamaño máximo de 5MB</span>
-          }
-        </small>
-      }
-    </div>
-
-    <div class="app-form-group">
-      <p-button
-        type="submit"
-        label="Guardar Capa"
-        icon="pi pi-save"
-        [disabled]="formGroup.invalid"
-        styleClass="w-full"
-      />
-    </div>
+  <div class="app-form-group">
+    <label for="categoryParent">Categoría:</label>
+    <p-tree-select
+      id="categoryParent"
+      formControlName="categoryParent"
+      [options]="categoryTree"
+      appendTo="body"
+      fluid
+      showClear
+      placeholder="Seleccione una categoría"
+    ></p-tree-select>
+    @if (
+      formGroup.get('categoryParent')?.errors?.['required'] &&
+      formGroup.get('categoryParent')?.touched
+    ) {
+      <small class="app-description-error">La categoría es obligatoria.</small>
+    }
   </div>
+  <div class="app-form-group">
+    <label for="code">Código:</label>
+    <input
+      id="code"
+      type="text"
+      pInputText
+      formControlName="code"
+      placeholder="Ingrese el código"
+      [fluid]="true"
+    />
+    @if (
+      formGroup.get('code')?.errors?.['required'] &&
+      formGroup.get('code')?.touched
+    ) {
+      <small class="app-description-error">El código es obligatorio.</small>
+    }
+    @if (formGroup.get('code')?.errors?.['pattern']) {
+      <small class="app-description-error">
+        El código debe contener solo letras, números y guiones bajos.
+      </small>
+    }
+  </div>
+  <div class="app-form-group">
+    <label for="name">Nombre:</label>
+    <input
+      id="name"
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Ingrese el nombre"
+      [fluid]="true"
+    />
+    @if (
+      formGroup.get('name')?.errors?.['required'] &&
+      formGroup.get('name')?.touched
+    ) {
+      <small class="app-description-error">El nombre es obligatorio.</small>
+    }
+  </div>
+  <div class="app-form-group">
+    <label for="description">Descripción:</label>
+    <textarea
+      id="description"
+      pInputTextarea
+      formControlName="description"
+      placeholder="Ingrese la descripción"
+      [rows]="3"
+      [cols]="30"
+      [autoResize]="true"
+      [fluid]="true"
+    ></textarea>
+    @if (
+      formGroup.get('description')?.errors?.['required'] &&
+      formGroup.get('description')?.touched
+    ) {
+      <small class="app-description-error">
+        La descripción es obligatoria.
+      </small>
+    }
+  </div>
+  <div class="app-form-group">
+    <label for="file">SHAPEFILE:</label>
+    <p-fileupload
+      [url]="fileApiUrl"
+      [auto]="true"
+      mode="advanced"
+      chooseLabel="Seleccionar"
+      chooseIcon="pi pi-upload"
+      name="file"
+      accept="application/zip,application/x-zip-compressed"
+      maxFileSize="5242880"
+      (onUpload)="onUpload($event)"
+      (onError)="onUploadError($event)"
+      [disabled]="files.length >= 1"
+    >
+      <ng-template #content>
+        @for (item of files; track item) {
+          <div class="file-list-item">
+            <span>
+              <b>{{ item.name }}</b>
+              ({{ item.size | number }} bytes)
+            </span>
+            <p-button
+              icon="pi pi-times"
+              severity="danger"
+              variant="text"
+              (click)="onRemoveFile()"
+            ></p-button>
+          </div>
+        }
+      </ng-template>
+    </p-fileupload>
+    @if (
+      formGroup.get('shapeFileName')?.errors?.['required'] &&
+      formGroup.get('shapeFileName')?.touched
+    ) {
+      <small class="app-description-error">
+        El archivo SHAPEFILE es obligatorio.
+      </small>
+    }
+  </div>
+  <p-button
+    label="Guardar"
+    icon="pi pi-save"
+    type="submit"
+    severity="success"
+    size="large"
+    [disabled]="formGroup.invalid"
+    [fluid]="true"
+  ></p-button>
 </form>
-
-<p-toast></p-toast>

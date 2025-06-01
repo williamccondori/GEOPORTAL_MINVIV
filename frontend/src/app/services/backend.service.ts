@@ -10,12 +10,17 @@ import { User } from '../models/user.model';
 import { WmsLayer } from '../models/wms-layer.model';
 
 import { ApiService } from './api.service';
+import { Layer, LayerForm } from '../models/layer.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BackendService {
   private readonly apiService = inject(ApiService);
+
+  getApiUrl(): string {
+    return this.apiService.getApiUrl();
+  }
 
   getInitialSettings(): Observable<InitialSettings> {
     return this.apiService.get<InitialSettings>(`admin/initial-settings/`);
@@ -151,6 +156,18 @@ export class BackendService {
   }
 
   // Layers
+
+  getAllLayers(): Observable<Layer[]> {
+    return this.apiService.get<Layer[]>(`admin/layers/`);
+  }
+
+  createLayer(layer: LayerForm): Observable<string> {
+    return this.apiService.post<string>(`admin/layers/`, layer);
+  }
+
+  updateLayer(layerId: string, layer: LayerForm): Observable<string> {
+    return this.apiService.put<string>(`admin/layers/${layerId}/`, layer);
+  }
 
   deleteLayer(layerId: string): Observable<string> {
     return this.apiService.delete<string>(`admin/layers/${layerId}/`);

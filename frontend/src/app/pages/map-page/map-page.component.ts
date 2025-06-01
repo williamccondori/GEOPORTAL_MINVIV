@@ -5,6 +5,7 @@ import { ChatbotDrawerComponent } from '../../components/chatbot-drawer/chatbot-
 import { LayerDrawerComponent } from '../../components/layer-drawer/layer-drawer.component';
 import { LayerInfoDrawerComponent } from '../../components/layer-info-drawer/layer-info-drawer.component';
 import { LocationDrawerComponent } from '../../components/location-drawer/location-drawer.component';
+import { MapSidebarComponent } from '../../components/map-sidebar/map-sidebar.component';
 import { MapComponent } from '../../components/map/map.component';
 import { SearchDrawerComponent } from '../../components/search-drawer/search-drawer.component';
 import { SearchTabularDrawerComponent } from '../../components/search-tabular-drawer/search-tabular-drawer.component';
@@ -25,7 +26,9 @@ import { WmsLayerDrawerComponent } from '../../components/wms-layer-drawer/wms-l
     LocationDrawerComponent,
     LayerDrawerComponent,
     LayerInfoDrawerComponent,
+    MapSidebarComponent,
   ],
   templateUrl: './map-page.component.html',
+  styleUrls: ['./map-page.component.css'],
 })
 export class MapPageComponent {}
