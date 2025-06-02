@@ -18,7 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 import { ToastModule } from 'primeng/toast';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 import { Constants } from '../../models/constants';
 import { LocationRequest, LocationResponse } from '../../models/location.model';
@@ -58,22 +58,22 @@ export class LocationDrawerComponent {
 
   formGroupCoordinate = new FormGroup({});
 
-  onDrawerOpen() {
+  onDrawerOpen(): void {
     this.formGroup.reset();
     this.formGroupCoordinate.reset();
 
     this.locations = [];
   }
 
-  get isVisible() {
+  get isVisible(): Observable<boolean> {
     return this.stateService.locationDrawerState$;
   }
 
-  onHide() {
+  onHide(): void {
     this.stateService.setLocationDrawerState(false);
   }
 
-  async onSubmit() {
+  async onSubmit(): Promise<void> {
     if (this.formGroup.valid) {
       const formValues = this.formGroup.getRawValue();
       const locationRequest: LocationRequest = {
@@ -100,7 +100,7 @@ export class LocationDrawerComponent {
     }
   }
 
-  async onSubmitCoordinate() {
+  async onSubmitCoordinate(): Promise<void> {
     if (this.formGroup.valid) {
     } else {
       this.formGroup.markAllAsTouched();
@@ -108,7 +108,7 @@ export class LocationDrawerComponent {
     }
   }
 
-  onClear() {
+  onClear(): void {
     this.formGroup.reset();
     this.locations = [];
   }

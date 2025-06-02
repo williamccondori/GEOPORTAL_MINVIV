@@ -14,9 +14,11 @@ import { StateService } from '../../services/state.service';
 export class LayerToolsControlComponent {
   private readonly stateService = inject(StateService);
 
-  onOpenLegendDrawer() {}
+  onOpenLegendDrawer(): void {
+    this.stateService.setLayerLegendDrawerState(true);
+  }
 
-  onOpenLayerInfoDrawer() {
+  onOpenLayerInfoDrawer(): void {
     this.stateService.setLayerInfoDrawerState(true);
   }
 }

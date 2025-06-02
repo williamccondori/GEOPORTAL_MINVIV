@@ -1,0 +1,24 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Leyenda"
+  [style]="{ width: '28rem' }"
+  (onHide)="onHide()"
+>
+  <div class="legend-content">
+    @if (activeLayers().length === 0) {
+      <p class="no-layers-message">No hay capas activas para mostrar leyenda</p>
+    }
+    @for (layer of activeLayers(); track layer.id) {
+      <p-fieldset
+        [legend]="layer.title || layer.name"
+        [toggleable]="true"
+        [collapsed]="false"
+      >
+        <img
+          [src]="getLegendUrl(layer)"
+          [alt]="layer.title"
+        />
+      </p-fieldset>
+    }
+  </div>
+</p-drawer>

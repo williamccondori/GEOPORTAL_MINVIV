@@ -6,6 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  FormBuilder,
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -19,8 +20,11 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { firstValueFrom, Observable } from 'rxjs';
 import { CategoryNode } from '../../models/category.model';
 import { Constants } from '../../models/constants';
-import { InternalLayer } from '../../models/layer.model';
-import { View } from '../../models/view.model';
+import {
+  InternalLayer,
+  LayerInformationTable,
+  LayerInformationFilter,
+} from '../../models/layer.model';
 import { BackendPublicService } from '../../services/backend-public.service';
 import { StateService } from '../../services/state.service';
 
@@ -44,10 +48,13 @@ export class SearchDrawerComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly messageService = inject(MessageService);
   private readonly backendPublicService = inject(BackendPublicService);
+  private readonly fb = inject(FormBuilder);
 
   categoryNodes: CategoryNode[] = [];
   categoryTree: TreeNode<string>[] = [];
   layers: InternalLayer[] = [];
+  layerInformationTable: LayerInformationTable | null = null;
+  filtersFormGroup: FormGroup = this.fb.group({});
 
   formGroup: FormGroup = new FormGroup({
     categoryParent: new FormControl<TreeNode<string> | undefined>(
@@ -157,13 +164,29 @@ export class SearchDrawerComponent implements OnInit {
       this.backendPublicService.getLayerInformationTable(layerId)
     );
     if (layerInformationTable) {
-      // this.columns = layerInformationTable.columns;
-      // this.data = layerInformationTable.data;
+      this.layerInformationTable = layerInformationTable;
+      this.createFiltersForm(layerInformationTable.filters);
+    } else {
+      this.clearForm();
+    }
+  }
+
+  private createFiltersForm(filters: LayerInformationFilter[]): void {
+    const group: Record<string, FormControl> = {};
+    filters.forEach(filter => {
+      group[filter.name] = new FormControl(null);
+    });
+    this.filtersFormGroup = this.fb.group(group);
+  }
+
+  onSubmitFilters(): void {
+    if (this.filtersFormGroup.valid && this.layerInformationTable) {
+      // Apply the filters to the layer information table.
     }
   }
 
   private clearForm(): void {
-    // this.columns = [];
-    // this.data = [];
+    this.layerInformationTable = null;
+    this.filtersFormGroup = this.fb.group({});
   }
 }

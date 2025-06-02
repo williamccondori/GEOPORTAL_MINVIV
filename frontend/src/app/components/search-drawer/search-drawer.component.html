@@ -5,40 +5,88 @@
   (onHide)="onHide()"
   (onShow)="onDrawerOpen()"
 >
-  <div class="app-space-vertical">
-    <p-fieldset legend="Categorización">
-      <form [formGroup]="formGroup">
-        <div class="app-form-group">
-          <label for="categoryParent">Categoría:</label>
-          <p-tree-select
-            id="categoryParent"
-            formControlName="categoryParent"
-            [options]="categoryTree"
-            appendTo="body"
-            fluid
-            showClear
-            placeholder="Seleccione una categoría"
-          ></p-tree-select>
-        </div>
-        <div class="app-form-group">
-          <label for="layer">Capa:</label>
-          <p-select
-            formControlName="layerId"
-            [options]="layers"
-            optionValue="id"
-            optionLabel="title"
-            filterBy="label"
-            appendTo="body"
-            fluid
-            filter
-            showClear
-            placeholder="Seleccione"
-          />
-        </div>
-      </form>
-    </p-fieldset>
-    <form>
-      <p-fieldset legend="Filtros avanzados"></p-fieldset>
-    </form>
+  <div class="drawer-content">
+    <div class="app-space-vertical">
+      <p-fieldset legend="Categorización">
+        <form
+          [formGroup]="formGroup"
+          class="responsive-form"
+        >
+          <div class="app-form-group">
+            <label for="categoryParent">Categoría:</label>
+            <p-tree-select
+              id="categoryParent"
+              formControlName="categoryParent"
+              [options]="categoryTree"
+              appendTo="body"
+              fluid
+              showClear
+              placeholder="Seleccione una categoría"
+            ></p-tree-select>
+          </div>
+          <div class="app-form-group">
+            <label for="layer">Capa:</label>
+            <p-select
+              [style]="{ maxWidth: '25rem', width: '100%' }"
+              formControlName="layerId"
+              [options]="layers"
+              optionValue="id"
+              optionLabel="title"
+              filterBy="label"
+              appendTo="body"
+              fluid
+              filter
+              showClear
+              placeholder="Seleccione"
+            ></p-select>
+          </div>
+        </form>
+      </p-fieldset>
+      @if (layerInformationTable && layerInformationTable.filters.length > 0) {
+        <form
+          [formGroup]="filtersFormGroup"
+          (ngSubmit)="onSubmitFilters()"
+          class="responsive-form"
+        >
+          <p-fieldset legend="Filtros avanzados">
+            <div class="app-space-vertical">
+              @for (
+                filter of layerInformationTable.filters;
+                track filter.name
+              ) {
+                <div class="app-form-group">
+                  <label [for]="filter.name">{{ filter.name }}:</label>
+                  <p-select
+                    [id]="filter.name"
+                    [formControlName]="filter.name"
+                    [style]="{ maxWidth: '22rem', width: '100%' }"
+                    [options]="filter.options"
+                    optionValue="id"
+                    optionLabel="label"
+                    filterBy="label"
+                    appendTo="body"
+                    fluid
+                    filter
+                    showClear
+                    placeholder="Seleccione"
+                  />
+                </div>
+              }
+              <div class="app-form-group">
+                <p-button
+                  type="submit"
+                  label="Buscar"
+                  size="large"
+                  severity="success"
+                  icon="pi pi-search"
+                  fluid
+                  [disabled]="!filtersFormGroup.valid"
+                ></p-button>
+              </div>
+            </div>
+          </p-fieldset>
+        </form>
+      }
+    </div>
   </div>
 </p-drawer>

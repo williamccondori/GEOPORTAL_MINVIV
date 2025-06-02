@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { BaseLayer } from '../models/base-layer.model';
-import { MapInformation } from '../models/map.model';
 import { WebMapServiceFeature } from '../models/layer.model';
+import { MapInformation } from '../models/map.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class StateService {
   private isLoadingStateSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingStateSubject.asObservable();
 
-  setIsLoadingState(isLoading: boolean) {
+  setIsLoadingState(isLoading: boolean): void {
     this.isLoadingStateSubject.next(isLoading);
   }
 
@@ -52,48 +52,54 @@ export class StateService {
   }>({ visible: false, data: [] });
   layerPropertyDrawerState$ =
     this.layerPropertyDrawerStateSubject.asObservable();
+  layerLegendDrawerStateSubject = new BehaviorSubject<boolean>(false);
+  layerLegendDrawerState$ = this.layerLegendDrawerStateSubject.asObservable();
 
-  setSearchDrawerState(state: boolean) {
+  setSearchDrawerState(state: boolean): void {
     this.searchDrawerStateSubject.next(state);
   }
 
-  setSearchTabularDrawerState(state: boolean) {
+  setSearchTabularDrawerState(state: boolean): void {
     this.searchTabularDrawerStateSubject.next(state);
   }
 
-  setViewDrawerState(state: boolean) {
+  setViewDrawerState(state: boolean): void {
     this.viewDrawerStateSubject.next(state);
   }
 
-  setBaseLayerDrawerState(state: boolean) {
+  setBaseLayerDrawerState(state: boolean): void {
     this.baseLayerDrawerStateSubject.next(state);
   }
 
-  setChatbotDrawerState(state: boolean) {
+  setChatbotDrawerState(state: boolean): void {
     this.chatbotDrawerStateSubject.next(state);
   }
 
-  setWmsLayerDrawerState(state: boolean) {
+  setWmsLayerDrawerState(state: boolean): void {
     this.wmsLayerDrawerStateSubject.next(state);
   }
 
-  setLocationDrawerState(state: boolean) {
+  setLocationDrawerState(state: boolean): void {
     this.locationDrawerStateSubject.next(state);
   }
 
-  setLayerDrawerState(state: boolean) {
+  setLayerDrawerState(state: boolean): void {
     this.layerDrawerStateSubject.next(state);
   }
 
-  setLayerInfoDrawerState(state: boolean) {
+  setLayerInfoDrawerState(state: boolean): void {
     this.layerInfoDrawerStateSubject.next(state);
   }
 
   setLayerPropertyDrawerState(state: {
     visible: boolean;
     data: WebMapServiceFeature[][];
-  }) {
+  }): void {
     this.layerPropertyDrawerStateSubject.next(state);
+  }
+
+  setLayerLegendDrawerState(state: boolean): void {
+    this.layerLegendDrawerStateSubject.next(state);
   }
 
   // Map states.
@@ -104,21 +110,21 @@ export class StateService {
   } | null>(null);
   centerState$ = this.centerStateSubject.asObservable();
 
-  setCenterState(center: { lat: number; lng: number }) {
+  setCenterState(center: { lat: number; lng: number }): void {
     this.centerStateSubject.next(center);
   }
 
   private zoomStateSubject = new BehaviorSubject<number>(12);
   zoomState$ = this.zoomStateSubject.asObservable();
 
-  setZoomState(zoom: number) {
+  setZoomState(zoom: number): void {
     this.zoomStateSubject.next(zoom);
   }
 
   private baseLayerStateSubject = new BehaviorSubject<BaseLayer | null>(null);
   baseLayerState$ = this.baseLayerStateSubject.asObservable();
 
-  setBaseLayerState(baseLayer: BaseLayer) {
+  setBaseLayerState(baseLayer: BaseLayer): void {
     this.baseLayerStateSubject.next(baseLayer);
   }
 }

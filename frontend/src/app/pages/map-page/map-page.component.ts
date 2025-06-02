@@ -12,6 +12,7 @@ import { SearchDrawerComponent } from '../../components/search-drawer/search-dra
 import { SearchTabularDrawerComponent } from '../../components/search-tabular-drawer/search-tabular-drawer.component';
 import { ViewDrawerComponent } from '../../components/view-drawer/view-drawer.component';
 import { WmsLayerDrawerComponent } from '../../components/wms-layer-drawer/wms-layer-drawer.component';
+import { LayerLegendDrawerComponent } from '../../components/layer-legend-drawer/layer-legend-drawer.component';
 
 @Component({
   standalone: true,
@@ -29,6 +30,7 @@ import { WmsLayerDrawerComponent } from '../../components/wms-layer-drawer/wms-l
     LayerInfoDrawerComponent,
     MapSidebarComponent,
     LayerPropertyDrawerComponent,
+    LayerLegendDrawerComponent,
   ],
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.css'],
