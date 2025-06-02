@@ -14,8 +14,8 @@ class Settings:
 
     # Dialogflow configuration.
 
-    DIALOGFLOW_PROJECT_ID: str
-    DIALOGFLOW_LANGUAGE_CODE: str
+    DIALOGFLOW_PROJECT_ID: str = os.getenv("DIALOGFLOW_PROJECT_ID", "geosnipa-eij9")
+    DIALOGFLOW_LANGUAGE_CODE: str = os.getenv("DIALOGFLOW_LANGUAGE_CODE", "es")
 
     ALLOWED_ORIGINS: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:4200")
 

@@ -167,7 +167,7 @@ def create_app():
 
     application.include_router(
         public_chat_router,
-        prefix=f"{api_prefix}/chat",
+        prefix=f"{api_prefix}/chats",
         tags=["public-chat"],
     )
 

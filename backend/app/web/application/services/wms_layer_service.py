@@ -69,7 +69,7 @@ class WmsLayerService:
                         key=feature.key,
                         value=feature.value,
                     )
-                    for feature in result.informacion
+                    for feature in result.information
                 ]
             )
             for result in results

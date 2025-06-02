@@ -343,7 +343,7 @@ def get_wms_feature_info(url: HttpUrl, x: int, y: int, width: int, height: int,
     except ValueError:
         return []
 
-    is_geoserver: bool = 'geoserver' in base_url.lower()  # noqa
+    is_geoserver: bool = 'geoserver' in str(base_url).lower()  # noqa
     return __get_data_from_dataframe(tables, is_geoserver)
 
 
