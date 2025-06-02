@@ -40,3 +40,39 @@ export interface ActiveWmsLayer {
   opacity: number;
   zIndex: number;
 }
+
+export interface LayerInformationOption {
+  id: string;
+  label: string;
+}
+
+export interface LayerInformationFilter {
+  name: string;
+  options: LayerInformationOption[];
+}
+
+export interface LayerInformationTable {
+  columns: string[];
+  data: [];
+  filters: LayerInformationFilter[];
+}
+
+export interface WebMapServiceFeatureRequest {
+  url: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  boundingBox: string;
+  layers: string;
+  filters: string[] | null;
+}
+
+export interface WebMapServiceFeatureProperty {
+  key: string;
+  value: string;
+}
+
+export interface WebMapServiceFeature {
+  information: WebMapServiceFeatureProperty[];
+}

@@ -48,7 +48,7 @@
       </form>
     </p-fieldset>
     <p-table
-      [value]="houses"
+      [value]="data"
       [paginator]="true"
       [rows]="5"
       [rowsPerPageOptions]="[5, 10, 20]"
@@ -58,7 +58,11 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Nombre</th>
+          @for (column of columns; track column) {
+            @if (column !== '_id') {
+              <th>{{ column }}</th>
+            }
+          }
           <th>Acciones</th>
         </tr>
       </ng-template>
@@ -67,16 +71,14 @@
         let-view
       >
         <tr>
-          <td>{{ view.name }}</td>
+          @for (column of columns; track column) {
+            @if (column !== '_id') {
+              <td>{{ view[column] }}</td>
+            }
+          }
           <td>
             <p-button
               icon="pi pi-eye"
-              class="p-button-rounded p-button-outlined"
-              [style]="{ width: '2rem', height: '2rem' }"
-            ></p-button>
-            <p-button
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-outlined"
               [style]="{ width: '2rem', height: '2rem' }"
             ></p-button>
           </td>

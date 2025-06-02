@@ -46,6 +46,9 @@ export class SearchTabularDrawerComponent implements OnInit {
   categoryTree: TreeNode<string>[] = [];
   layers: InternalLayer[] = [];
 
+  columns: string[] = [];
+  data: [] = [];
+
   formGroup: FormGroup = new FormGroup({
     categoryParent: new FormControl<TreeNode<string> | undefined>(
       {
@@ -62,6 +65,8 @@ export class SearchTabularDrawerComponent implements OnInit {
       .get('categoryParent')
       ?.valueChanges.subscribe(async (value: TreeNode<string> | undefined) => {
         this.layers = [];
+        this.clearTable();
+        this.formGroup.get('layerId')?.setValue('');
         if (value) {
           try {
             this.stateService.setIsLoadingState(true);
@@ -76,13 +81,29 @@ export class SearchTabularDrawerComponent implements OnInit {
           } finally {
             this.stateService.setIsLoadingState(false);
           }
-        } else {
-          this.formGroup.get('layerId')?.setValue('');
+        }
+      });
+    this.formGroup
+      .get('layerId')
+      ?.valueChanges.subscribe(async (value: string) => {
+        this.clearTable();
+        if (value) {
+          try {
+            this.stateService.setIsLoadingState(true);
+            await this.getLayerInformationTable(value);
+          } catch (e) {
+            console.error(e);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'ERROR',
+              detail: Constants.ERROR_MESSAGE,
+            });
+          } finally {
+            this.stateService.setIsLoadingState(false);
+          }
         }
       });
   }
-
-  houses: any[] = [];
 
   get isVisible(): Observable<boolean> {
     return this.stateService.searchTabularDrawerState$;
@@ -129,5 +150,22 @@ export class SearchTabularDrawerComponent implements OnInit {
     this.layers = await firstValueFrom(
       this.backendPublicService.getLayersByCategoryId(categoryId, false)
     );
+  }
+
+  private async getLayerInformationTable(layerId: string): Promise<void> {
+    const layerInformationTable = await firstValueFrom(
+      this.backendPublicService.getLayerInformationTable(layerId)
+    );
+    if (layerInformationTable) {
+      this.columns = layerInformationTable.columns;
+      this.data = layerInformationTable.data;
+    } else {
+      this.clearTable();
+    }
+  }
+
+  private clearTable(): void {
+    this.columns = [];
+    this.data = [];
   }
 }

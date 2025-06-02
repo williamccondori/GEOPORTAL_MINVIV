@@ -8,7 +8,12 @@ import { LocationRequest, LocationResponse } from '../models/location.model';
 import { WebMapServiceInformation } from '../models/wms-info.model';
 
 import { CategoryNode } from '../models/category.model';
-import { InternalLayer } from '../models/layer.model';
+import {
+  InternalLayer,
+  LayerInformationTable,
+  WebMapServiceFeature,
+  WebMapServiceFeatureRequest,
+} from '../models/layer.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -33,6 +38,15 @@ export class BackendPublicService {
     );
   }
 
+  getWmsFeatureInformation(
+    request: WebMapServiceFeatureRequest
+  ): Observable<WebMapServiceFeature[]> {
+    return this.apiService.get<WebMapServiceFeature[]>(
+      `wms-layers/features/`,
+      request
+    );
+  }
+
   getAllLocations(
     locationRequest: LocationRequest
   ): Observable<LocationResponse[]> {
@@ -52,5 +66,19 @@ export class BackendPublicService {
     return this.apiService.get<InternalLayer[]>(
       `layers/?categoryId=${encodeURIComponent(categoryId)}&includeWmsLayers=${includeWmsLayers}`
     );
+  }
+
+  getLayerInformationTable(layerId: string): Observable<LayerInformationTable> {
+    return this.apiService.get<LayerInformationTable>(
+      `layers/${layerId}/tables/`
+    );
+  }
+
+  getQuery(formData: FormData): Observable<string> {
+    return this.apiService.post<string>(`chats/queries/`, formData);
+  }
+
+  getVoiceQuery(formData: FormData): Observable<string> {
+    return this.apiService.post<string>(`chats/voice-queries/`, formData);
   }
 }

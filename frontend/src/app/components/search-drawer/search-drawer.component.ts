@@ -65,6 +65,8 @@ export class SearchDrawerComponent implements OnInit {
       .get('categoryParent')
       ?.valueChanges.subscribe(async (value: TreeNode<string> | undefined) => {
         this.layers = [];
+        this.clearForm();
+        this.formGroup.get('layerId')?.setValue('');
         if (value) {
           try {
             this.stateService.setIsLoadingState(true);
@@ -79,8 +81,26 @@ export class SearchDrawerComponent implements OnInit {
           } finally {
             this.stateService.setIsLoadingState(false);
           }
-        } else {
-          this.formGroup.get('layerId')?.setValue('');
+        }
+      });
+    this.formGroup
+      .get('layerId')
+      ?.valueChanges.subscribe(async (value: string) => {
+        this.clearForm();
+        if (value) {
+          try {
+            this.stateService.setIsLoadingState(true);
+            await this.getLayerInformationTable(value);
+          } catch (e) {
+            console.error(e);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'ERROR',
+              detail: Constants.ERROR_MESSAGE,
+            });
+          } finally {
+            this.stateService.setIsLoadingState(false);
+          }
         }
       });
   }
@@ -89,7 +109,7 @@ export class SearchDrawerComponent implements OnInit {
     return this.stateService.searchDrawerState$;
   }
 
-  onHide() {
+  onHide(): void {
     this.stateService.setSearchDrawerState(false);
   }
 
@@ -106,15 +126,6 @@ export class SearchDrawerComponent implements OnInit {
       });
     } finally {
       this.stateService.setIsLoadingState(false);
-    }
-  }
-
-  onSubmit() {
-    if (this.formGroup.valid) {
-      const formValues = this.formGroup.getRawValue();
-      const view: View = {
-        ...formValues,
-      } as View;
     }
   }
 
@@ -139,5 +150,20 @@ export class SearchDrawerComponent implements OnInit {
     this.layers = await firstValueFrom(
       this.backendPublicService.getLayersByCategoryId(categoryId, false)
     );
+  }
+
+  private async getLayerInformationTable(layerId: string): Promise<void> {
+    const layerInformationTable = await firstValueFrom(
+      this.backendPublicService.getLayerInformationTable(layerId)
+    );
+    if (layerInformationTable) {
+      // this.columns = layerInformationTable.columns;
+      // this.data = layerInformationTable.data;
+    }
+  }
+
+  private clearForm(): void {
+    // this.columns = [];
+    // this.data = [];
   }
 }

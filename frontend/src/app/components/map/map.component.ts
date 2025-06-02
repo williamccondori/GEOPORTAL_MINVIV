@@ -21,12 +21,15 @@ import { LogoControlComponent } from '../../leaflet-controls/logo-control/logo-c
 import { ToolsControlComponent } from '../../leaflet-controls/tools-control/tools-control.component';
 import { Constants } from '../../models/constants';
 import { InitialSettings } from '../../models/initial-settings.model';
+import {
+  ActiveWmsLayer,
+  WebMapServiceFeatureRequest,
+} from '../../models/layer.model';
 import { MapInformation } from '../../models/map.model';
 import { BackendPublicService } from '../../services/backend-public.service';
 import { ComponentInjectorService } from '../../services/component-injector.service';
-import { StateService } from '../../services/state.service';
 import { LayerService } from '../../services/layer.service';
-import { ActiveWmsLayer } from '../../models/layer.model';
+import { StateService } from '../../services/state.service';
 
 @Component({
   standalone: true,
@@ -291,11 +294,57 @@ export class MapComponent implements OnInit, AfterViewInit {
     ];
   }
 
-  private searchInThisPoint(): void {
-    if (this.map && this.rightClickLatLng) {
-      const center = this.map.getCenter();
-      const lat = center.lat;
-      const lng = center.lng;
+  private async searchInThisPoint(): Promise<void> {
+    if (!this.map || !this.rightClickLatLng) return;
+
+    const size = this.map.getSize();
+    const bounds = this.map.getBounds();
+    const latlng = this.rightClickLatLng;
+    const pointOfQuery = this.map.latLngToContainerPoint(latlng);
+
+    const params = {
+      width: size.x,
+      height: size.y,
+      x: Math.round(pointOfQuery.x),
+      y: Math.round(pointOfQuery.y),
+      boundingBox: bounds.toBBoxString(),
+    } as WebMapServiceFeatureRequest;
+
+    const activeLayers = this.layerService.activeLayers();
+
+    const urlToLayers: Record<string, string[]> = {};
+    for (const layer of activeLayers) {
+      if (!urlToLayers[layer.url]) urlToLayers[layer.url] = [];
+      urlToLayers[layer.url].push(layer.name);
+    }
+
+    const layerQueries = Object.entries(urlToLayers).map(([url, layers]) => {
+      const paramsToSend = {
+        ...params,
+        url,
+        layers: layers.join(','),
+      };
+      return firstValueFrom(
+        this.backendPublicService.getWmsFeatureInformation(paramsToSend)
+      );
+    });
+
+    try {
+      this.stateService.setIsLoadingState(true);
+      const results = await Promise.all(layerQueries);
+      this.stateService.setLayerPropertyDrawerState({
+        visible: true,
+        data: results,
+      });
+    } catch (e) {
+      console.error(e);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'ERROR',
+        detail: Constants.ERROR_MESSAGE,
+      });
+    } finally {
+      this.stateService.setIsLoadingState(false);
     }
   }
 

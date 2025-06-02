@@ -1,0 +1,50 @@
+<p-drawer
+  [visible]="(isVisible | async) ?? false"
+  header="Información de las capas"
+  [style]="{ width: '28rem' }"
+  position="right"
+  (onHide)="onHide()"
+>
+  <p-tabView>
+    @for (source of sources | async; track $index) {
+      <p-tabPanel [header]="'Fuente ' + ($index + 1)">
+        <p-tabView>
+          @for (
+            feature of source;
+            track featureIndex;
+            let featureIndex = $index
+          ) {
+            <p-tabPanel [header]="'Capa ' + (featureIndex + 1)">
+              <p-table
+                [value]="feature.information"
+                size="small"
+                showGridlines
+                stripedRows
+                paginator
+                [rows]="20"
+                [rowsPerPageOptions]="[20, 50]"
+                responsiveLayout="scroll"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Propiedad</th>
+                    <th>Valor</th>
+                  </tr>
+                </ng-template>
+                <ng-template
+                  pTemplate="body"
+                  let-info
+                >
+                  <tr>
+                    <td>{{ info.key }}</td>
+                    <td>{{ info.value }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-tabPanel>
+          }
+        </p-tabView>
+      </p-tabPanel>
+    }
+  </p-tabView>
+</p-drawer>

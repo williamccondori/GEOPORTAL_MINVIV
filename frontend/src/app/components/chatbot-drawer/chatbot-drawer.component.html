@@ -5,7 +5,10 @@
   position="right"
   (onHide)="onHide()"
 >
-  <div class="app-space-vertical">
+  <div
+    class="app-space-vertical"
+    [style]="{ height: '100%' }"
+  >
     <div class="chat-messages">
       <div class="message-user">
         <div class="message-content">
@@ -17,26 +20,36 @@
           <p>Hola, ¿en qué puedo ayudarte?</p>
         </div>
       </div>
-      <div class="message-user">
-        <div class="message-content">
-          <p>Hola</p>
-        </div>
-      </div>
-      <div class="message-me">
-        <div class="message-content">
-          <p>Hola, ¿en qué puedo ayudarte?</p>
-        </div>
-      </div>
-      <div class="message-user">
-        <div class="message-content">
-          <p>Hola</p>
-        </div>
-      </div>
-      <div class="message-me">
-        <div class="message-content">
-          <p>Hola, ¿en qué puedo ayudarte?</p>
-        </div>
-      </div>
     </div>
+    <form
+      [formGroup]="formGroup"
+      (submit)="onSendMessage()"
+    >
+      <p-inputgroup>
+        <input
+          pInputText
+          type="text"
+          formControlName="message"
+          placeholder="Escribe un mensaje..."
+        />
+        <p-inputgroup-addon>
+          <p-button
+            size="large"
+            icon="pi pi-microphone"
+            severity="secondary"
+            (onClick)="onRecordAudio()"
+          />
+        </p-inputgroup-addon>
+        <p-inputgroup-addon>
+          <p-button
+            size="large"
+            icon="pi pi-send"
+            severity="secondary"
+            type="submit"
+            [disabled]="formGroup.invalid"
+          />
+        </p-inputgroup-addon>
+      </p-inputgroup>
+    </form>
   </div>
 </p-drawer>

@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { BaseLayer } from '../models/base-layer.model';
 import { MapInformation } from '../models/map.model';
+import { WebMapServiceFeature } from '../models/layer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class StateService {
     new BehaviorSubject<MapInformation | null>(null);
   mapInformationState$ = this.mapInformationStateSubject.asObservable();
 
-  setMapInformationState(mapInformation: MapInformation) {
+  setMapInformationState(mapInformation: MapInformation): void {
     this.mapInformationStateSubject.next(mapInformation);
   }
 
@@ -45,6 +46,12 @@ export class StateService {
   layerDrawerState$ = this.layerDrawerStateSubject.asObservable();
   private layerInfoDrawerStateSubject = new BehaviorSubject<boolean>(false);
   layerInfoDrawerState$ = this.layerInfoDrawerStateSubject.asObservable();
+  private layerPropertyDrawerStateSubject = new BehaviorSubject<{
+    visible: boolean;
+    data: WebMapServiceFeature[][];
+  }>({ visible: false, data: [] });
+  layerPropertyDrawerState$ =
+    this.layerPropertyDrawerStateSubject.asObservable();
 
   setSearchDrawerState(state: boolean) {
     this.searchDrawerStateSubject.next(state);
@@ -80,6 +87,13 @@ export class StateService {
 
   setLayerInfoDrawerState(state: boolean) {
     this.layerInfoDrawerStateSubject.next(state);
+  }
+
+  setLayerPropertyDrawerState(state: {
+    visible: boolean;
+    data: WebMapServiceFeature[][];
+  }) {
+    this.layerPropertyDrawerStateSubject.next(state);
   }
 
   // Map states.
