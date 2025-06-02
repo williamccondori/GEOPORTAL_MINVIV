@@ -1,17 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
-import { StateService } from '../../services/state.service';
 import { MapInformation } from '../../models/map.model';
+import { LayerService } from '../../services/layer.service';
+import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'app-share-form',
@@ -30,6 +31,7 @@ import { MapInformation } from '../../models/map.model';
 })
 export class ShareFormComponent implements OnInit {
   private readonly stateService = inject(StateService);
+  private readonly layerService = inject(LayerService);
   private readonly messageService = inject(MessageService);
 
   mapInformation: MapInformation | null = null;
@@ -44,6 +46,14 @@ export class ShareFormComponent implements OnInit {
       disabled: true,
     }),
   });
+
+  constructor() {
+    // React to changes in active layers
+    effect(() => {
+      this.layerService.activeLayers(); // Read the signal to register dependency
+      this.updateShareLinks();
+    });
+  }
 
   ngOnInit(): void {
     // Subscribe to map information changes
@@ -68,6 +78,28 @@ export class ShareFormComponent implements OnInit {
 
       // Create URL with coordinates and zoom
       shareUrl = `${baseUrl}?lat=${lat.toFixed(6)}&lng=${lng.toFixed(6)}&zoom=${zoom}`;
+
+      // Include active layers in the URL
+      const activeLayers = this.layerService.activeLayers();
+      if (activeLayers.length > 0) {
+        const layersParam = activeLayers
+          .map(layer => {
+            // Encode layer information as JSON
+            const layerInfo = {
+              id: layer.id,
+              name: layer.name,
+              title: layer.title,
+              url: layer.url,
+              opacity: layer.opacity,
+              zIndex: layer.zIndex,
+              ...(layer.cqlFilter && { cqlFilter: layer.cqlFilter }),
+            };
+            return encodeURIComponent(JSON.stringify(layerInfo));
+          })
+          .join(',');
+
+        shareUrl += `&layers=${layersParam}`;
+      }
 
       // Create embed code
       embedCode = `<iframe src="${shareUrl}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;

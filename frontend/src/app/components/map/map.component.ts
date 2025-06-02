@@ -15,6 +15,13 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { ToastModule } from 'primeng/toast';
 import { firstValueFrom } from 'rxjs';
 
+// Extend Leaflet WMSOptions to include CQL_FILTER
+declare module 'leaflet' {
+  interface WMSOptions extends TileLayerOptions {
+    CQL_FILTER?: string;
+  }
+}
+
 import { CoordinatesControlComponent } from '../../leaflet-controls/coordinates-control/coordinates-control.component';
 import { LayerToolsControlComponent } from '../../leaflet-controls/layer-tools-control/layer-tools-control.component';
 import { LogoControlComponent } from '../../leaflet-controls/logo-control/logo-control.component';
@@ -72,11 +79,33 @@ export class MapComponent implements OnInit, AfterViewInit {
         // Add new active layers or update existing ones.
         activeLayers.forEach(activeLayer => {
           const existingLayer = this.activeLayersMap.get(activeLayer.name);
-
           if (existingLayer) {
             // If the layer already exists, update its opacity and zIndex.
             existingLayer.setOpacity(activeLayer.opacity ?? 1);
             existingLayer.setZIndex(activeLayer.zIndex ?? 1);
+            // Check if the CQL filter has changed and recreate the layer if needed
+            const currentParams = existingLayer.options as L.WMSParams;
+            const newCqlFilter = activeLayer.cqlFilter || '';
+            const currentCqlFilter =
+              (currentParams as L.WMSOptions).CQL_FILTER || '';
+
+            if (newCqlFilter !== currentCqlFilter) {
+              // Remove the old layer and create a new one with the updated filter
+              this.map!.removeLayer(existingLayer);
+              this.activeLayersMap.delete(activeLayer.name);
+
+              const layer = L.tileLayer.wms(activeLayer.url, {
+                layers: activeLayer.name,
+                format: 'image/png',
+                transparent: true,
+                attribution: activeLayer.title,
+                zIndex: activeLayer.zIndex ?? 1,
+                opacity: activeLayer.opacity ?? 1,
+                CQL_FILTER: activeLayer.cqlFilter || undefined,
+              });
+              this.map!.addLayer(layer);
+              this.activeLayersMap.set(activeLayer.name, layer);
+            }
           } else {
             // If the layer doesn't exist, create and add it.
             const layer = L.tileLayer.wms(activeLayer.url, {
@@ -86,6 +115,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               attribution: activeLayer.title,
               zIndex: activeLayer.zIndex ?? 1,
               opacity: activeLayer.opacity ?? 1,
+              CQL_FILTER: activeLayer.cqlFilter || undefined,
             });
             this.map!.addLayer(layer);
             this.activeLayersMap.set(activeLayer.name, layer);
@@ -248,6 +278,9 @@ export class MapComponent implements OnInit, AfterViewInit {
 
       this.map.setView(new L.LatLng(lat, lng), zoom);
 
+      // Process layer parameters from URL
+      this.processLayersFromUrl(urlParams);
+
       if (!settings.hasAttribution) {
         this.map.attributionControl.remove();
       }
@@ -365,6 +398,58 @@ export class MapComponent implements OnInit, AfterViewInit {
       const lng = this.rightClickLatLng.lng;
       const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
       window.open(url, '_blank');
+    }
+  }
+
+  private processLayersFromUrl(urlParams: { [key: string]: string }): void {
+    const layersParam = urlParams['layers'];
+    if (layersParam) {
+      try {
+        // Split the layers parameter by comma and decode each layer
+        const layerStrings = layersParam.split(',');
+        const layersToActivate: ActiveWmsLayer[] = [];
+
+        for (const layerString of layerStrings) {
+          try {
+            const decodedLayer = decodeURIComponent(layerString);
+            const layerInfo = JSON.parse(decodedLayer);
+
+            // Validate that the layer has required properties
+            if (
+              layerInfo.id &&
+              layerInfo.name &&
+              layerInfo.title &&
+              layerInfo.url
+            ) {
+              const activeLayer: ActiveWmsLayer = {
+                id: layerInfo.id,
+                name: layerInfo.name,
+                title: layerInfo.title,
+                url: layerInfo.url,
+                opacity: layerInfo.opacity || 1,
+                zIndex: layerInfo.zIndex || 1,
+                ...(layerInfo.cqlFilter && { cqlFilter: layerInfo.cqlFilter }),
+              };
+              layersToActivate.push(activeLayer);
+            }
+          } catch (layerError) {
+            console.error('Failed to parse layer from URL:', layerError);
+          }
+        }
+
+        // Activate all valid layers
+        if (layersToActivate.length > 0) {
+          // Clear existing active layers first
+          this.layerService.onDeleteAllActiveLayers();
+
+          // Add the layers from the URL
+          layersToActivate.forEach(layer => {
+            this.layerService.onAddActiveLayer(layer);
+          });
+        }
+      } catch (error) {
+        console.error('Failed to process layers from URL:', error);
+      }
     }
   }
 }

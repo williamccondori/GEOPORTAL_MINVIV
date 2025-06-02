@@ -26,6 +26,7 @@ import {
   LayerInformationFilter,
 } from '../../models/layer.model';
 import { BackendPublicService } from '../../services/backend-public.service';
+import { LayerService } from '../../services/layer.service';
 import { StateService } from '../../services/state.service';
 
 @Component({
@@ -48,6 +49,7 @@ export class SearchDrawerComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly messageService = inject(MessageService);
   private readonly backendPublicService = inject(BackendPublicService);
+  private readonly layerService = inject(LayerService);
   private readonly fb = inject(FormBuilder);
 
   categoryNodes: CategoryNode[] = [];
@@ -181,8 +183,70 @@ export class SearchDrawerComponent implements OnInit {
 
   onSubmitFilters(): void {
     if (this.filtersFormGroup.valid && this.layerInformationTable) {
-      // Apply the filters to the layer information table.
+      const formValues = this.filtersFormGroup.value;
+      const cqlFilter = this.generateCqlFilter(formValues);
+
+      // Get the selected layer ID from the form
+      const selectedLayerId = this.formGroup.get('layerId')?.value;
+      if (selectedLayerId && cqlFilter) {
+        // Find the corresponding active layer
+        const activeLayer =
+          this.layerService.getActiveLayerById(selectedLayerId);
+        if (activeLayer) {
+          // Apply the filter to the active layer
+          this.layerService.updateLayerFilter(selectedLayerId, cqlFilter);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Filtros aplicados',
+            detail: 'Los filtros se han aplicado correctamente a la capa.',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Capa no activa',
+            detail:
+              'La capa debe estar activa en el mapa para aplicar filtros.',
+          });
+        }
+      } else if (selectedLayerId && !cqlFilter) {
+        // Clear filters if no filter values are selected
+        this.layerService.updateLayerFilter(selectedLayerId, undefined);
+
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Filtros removidos',
+          detail: 'Se han removido todos los filtros de la capa.',
+        });
+      }
     }
+  }
+
+  /**
+   * Generates a CQL filter string from form values
+   * @param formValues - The form values from the filters form
+   * @returns CQL filter string or empty string if no filters are applied
+   */
+  private generateCqlFilter(
+    formValues: Record<string, string | number | null>
+  ): string {
+    const filters: string[] = [];
+
+    // Iterate through form values and build CQL filter conditions
+    Object.entries(formValues).forEach(([fieldName, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        // Escape single quotes in values and wrap strings in single quotes
+        const escapedValue =
+          typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value;
+
+        // Build the condition - assuming equality for now
+        // You can extend this to support other operators like LIKE, IN, etc.
+        filters.push(`${fieldName} = ${escapedValue}`);
+      }
+    });
+
+    // Join multiple conditions with AND
+    return filters.length > 0 ? filters.join(' AND ') : '';
   }
 
   private clearForm(): void {

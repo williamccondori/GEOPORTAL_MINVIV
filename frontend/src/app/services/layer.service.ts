@@ -48,6 +48,22 @@ export class LayerService {
     );
   }
 
+  updateLayerFilter(id: string, cqlFilter?: string): void {
+    this.activeLayersSignal.update(layers =>
+      layers.map(layer => (layer.id === id ? { ...layer, cqlFilter } : layer))
+    );
+  }
+
+  clearAllFilters(): void {
+    this.activeLayersSignal.update(layers =>
+      layers.map(layer => ({ ...layer, cqlFilter: undefined }))
+    );
+  }
+
+  getActiveLayerById(id: string): ActiveWmsLayer | undefined {
+    return this.activeLayersSignal().find(layer => layer.id === id);
+  }
+
   moveLayerToFront(id: string): void {
     this.activeLayersSignal.update(layers => {
       const layerIndex = layers.findIndex(layer => layer.id === id);
