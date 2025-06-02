@@ -30,9 +30,37 @@ class ChatService:
     async def __generate_result(self, result: QueryResult) -> list[ChatResponseDTO]:
         initial_message: str = result.query_text
 
-        print(initial_message)
+        responses = [ChatResponseDTO(
+            message=result.fulfillment_text,
+            initial_message=initial_message
+        )]
 
-        return []
+        action: str = result.action
+
+        if action == "":
+            pass
+
+        if action == "activar_capa":
+            active_layer = result.parameters.get("CAPA_ACTIVA", None)
+            if not active_layer:
+                responses.append(ChatResponseDTO(
+                    message="☹️ No se ha encontrado la capa, por favor, sé más específico e inténtalo nuevamente",
+                    initial_message=initial_message,
+                    action="activar_capa",
+                    action_control="activar_capa"
+                ))
+            else:
+                responses.append(ChatResponseDTO(
+                    message=f"Capa: {active_layer}",
+                    initial_message=initial_message,
+                    action="activar_capa",
+                    data={
+                        "layerName": active_layer
+                    },
+                    action_control="activar_capa"
+                ))
+
+        return responses
 
     async def get_query(self, session_id: str, message: str) -> list[ChatResponseDTO]:
         try:
