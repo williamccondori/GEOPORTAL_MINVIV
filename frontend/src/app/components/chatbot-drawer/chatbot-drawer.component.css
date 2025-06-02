@@ -35,3 +35,20 @@
   border: 1px solid #dee2e6;
   border-radius: 5px;
 }
+
+.typing-indicator {
+  color: #6c757d;
+  font-style: italic;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}

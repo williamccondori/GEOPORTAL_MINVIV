@@ -15,6 +15,7 @@ import {
   WebMapServiceFeatureRequest,
 } from '../models/layer.model';
 import { ApiService } from './api.service';
+import { ChatResponse } from '../models/chatbot.model';
 
 @Injectable({
   providedIn: 'root',
@@ -74,11 +75,14 @@ export class BackendPublicService {
     );
   }
 
-  getQuery(formData: FormData): Observable<string> {
-    return this.apiService.post<string>(`chats/queries/`, formData);
+  getQuery(formData: FormData): Observable<ChatResponse[]> {
+    return this.apiService.post<ChatResponse[]>(`chats/queries/`, formData);
   }
 
-  getVoiceQuery(formData: FormData): Observable<string> {
-    return this.apiService.post<string>(`chats/voice-queries/`, formData);
+  getVoiceQuery(formData: FormData): Observable<ChatResponse[]> {
+    return this.apiService.post<ChatResponse[]>(
+      `chats/voice-queries/`,
+      formData
+    );
   }
 }

@@ -10,16 +10,16 @@
     [style]="{ height: '100%' }"
   >
     <div class="chat-messages">
-      <div class="message-user">
-        <div class="message-content">
-          <p>Hola</p>
+      @for (message of conversation; track message.id) {
+        <div [class]="message.isUser ? 'message-user' : 'message-me'">
+          <div class="message-content">
+            <p>{{ message.content }}</p>
+            @if (message.isTyping) {
+              <span class="typing-indicator">...</span>
+            }
+          </div>
         </div>
-      </div>
-      <div class="message-me">
-        <div class="message-content">
-          <p>Hola, ¿en qué puedo ayudarte?</p>
-        </div>
-      </div>
+      }
     </div>
     <form
       [formGroup]="formGroup"
