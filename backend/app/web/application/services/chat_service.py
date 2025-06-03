@@ -35,30 +35,59 @@ class ChatService:
             initial_message=initial_message
         )]
 
-        action: str = result.action
+        intent = result.intent.display_name
 
-        if action == "":
-            pass
+        # INTENCIÓN: filtrar_suelo_urbano o agregar_filtro_suelo_urbano.
+        if intent in ["filtrar_suelo_urbano", "agregar_filtro_suelo_urbano"]:
+            action: str = result.action
 
-        if action == "activar_capa":
-            active_layer = result.parameters.get("CAPA_ACTIVA", None)
+            if action == "filtrar_suelo_urbano":
+                categoria = result.parameters.get("categoria", None)
+                propietario = result.parameters.get("propietario", None)
+                provincia = result.parameters.get("provincia", None)
+                region = result.parameters.get("region", None)
+                servicios = result.parameters.get("servicios", None)
+                zonificacion = result.parameters.get("zonificacion", None)
+
+                print(
+                    f"Categoria: {categoria}, Propietario: {propietario}, Provincia: {provincia}, Region: {region}, Servicios: {servicios}, Zonificacion: {zonificacion}")
+
+        # INTENCIÓN: activar o desactivar capa.
+        elif intent == "controlar_capa":
+            active_layer: str = result.parameters.get("capa", "")
+            action_value: str = result.parameters.get("accion", "")
+
             if not active_layer:
                 responses.append(ChatResponseDTO(
-                    message="☹️ No se ha encontrado la capa, por favor, sé más específico e inténtalo nuevamente",
+                    message="☹️ No se ha especificado qué capa controlar. Por favor, indícalo con más detalle.",
                     initial_message=initial_message,
-                    action="activar_capa",
-                    action_control="activar_capa"
+                    action="controlar_capa",
+                    action_control="controlar_capa"
                 ))
             else:
-                responses.append(ChatResponseDTO(
-                    message=f"Capa: {active_layer}",
-                    initial_message=initial_message,
-                    action="activar_capa",
-                    data={
-                        "layerName": active_layer
-                    },
-                    action_control="activar_capa"
-                ))
+                if action_value == "activar":
+                    responses.append(ChatResponseDTO(
+                        message=f"✅ Se ha activado la capa: {active_layer}",
+                        initial_message=initial_message,
+                        action="activar_capa",
+                        data={"layerName": active_layer},
+                        action_control="activar_capa"
+                    ))
+                elif action_value == "desactivar":
+                    responses.append(ChatResponseDTO(
+                        message=f"🚫 Se ha desactivado la capa: {active_layer}",
+                        initial_message=initial_message,
+                        action="desactivar_capa",
+                        data={"layerName": active_layer},
+                        action_control="desactivar_capa"
+                    ))
+                else:
+                    responses.append(ChatResponseDTO(
+                        message="⚠️ No entendí si deseas activar o desactivar la capa. Por favor, acláralo.",
+                        initial_message=initial_message,
+                        action="accion_no_reconocida",
+                        action_control="accion_no_reconocida"
+                    ))
 
         return responses
 
@@ -76,9 +105,6 @@ class ChatService:
         except Exception as e:
             print(e)
             raise ApplicationException("El archivo de audio debe ser válido")
-
-        # Limitar a 20 segundos.
-        audio_segment = audio_segment[:20000]
 
         message: str = ""
 
