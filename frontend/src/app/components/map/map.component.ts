@@ -127,6 +127,10 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
             this.map!.addLayer(layer);
             this.activeGeoJsonLayersMap.set(activeLayer.id, layer);
+            const bounds = layer.getBounds();
+            if (bounds.isValid()) {
+              this.map!.fitBounds(bounds);
+            }
           }
         });
       }
