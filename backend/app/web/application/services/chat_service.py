@@ -30,12 +30,9 @@ class ChatService:
     async def __generate_result(self, result: QueryResult) -> list[ChatResponseDTO]:
         initial_message: str = result.query_text
 
-        responses = [ChatResponseDTO(
-            message=result.fulfillment_text,
-            initial_message=initial_message
-        )]
+        intent = result.intent.name
 
-        intent = result.intent.display_name
+        responses = []
 
         # INTENCIÓN: filtrar_suelo_urbano o agregar_filtro_suelo_urbano.
         if intent in ["filtrar_suelo_urbano", "agregar_filtro_suelo_urbano"]:
@@ -88,6 +85,12 @@ class ChatService:
                         action="accion_no_reconocida",
                         action_control="accion_no_reconocida"
                     ))
+
+        else:
+            responses = [ChatResponseDTO(
+                message=result.fulfillment_text,
+                initial_message=initial_message
+            )]
 
         return responses
 
