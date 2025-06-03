@@ -22,7 +22,7 @@ class BaseRepository:
         return result
 
     async def get(self, document_id: str) -> Optional[T]:
-        document: Optional[Dict[str, Any]] = await self.collection.find_one({"_id": ObjectId(document_id)})
+        document: Optional[Dict[str, Any]] = await self.collection.fidn_one({"_id": ObjectId(document_id)})
         if not document:
             return None
         document["id"] = str(document.pop("_id"))

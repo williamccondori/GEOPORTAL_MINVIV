@@ -176,7 +176,7 @@ class ChatService:
         return equivalents.get(df_name, "")
 
     async def __get_layer_name_by_id(self, active_layer_id):
-        layer: Optional[Layer] = await self.layer_repository.find(active_layer_id)
+        layer: Optional[Layer] = await self.layer_repository.get(active_layer_id)
         if layer:
             return layer.name
         else:

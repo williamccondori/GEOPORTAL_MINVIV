@@ -1,6 +1,7 @@
 from typing import Counter, Optional
 
 from motor.motor_asyncio import AsyncIOMotorCollection
+from pymongo import ASCENDING
 
 from app.shared.db.base import database
 from app.web.domain.models.layer_information_table import LayerInformationTable, LayerInformationFilter, \
@@ -59,15 +60,34 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
             filters=filters
         )
 
-    async def get_geometry_and_table(self, collection_name, filters) -> dict:
+    @staticmethod
+    def __build_case_insensitive_filter(filters: dict) -> dict:
+        mongo_filter = {}
+        for key, value in filters.items():
+            if value:
+                # Coincidencia parcial insensible a mayúsculas/minúsculas
+                mongo_filter[key] = {"$regex": f".*{value}.*", "$options": "i"}
+        return mongo_filter
+
+    async def get_geometry_and_table(self, collection_name: str, filters: dict) -> dict:
         collection: AsyncIOMotorCollection = database.get_collection(collection_name)
 
-        exclude_columns = ['geometry']
-        exclude_set = set(exclude_columns) if exclude_columns else set()
-        columns = [x for x in (await collection.find_one()).keys() if x not in exclude_set]
+        # Construir filtros insensibles a mayúsculas/minúsculas y parciales
+        mongo_filter = self.__build_case_insensitive_filter(filters)
 
-        cursor = collection.find(filters)
+        # Excluir columnas no deseadas
+        exclude_columns = {"geometry"}
+        example_doc = await collection.find_one(mongo_filter)
+        if not example_doc:
+            return {"geometry": [], "data": []}
+
+        columns = [key for key in example_doc.keys() if key not in exclude_columns]
+
+        # Consultar documentos con filtros aplicados
+        cursor = collection.find(mongo_filter).sort("_id", ASCENDING)
         data = []
+        geometry = []
+
         async for doc in cursor:
             row = {}
             for col in columns:
@@ -77,7 +97,8 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
                 row[col] = value
             data.append(row)
 
-        geometry = [doc.get('geometry') for doc in data if 'geometry' in doc]
+            if "geometry" in doc:
+                geometry.append(doc["geometry"])
 
         return {
             "geometry": geometry,
