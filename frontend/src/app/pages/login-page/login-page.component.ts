@@ -48,9 +48,7 @@ export class LoginPageComponent {
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(20),
-      Validators.pattern(
-        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d])[a-zA-Z\\d\\W]{6,20}$'
-      ),
+      Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d])[a-zA-Z\\d\\W]{6,20}$'),
     ]),
   });
 

@@ -77,34 +77,32 @@ export class WmsLayerPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.dialogSubscription = dialog.onClose.subscribe(
-      async (wmsLayer: WmsLayer) => {
-        if (wmsLayer) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            const command = wmsLayerId
-              ? this.backendService.updateWmsLayer(wmsLayerId, wmsLayer)
-              : this.backendService.createWmsLayer(wmsLayer);
-            await firstValueFrom(command);
-            await this.getData();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'ÉXITO',
-              detail: Constants.SUCCESS_MESSAGE,
-            });
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
+    this.dialogSubscription = dialog.onClose.subscribe(async (wmsLayer: WmsLayer) => {
+      if (wmsLayer) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          const command = wmsLayerId
+            ? this.backendService.updateWmsLayer(wmsLayerId, wmsLayer)
+            : this.backendService.createWmsLayer(wmsLayer);
+          await firstValueFrom(command);
+          await this.getData();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ÉXITO',
+            detail: Constants.SUCCESS_MESSAGE,
+          });
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
       }
-    );
+    });
   }
 
   onDelete(wmsLayerId: string) {
@@ -146,15 +144,10 @@ export class WmsLayerPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch($event: Event, table: Table) {
-    return table.filterGlobal(
-      ($event.target as HTMLInputElement).value,
-      'contains'
-    );
+    return table.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   private async getData() {
-    this.wmsLayers = await firstValueFrom(
-      this.backendService.getAllWmsLayers()
-    );
+    this.wmsLayers = await firstValueFrom(this.backendService.getAllWmsLayers());
   }
 }

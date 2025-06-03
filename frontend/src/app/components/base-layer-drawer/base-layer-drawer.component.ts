@@ -16,13 +16,7 @@ import { BaseLayerMapComponent } from '../base-layer-map/base-layer-map.componen
 @Component({
   standalone: true,
   selector: 'app-base-layer-drawer',
-  imports: [
-    DrawerModule,
-    AsyncPipe,
-    BaseLayerMapComponent,
-    CardModule,
-    ToastModule,
-  ],
+  imports: [DrawerModule, AsyncPipe, BaseLayerMapComponent, CardModule, ToastModule],
   providers: [MessageService],
   templateUrl: './base-layer-drawer.component.html',
 })
@@ -63,8 +57,6 @@ export class BaseLayerDrawerComponent {
   }
 
   private async getData() {
-    this.baseLayers = await firstValueFrom(
-      this.backendPublicService.getAllBaseLayers()
-    );
+    this.baseLayers = await firstValueFrom(this.backendPublicService.getAllBaseLayers());
   }
 }

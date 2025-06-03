@@ -77,34 +77,32 @@ export class BaseLayerPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.dialogSubscription = dialog.onClose.subscribe(
-      async (baseLayer: BaseLayer) => {
-        if (baseLayer) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            const command = baseLayerId
-              ? this.backendService.updateBaseLayer(baseLayerId, baseLayer)
-              : this.backendService.createBaseLayer(baseLayer);
-            await firstValueFrom(command);
-            await this.getData();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'ÉXITO',
-              detail: Constants.SUCCESS_MESSAGE,
-            });
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
+    this.dialogSubscription = dialog.onClose.subscribe(async (baseLayer: BaseLayer) => {
+      if (baseLayer) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          const command = baseLayerId
+            ? this.backendService.updateBaseLayer(baseLayerId, baseLayer)
+            : this.backendService.createBaseLayer(baseLayer);
+          await firstValueFrom(command);
+          await this.getData();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ÉXITO',
+            detail: Constants.SUCCESS_MESSAGE,
+          });
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
       }
-    );
+    });
   }
 
   onDelete(baseLayerId: string) {
@@ -118,9 +116,7 @@ export class BaseLayerPageComponent implements OnInit, OnDestroy {
       accept: async () => {
         try {
           this.stateService.setIsLoadingState(true);
-          await firstValueFrom(
-            this.backendService.deleteBaseLayer(baseLayerId)
-          );
+          await firstValueFrom(this.backendService.deleteBaseLayer(baseLayerId));
           await this.getData();
           this.messageService.add({
             severity: 'success',
@@ -142,10 +138,7 @@ export class BaseLayerPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch($event: Event, table: Table) {
-    return table.filterGlobal(
-      ($event.target as HTMLInputElement).value,
-      'contains'
-    );
+    return table.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   ngOnDestroy() {
@@ -155,8 +148,6 @@ export class BaseLayerPageComponent implements OnInit, OnDestroy {
   }
 
   private async getData() {
-    this.baseLayers = await firstValueFrom(
-      this.backendService.getAllBaseLayers()
-    );
+    this.baseLayers = await firstValueFrom(this.backendService.getAllBaseLayers());
   }
 }

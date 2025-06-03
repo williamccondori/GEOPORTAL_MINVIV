@@ -57,17 +57,13 @@ export class LayerInfoDrawerComponent {
       opacity: [1],
     });
 
-    this.formGroup.get('activeLayerId')?.valueChanges.subscribe(layerId => {
-      const activeLayer = this.layerService
-        .activeLayers()
-        .find(layer => layer.id === layerId);
+    this.formGroup.get('activeLayerId')?.valueChanges.subscribe((layerId) => {
+      const activeLayer = this.layerService.activeLayers().find((layer) => layer.id === layerId);
       if (activeLayer) {
         this.activeWmsLayer = activeLayer;
         this.updateLayerInformation(activeLayer);
         // Update the opacity form control with the selected layer's opacity
-        this.formGroup
-          .get('opacity')
-          ?.setValue(activeLayer.opacity, { emitEvent: false });
+        this.formGroup.get('opacity')?.setValue(activeLayer.opacity, { emitEvent: false });
       } else {
         this.activeWmsLayer = null;
         this.layerInformation = [];
@@ -75,7 +71,7 @@ export class LayerInfoDrawerComponent {
     });
 
     // Subscribe to opacity changes and update the layer
-    this.formGroup.get('opacity')?.valueChanges.subscribe(opacity => {
+    this.formGroup.get('opacity')?.valueChanges.subscribe((opacity) => {
       if (this.activeWmsLayer && opacity !== null) {
         this.onOpacityChange(this.activeWmsLayer.id, opacity);
       }
@@ -86,13 +82,9 @@ export class LayerInfoDrawerComponent {
       const activeLayers = this.layerService.activeLayers();
       const currentSelectedId = this.formGroup.get('activeLayerId')?.value;
       if (currentSelectedId) {
-        const stillExists = activeLayers.some(
-          layer => layer.id === currentSelectedId
-        );
+        const stillExists = activeLayers.some((layer) => layer.id === currentSelectedId);
         if (!stillExists) {
-          this.formGroup
-            .get('activeLayerId')
-            ?.setValue(null, { emitEvent: false });
+          this.formGroup.get('activeLayerId')?.setValue(null, { emitEvent: false });
           this.activeWmsLayer = null;
           this.layerInformation = [];
         }

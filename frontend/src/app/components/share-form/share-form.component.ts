@@ -57,7 +57,7 @@ export class ShareFormComponent implements OnInit {
 
   ngOnInit(): void {
     // Subscribe to map information changes
-    this.stateService.mapInformationState$.subscribe(mapInfo => {
+    this.stateService.mapInformationState$.subscribe((mapInfo) => {
       this.mapInformation = mapInfo;
       this.updateShareLinks();
     });
@@ -83,7 +83,7 @@ export class ShareFormComponent implements OnInit {
       const activeLayers = this.layerService.activeLayers();
       if (activeLayers.length > 0) {
         const layersParam = activeLayers
-          .map(layer => {
+          .map((layer) => {
             // Encode layer information as JSON
             const layerInfo = {
               id: layer.id,
@@ -127,16 +127,14 @@ export class ShareFormComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail:
-            'No se pudo copiar el enlace. Tu navegador no soporta esta función.',
+          detail: 'No se pudo copiar el enlace. Tu navegador no soporta esta función.',
         });
       }
     } else {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail:
-          'No se pudo copiar el enlace. Tu navegador no soporta esta función.',
+        detail: 'No se pudo copiar el enlace. Tu navegador no soporta esta función.',
       });
     }
   }

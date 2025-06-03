@@ -35,18 +35,14 @@ export class ViewFormComponent implements OnInit {
   private readonly dialogRef = inject(DynamicDialogRef);
 
   formGroup = new FormGroup({
-    latitude: new FormControl({ value: 0, disabled: true }, [
-      Validators.required,
-    ]),
-    longitude: new FormControl({ value: 0, disabled: true }, [
-      Validators.required,
-    ]),
+    latitude: new FormControl({ value: 0, disabled: true }, [Validators.required]),
+    longitude: new FormControl({ value: 0, disabled: true }, [Validators.required]),
     zoom: new FormControl({ value: 0, disabled: true }, [Validators.required]),
     name: new FormControl('', [Validators.required]),
   });
 
   ngOnInit() {
-    this.stateService.mapInformationState$.subscribe(state => {
+    this.stateService.mapInformationState$.subscribe((state) => {
       if (state) {
         this.formGroup.patchValue({
           latitude: state.latLng[0],

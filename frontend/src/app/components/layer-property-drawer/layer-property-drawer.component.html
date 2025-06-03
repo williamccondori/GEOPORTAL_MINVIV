@@ -9,11 +9,7 @@
     @for (source of sources | async; track $index) {
       <p-tabPanel [header]="'Fuente ' + ($index + 1)">
         <p-tabView>
-          @for (
-            feature of source;
-            track featureIndex;
-            let featureIndex = $index
-          ) {
+          @for (feature of source; track featureIndex; let featureIndex = $index) {
             <p-tabPanel [header]="'Capa ' + (featureIndex + 1)">
               <p-table
                 [value]="feature.information"

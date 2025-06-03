@@ -16,13 +16,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
 
     return next(clonedReq).pipe(
-      catchError(error => {
+      catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
           localStorage.removeItem('authToken');
           router.navigate(['/login']).then();
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 

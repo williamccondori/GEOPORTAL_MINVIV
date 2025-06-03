@@ -10,10 +10,7 @@ declare module 'leaflet-minimap' {
     constructor(layer: L.TileLayer, options?: MiniMapOptions);
   }
 
-  export function minimap(
-    layer: L.TileLayer,
-    options?: MiniMapOptions
-  ): MiniMap;
+  export function minimap(layer: L.TileLayer, options?: MiniMapOptions): MiniMap;
 
   declare module 'leaflet' {
     namespace control {

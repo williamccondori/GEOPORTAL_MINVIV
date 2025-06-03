@@ -4,12 +4,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { DrawerModule } from 'primeng/drawer';
 
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -58,7 +53,7 @@ export class LayerDrawerComponent implements OnInit {
         value: undefined,
         disabled: false,
       },
-      [Validators.required]
+      [Validators.required],
     ),
   });
 
@@ -105,25 +100,22 @@ export class LayerDrawerComponent implements OnInit {
 
   onAddLayer(id: string): void {
     const existingLayer: InternalLayer | null =
-      this.selectedLayers.find(layer => layer.id === id) ?? null;
+      this.selectedLayers.find((layer) => layer.id === id) ?? null;
     if (!existingLayer) {
-      this.selectedLayers.push(
-        this.layers.find(layer => layer.id === id) as InternalLayer
-      );
+      this.selectedLayers.push(this.layers.find((layer) => layer.id === id) as InternalLayer);
     }
   }
 
   onDelete(id: string): void {
     this.confirmationService.confirm({
-      message:
-        '¿Está seguro de que desea eliminar esta capa del espacio de trabajo?',
+      message: '¿Está seguro de que desea eliminar esta capa del espacio de trabajo?',
       header: 'Eliminar capa del espacio de trabajo',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Eliminar',
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        const index = this.selectedLayers.findIndex(layer => layer.id === id);
+        const index = this.selectedLayers.findIndex((layer) => layer.id === id);
         if (index !== -1) {
           this.selectedLayers.splice(index, 1);
         }
@@ -140,13 +132,11 @@ export class LayerDrawerComponent implements OnInit {
   }
 
   onShowLayer(id: string): void {
-    const existingActiveLayer = this.layerService
-      .activeLayers()
-      .find(layer => layer.id === id);
+    const existingActiveLayer = this.layerService.activeLayers().find((layer) => layer.id === id);
     if (existingActiveLayer) {
       this.layerService.onDeleteActiveLayer(id);
     } else {
-      const existingLayer = this.selectedLayers.find(layer => layer.id === id);
+      const existingLayer = this.selectedLayers.find((layer) => layer.id === id);
       if (existingLayer) {
         this.layerService.onAddActiveLayer({
           id: existingLayer.id,
@@ -165,16 +155,14 @@ export class LayerDrawerComponent implements OnInit {
   }
 
   getLayerIcon(id: string): string {
-    const isActive = this.layerService
-      .activeLayers()
-      .some(layer => layer.id === id);
+    const isActive = this.layerService.activeLayers().some((layer) => layer.id === id);
     return isActive ? 'pi pi-eye-slash' : 'pi pi-eye';
   }
 
   private getNextZIndex(): number {
     const activeLayers = this.layerService.activeLayers();
     if (activeLayers.length === 0) return 1;
-    return Math.max(...activeLayers.map(layer => layer.zIndex), 0) + 1;
+    return Math.max(...activeLayers.map((layer) => layer.zIndex), 0) + 1;
   }
 
   onHide(): void {
@@ -184,14 +172,12 @@ export class LayerDrawerComponent implements OnInit {
   async onSubmit(): Promise<void> {}
 
   private async getCategoryStructure(): Promise<void> {
-    const categoryList = await firstValueFrom(
-      this.backendPublicService.getCatalogStructure()
-    );
+    const categoryList = await firstValueFrom(this.backendPublicService.getCatalogStructure());
     this.categoryTree = this.convertToTree(categoryList);
   }
 
   private convertToTree(nodes: CategoryNode[]): TreeNode<string>[] {
-    return nodes.map(node => ({
+    return nodes.map((node) => ({
       key: node.id.toString(),
       label: node.name,
       data: node.id,
@@ -202,7 +188,7 @@ export class LayerDrawerComponent implements OnInit {
 
   private async getAllLayers(categoryId: string): Promise<void> {
     this.layers = await firstValueFrom(
-      this.backendPublicService.getLayersByCategoryId(categoryId, false)
+      this.backendPublicService.getLayersByCategoryId(categoryId, false),
     );
   }
 }

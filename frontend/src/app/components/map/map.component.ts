@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  effect,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import * as L from 'leaflet';
@@ -28,10 +22,7 @@ import { LogoControlComponent } from '../../leaflet-controls/logo-control/logo-c
 import { ToolsControlComponent } from '../../leaflet-controls/tools-control/tools-control.component';
 import { Constants } from '../../models/constants';
 import { InitialSettings } from '../../models/initial-settings.model';
-import {
-  ActiveWmsLayer,
-  WebMapServiceFeatureRequest,
-} from '../../models/layer.model';
+import { ActiveWmsLayer, WebMapServiceFeatureRequest } from '../../models/layer.model';
 import { MapInformation } from '../../models/map.model';
 import { BackendPublicService } from '../../services/backend-public.service';
 import { ComponentInjectorService } from '../../services/component-injector.service';
@@ -66,7 +57,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       const activeLayers: ActiveWmsLayer[] = this.layerService.activeLayers();
 
       if (this.map) {
-        const currentLayerIds = new Set(activeLayers.map(layer => layer.name));
+        const currentLayerIds = new Set(activeLayers.map((layer) => layer.name));
 
         // Remove layers that are no longer active.
         this.activeLayersMap.forEach((leafletLayer, layerId) => {
@@ -77,7 +68,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         });
 
         // Add new active layers or update existing ones.
-        activeLayers.forEach(activeLayer => {
+        activeLayers.forEach((activeLayer) => {
           const existingLayer = this.activeLayersMap.get(activeLayer.name);
           if (existingLayer) {
             // If the layer already exists, update its opacity and zIndex.
@@ -86,8 +77,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             // Check if the CQL filter has changed and recreate the layer if needed
             const currentParams = existingLayer.options as L.WMSParams;
             const newCqlFilter = activeLayer.cqlFilter || '';
-            const currentCqlFilter =
-              (currentParams as L.WMSOptions).CQL_FILTER || '';
+            const currentCqlFilter = (currentParams as L.WMSOptions).CQL_FILTER || '';
 
             if (newCqlFilter !== currentCqlFilter) {
               // Remove the old layer and create a new one with the updated filter
@@ -175,10 +165,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(logoControl);
 
     // Coordinates control.
-    const { element: coordinatesElement } =
-      this.componentInjectorService.createComponent(
-        CoordinatesControlComponent
-      );
+    const { element: coordinatesElement } = this.componentInjectorService.createComponent(
+      CoordinatesControlComponent,
+    );
     const coordinatesControl = new L.Control({ position: 'bottomright' });
     coordinatesControl.onAdd = () => coordinatesElement;
     this.map.addControl(coordinatesControl);
@@ -191,28 +180,29 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(scaleControl);
 
     // Layer tools control.
-    const { element: layerToolsElement } =
-      this.componentInjectorService.createComponent(LayerToolsControlComponent);
+    const { element: layerToolsElement } = this.componentInjectorService.createComponent(
+      LayerToolsControlComponent,
+    );
     const layerToolsControl = new L.Control({ position: 'bottomleft' });
     layerToolsControl.onAdd = () => layerToolsElement;
     this.map.addControl(layerToolsControl);
 
     // Change center.
-    this.stateService.centerState$.subscribe(center => {
+    this.stateService.centerState$.subscribe((center) => {
       if (center) {
         this.map?.setView(new L.LatLng(center.lat, center.lng), 12);
       }
     });
 
     // Change zoom.
-    this.stateService.zoomState$.subscribe(zoom => {
+    this.stateService.zoomState$.subscribe((zoom) => {
       if (zoom) {
         this.map?.setZoom(zoom);
       }
     });
 
     // Change base layer.
-    this.stateService.baseLayerState$.subscribe(baseLayer => {
+    this.stateService.baseLayerState$.subscribe((baseLayer) => {
       if (baseLayer) {
         if (this.baseLayerLeaflet) {
           this.map?.removeLayer(this.baseLayerLeaflet);
@@ -229,9 +219,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   async getInitialSettings(): Promise<void> {
-    const initialSettings = await firstValueFrom(
-      this.backendPublicService.getInitialSettings()
-    );
+    const initialSettings = await firstValueFrom(this.backendPublicService.getInitialSettings());
     this.loadInitialSettings(initialSettings);
   }
 
@@ -239,8 +227,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     if (this.map) {
       // Check for URL parameters first
       const urlParams = this.route.snapshot.queryParams;
-      const hasUrlParams =
-        urlParams['lat'] && urlParams['lng'] && urlParams['zoom'];
+      const hasUrlParams = urlParams['lat'] && urlParams['lng'] && urlParams['zoom'];
 
       let lat: number, lng: number, zoom: number;
 
@@ -285,9 +272,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.map.attributionControl.remove();
       }
 
-      const baseLayer = settings.baseLayers.find(
-        x => x.id === settings.defaultBaseLayerId
-      );
+      const baseLayer = settings.baseLayers.find((x) => x.id === settings.defaultBaseLayerId);
 
       if (baseLayer) {
         this.baseLayerLeaflet = L.tileLayer(baseLayer.url, {
@@ -357,9 +342,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         url,
         layers: layers.join(','),
       };
-      return firstValueFrom(
-        this.backendPublicService.getWmsFeatureInformation(paramsToSend)
-      );
+      return firstValueFrom(this.backendPublicService.getWmsFeatureInformation(paramsToSend));
     });
 
     try {
@@ -415,12 +398,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             const layerInfo = JSON.parse(decodedLayer);
 
             // Validate that the layer has required properties
-            if (
-              layerInfo.id &&
-              layerInfo.name &&
-              layerInfo.title &&
-              layerInfo.url
-            ) {
+            if (layerInfo.id && layerInfo.name && layerInfo.title && layerInfo.url) {
               const activeLayer: ActiveWmsLayer = {
                 id: layerInfo.id,
                 name: layerInfo.name,
@@ -443,7 +421,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.layerService.onDeleteAllActiveLayers();
 
           // Add the layers from the URL
-          layersToActivate.forEach(layer => {
+          layersToActivate.forEach((layer) => {
             this.layerService.onAddActiveLayer(layer);
           });
         }

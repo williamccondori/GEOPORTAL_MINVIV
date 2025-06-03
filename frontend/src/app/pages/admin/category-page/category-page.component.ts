@@ -7,11 +7,7 @@ import { firstValueFrom, Subscription } from 'rxjs';
 
 import { CategoryFormComponent } from '../../../components/admin/category-form/category-form.component';
 import { CategoryNodeComponent } from '../../../components/admin/category-node/category-node.component';
-import {
-  Category,
-  CategoryNode,
-  CategoryParameter,
-} from '../../../models/category.model';
+import { Category, CategoryNode, CategoryParameter } from '../../../models/category.model';
 import { Constants } from '../../../models/constants';
 import { BackendService } from '../../../services/backend.service';
 import { StateService } from '../../../services/state.service';
@@ -67,34 +63,32 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
       } as CategoryParameter,
     });
 
-    this.dialogSubscription = dialog?.onClose.subscribe(
-      async (category: Category) => {
-        if (category) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            const command = categoryId
-              ? this.backendService.updateCategory(categoryId, category)
-              : this.backendService.createCategory(category);
-            await firstValueFrom(command);
-            await this.getCategoryStructure();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'ÉXITO',
-              detail: Constants.SUCCESS_MESSAGE,
-            });
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
+    this.dialogSubscription = dialog?.onClose.subscribe(async (category: Category) => {
+      if (category) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          const command = categoryId
+            ? this.backendService.updateCategory(categoryId, category)
+            : this.backendService.createCategory(category);
+          await firstValueFrom(command);
+          await this.getCategoryStructure();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ÉXITO',
+            detail: Constants.SUCCESS_MESSAGE,
+          });
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
       }
-    );
+    });
   }
 
   onDelete(categoryId: string) {
@@ -136,8 +130,6 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
   }
 
   private async getCategoryStructure() {
-    this.categories = await firstValueFrom(
-      this.backendService.getCatalogStructure()
-    );
+    this.categories = await firstValueFrom(this.backendService.getCatalogStructure());
   }
 }

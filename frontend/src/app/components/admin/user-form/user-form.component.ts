@@ -46,9 +46,7 @@ export class UserFormComponent implements OnInit {
     const data = this.dynamicDialogConfig.data as Partial<{ id: string }>;
     if (data.id) {
       try {
-        const baseLayer = await firstValueFrom(
-          this.backendService.getUserById(data.id)
-        );
+        const baseLayer = await firstValueFrom(this.backendService.getUserById(data.id));
         this.formGroup.patchValue({
           name: baseLayer.name,
           lastName: baseLayer.lastName,

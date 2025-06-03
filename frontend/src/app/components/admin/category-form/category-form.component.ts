@@ -18,11 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { firstValueFrom } from 'rxjs';
 
-import {
-  Category,
-  CategoryNode,
-  CategoryParameter,
-} from '../../../models/category.model';
+import { Category, CategoryNode, CategoryParameter } from '../../../models/category.model';
 import { Constants } from '../../../models/constants';
 import { BackendService } from '../../../services/backend.service';
 import { StateService } from '../../../services/state.service';
@@ -103,35 +99,28 @@ export class CategoryFormComponent implements OnInit {
     const catalogFlatList = this.convertToFlat(this.categoryTree);
     if (data.id) {
       this.categoryId = data.id;
-      const category = await firstValueFrom(
-        this.backendService.getCategoryById(data.id)
-      );
+      const category = await firstValueFrom(this.backendService.getCategoryById(data.id));
       if (category) {
         this.formGroup.patchValue({
-          categoryParent:
-            catalogFlatList.find(p => p.data === category.categoryId) ??
-            undefined,
+          categoryParent: catalogFlatList.find((p) => p.data === category.categoryId) ?? undefined,
           name: category.name,
           description: category.description,
         });
       }
     } else {
       this.formGroup.patchValue({
-        categoryParent:
-          catalogFlatList.find(p => p.data === data.categoryId) ?? undefined,
+        categoryParent: catalogFlatList.find((p) => p.data === data.categoryId) ?? undefined,
       });
     }
   }
 
   private async getCategoryStructure() {
-    const categoryList = await firstValueFrom(
-      this.backendService.getCatalogStructure()
-    );
+    const categoryList = await firstValueFrom(this.backendService.getCatalogStructure());
     this.categoryTree = this.convertToTree(categoryList);
   }
 
   private convertToTree(nodes: CategoryNode[]): TreeNode<string>[] {
-    return nodes.map(node => ({
+    return nodes.map((node) => ({
       key: node.id.toString(),
       label: node.name,
       data: node.id,

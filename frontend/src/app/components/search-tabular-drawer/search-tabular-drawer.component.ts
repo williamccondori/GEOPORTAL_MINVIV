@@ -5,12 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { TableModule } from 'primeng/table';
 
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService, TreeNode } from 'primeng/api';
 import { FieldsetModule } from 'primeng/fieldset';
 import { SelectModule } from 'primeng/select';
@@ -55,7 +50,7 @@ export class SearchTabularDrawerComponent implements OnInit {
         value: undefined,
         disabled: false,
       },
-      [Validators.required]
+      [Validators.required],
     ),
     layerId: new FormControl<string>('', [Validators.required]),
   });
@@ -83,26 +78,24 @@ export class SearchTabularDrawerComponent implements OnInit {
           }
         }
       });
-    this.formGroup
-      .get('layerId')
-      ?.valueChanges.subscribe(async (value: string) => {
-        this.clearTable();
-        if (value) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            await this.getLayerInformationTable(value);
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
+    this.formGroup.get('layerId')?.valueChanges.subscribe(async (value: string) => {
+      this.clearTable();
+      if (value) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          await this.getLayerInformationTable(value);
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
-      });
+      }
+    });
   }
 
   get isVisible(): Observable<boolean> {
@@ -130,14 +123,12 @@ export class SearchTabularDrawerComponent implements OnInit {
   }
 
   private async getCategoryStructure(): Promise<void> {
-    const categoryList = await firstValueFrom(
-      this.backendPublicService.getCatalogStructure()
-    );
+    const categoryList = await firstValueFrom(this.backendPublicService.getCatalogStructure());
     this.categoryTree = this.convertToTree(categoryList);
   }
 
   private convertToTree(nodes: CategoryNode[]): TreeNode<string>[] {
-    return nodes.map(node => ({
+    return nodes.map((node) => ({
       key: node.id.toString(),
       label: node.name,
       data: node.id,
@@ -148,13 +139,13 @@ export class SearchTabularDrawerComponent implements OnInit {
 
   private async getAllLayers(categoryId: string): Promise<void> {
     this.layers = await firstValueFrom(
-      this.backendPublicService.getLayersByCategoryId(categoryId, false)
+      this.backendPublicService.getLayersByCategoryId(categoryId, false),
     );
   }
 
   private async getLayerInformationTable(layerId: string): Promise<void> {
     const layerInformationTable = await firstValueFrom(
-      this.backendPublicService.getLayerInformationTable(layerId)
+      this.backendPublicService.getLayerInformationTable(layerId),
     );
     if (layerInformationTable) {
       this.columns = layerInformationTable.columns;

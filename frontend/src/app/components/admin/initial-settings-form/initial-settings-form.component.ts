@@ -86,9 +86,7 @@ export class InitialSettingsFormComponent implements OnInit {
           ...this.formGroup.value,
         } as InitialSettings;
 
-        await firstValueFrom(
-          this.backendService.updateInitialSettings(initialSettings)
-        );
+        await firstValueFrom(this.backendService.updateInitialSettings(initialSettings));
 
         await this.getInitialSettings();
 
@@ -114,18 +112,12 @@ export class InitialSettingsFormComponent implements OnInit {
   }
 
   private async getData() {
-    this.baseLayers = await firstValueFrom(
-      this.backendService.getAllBaseLayers()
-    );
-    this.wmsLayers = await firstValueFrom(
-      this.backendService.getAllWmsLayers()
-    );
+    this.baseLayers = await firstValueFrom(this.backendService.getAllBaseLayers());
+    this.wmsLayers = await firstValueFrom(this.backendService.getAllWmsLayers());
   }
 
   private async getInitialSettings() {
-    const initialSettings = await firstValueFrom(
-      this.backendService.getInitialSettings()
-    );
+    const initialSettings = await firstValueFrom(this.backendService.getInitialSettings());
     this.formGroup.patchValue(initialSettings);
   }
 }

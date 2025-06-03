@@ -82,11 +82,9 @@ export class WmsLayerDrawerComponent {
         this.stateService.setIsLoadingState(true);
         const formValues = this.formGroup.getRawValue();
         this.wmsInformation = await firstValueFrom(
-          this.backendPublicService.getWmsInformation(formValues.url)
+          this.backendPublicService.getWmsInformation(formValues.url),
         );
-        this.wmsInformationTable = this.getWmsInformationTable(
-          this.wmsInformation
-        );
+        this.wmsInformationTable = this.getWmsInformationTable(this.wmsInformation);
       } else {
         this.formGroup.markAllAsTouched();
         this.formGroup.updateValueAndValidity();
@@ -135,28 +133,22 @@ export class WmsLayerDrawerComponent {
   }
 
   getLayerIcon(id: string): string {
-    const isActive = this.layerService
-      .activeLayers()
-      .some(layer => layer.id === id);
+    const isActive = this.layerService.activeLayers().some((layer) => layer.id === id);
     return isActive ? 'pi pi-eye-slash' : 'pi pi-eye';
   }
 
   private getNextZIndex(): number {
     const activeLayers = this.layerService.activeLayers();
     if (activeLayers.length === 0) return 1;
-    return Math.max(...activeLayers.map(layer => layer.zIndex), 0) + 1;
+    return Math.max(...activeLayers.map((layer) => layer.zIndex), 0) + 1;
   }
 
   onShowLayer(id: string): void {
-    const existingActiveLayer = this.layerService
-      .activeLayers()
-      .find(layer => layer.id === id);
+    const existingActiveLayer = this.layerService.activeLayers().find((layer) => layer.id === id);
     if (existingActiveLayer) {
       this.layerService.onDeleteActiveLayer(id);
     } else {
-      const existingLayer = this.layerService
-        .userWmslayers()
-        .find(layer => layer.id === id);
+      const existingLayer = this.layerService.userWmslayers().find((layer) => layer.id === id);
       if (existingLayer) {
         this.layerService.onAddActiveLayer({
           id: existingLayer.id,
@@ -190,7 +182,7 @@ export class WmsLayerDrawerComponent {
   }
 
   private getWmsInformationTable(
-    wmsInformation: WebMapServiceInformation
+    wmsInformation: WebMapServiceInformation,
   ): WebMapServiceInformationTable[] {
     return [
       { key: 'URL', value: wmsInformation.url },

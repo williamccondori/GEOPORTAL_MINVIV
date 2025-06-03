@@ -1,11 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeEsPe from '@angular/common/locales/es-PE';
-import {
-  ApplicationConfig,
-  LOCALE_ID,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 

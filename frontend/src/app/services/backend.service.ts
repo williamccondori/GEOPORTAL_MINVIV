@@ -27,10 +27,7 @@ export class BackendService {
   }
 
   updateInitialSettings(initialSettings: InitialSettings): Observable<string> {
-    return this.apiService.put<string>(
-      `admin/initial-settings/`,
-      initialSettings
-    );
+    return this.apiService.put<string>(`admin/initial-settings/`, initialSettings);
   }
 
   // Base layers
@@ -39,14 +36,8 @@ export class BackendService {
     return this.apiService.post<string>(`admin/base-layers/`, baseLayer);
   }
 
-  updateBaseLayer(
-    baseLayerId: string,
-    baseLayer: BaseLayer
-  ): Observable<string> {
-    return this.apiService.put<string>(
-      `admin/base-layers/${baseLayerId}/`,
-      baseLayer
-    );
+  updateBaseLayer(baseLayerId: string, baseLayer: BaseLayer): Observable<string> {
+    return this.apiService.put<string>(`admin/base-layers/${baseLayerId}/`, baseLayer);
   }
 
   getAllBaseLayers(): Observable<BaseLayer[]> {
@@ -68,10 +59,7 @@ export class BackendService {
   }
 
   updateWmsLayer(wmsLayerId: string, wmsLayer: WmsLayer): Observable<string> {
-    return this.apiService.put<string>(
-      `admin/wms-layers/${wmsLayerId}/`,
-      wmsLayer
-    );
+    return this.apiService.put<string>(`admin/wms-layers/${wmsLayerId}/`, wmsLayer);
   }
 
   getAllWmsLayers(): Observable<WmsLayer[]> {
@@ -141,10 +129,7 @@ export class BackendService {
   }
 
   updateCategory(categoryId: string, category: Category): Observable<string> {
-    return this.apiService.put<string>(
-      `admin/categories/${categoryId}/`,
-      category
-    );
+    return this.apiService.put<string>(`admin/categories/${categoryId}/`, category);
   }
 
   getCatalogStructure(): Observable<CategoryNode[]> {

@@ -63,9 +63,7 @@ export class WmsLayerListComponent implements OnInit {
   }
 
   onAdd(layerName: string): void {
-    const layer: WebMapServiceLayer | null = this.layers.find(
-      layer => layer.name === layerName
-    )!;
+    const layer: WebMapServiceLayer | null = this.layers.find((layer) => layer.name === layerName)!;
     if (layer) {
       this.layerService.onAddUserWmsLayer({
         id: layer.name,

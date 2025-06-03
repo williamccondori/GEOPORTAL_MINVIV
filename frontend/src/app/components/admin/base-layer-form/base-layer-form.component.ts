@@ -42,9 +42,7 @@ export class BaseLayerFormComponent implements OnInit {
     const data = this.dynamicDialogConfig.data as Partial<{ id: string }>;
     if (data.id) {
       try {
-        const baseLayer = await firstValueFrom(
-          this.backendService.getBaseLayerById(data.id)
-        );
+        const baseLayer = await firstValueFrom(this.backendService.getBaseLayerById(data.id));
         this.formGroup.patchValue({
           url: baseLayer.url,
           name: baseLayer.name,

@@ -30,10 +30,7 @@
       placeholder="Ingrese el código"
       [fluid]="true"
     />
-    @if (
-      formGroup.get('code')?.errors?.['required'] &&
-      formGroup.get('code')?.touched
-    ) {
+    @if (formGroup.get('code')?.errors?.['required'] && formGroup.get('code')?.touched) {
       <small class="app-description-error">El código es obligatorio.</small>
     }
     @if (formGroup.get('code')?.errors?.['pattern']) {
@@ -52,10 +49,7 @@
       placeholder="Ingrese el nombre"
       [fluid]="true"
     />
-    @if (
-      formGroup.get('name')?.errors?.['required'] &&
-      formGroup.get('name')?.touched
-    ) {
+    @if (formGroup.get('name')?.errors?.['required'] && formGroup.get('name')?.touched) {
       <small class="app-description-error">El nombre es obligatorio.</small>
     }
   </div>
@@ -72,12 +66,9 @@
       [fluid]="true"
     ></textarea>
     @if (
-      formGroup.get('description')?.errors?.['required'] &&
-      formGroup.get('description')?.touched
+      formGroup.get('description')?.errors?.['required'] && formGroup.get('description')?.touched
     ) {
-      <small class="app-description-error">
-        La descripción es obligatoria.
-      </small>
+      <small class="app-description-error"> La descripción es obligatoria. </small>
     }
   </div>
   <div class="app-form-group">
@@ -116,9 +107,7 @@
       formGroup.get('shapeFileName')?.errors?.['required'] &&
       formGroup.get('shapeFileName')?.touched
     ) {
-      <small class="app-description-error">
-        El archivo SHAPEFILE es obligatorio.
-      </small>
+      <small class="app-description-error"> El archivo SHAPEFILE es obligatorio. </small>
     }
   </div>
   <p-button

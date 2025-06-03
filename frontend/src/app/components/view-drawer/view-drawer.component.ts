@@ -17,13 +17,7 @@ import { ViewFormComponent } from '../view-form/view-form.component';
 @Component({
   standalone: true,
   selector: 'app-view-drawer',
-  imports: [
-    DrawerModule,
-    ButtonModule,
-    TableModule,
-    AsyncPipe,
-    ConfirmDialogModule,
-  ],
+  imports: [DrawerModule, ButtonModule, TableModule, AsyncPipe, ConfirmDialogModule],
   providers: [DialogService, ConfirmationService, MessageService],
   templateUrl: './view-drawer.component.html',
 })
@@ -86,7 +80,7 @@ export class ViewDrawerComponent implements OnDestroy {
       accept: async () => {
         try {
           this.stateService.setIsLoadingState(true);
-          this.views = this.views.filter(x => x.id !== view.id);
+          this.views = this.views.filter((x) => x.id !== view.id);
           this.messageService.add({
             severity: 'success',
             summary: 'ÉXITO',

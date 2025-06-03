@@ -10,12 +10,7 @@ import { StateService } from './services/state.service';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    ProgressSpinnerModule,
-    ToastModule,
-    ConfirmDialogModule,
-  ],
+  imports: [RouterOutlet, ProgressSpinnerModule, ToastModule, ConfirmDialogModule],
   providers: [MessageService, DialogService, ConfirmationService],
   templateUrl: './app.component.html',
 })
@@ -26,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoading = false;
 
   ngOnInit(): void {
-    this.subscription = this.stateService.isLoading$.subscribe(estado => {
+    this.subscription = this.stateService.isLoading$.subscribe((estado) => {
       setTimeout(() => {
         this.isLoading = estado;
       });

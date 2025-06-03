@@ -98,7 +98,7 @@ export class ChatbotDrawerComponent implements OnInit {
       }, MAX_RECORDING_TIME);
 
       // Se va a guardar los datos de audio en un array de blobs.
-      this.mediaRecorder.addEventListener('dataavailable', event => {
+      this.mediaRecorder.addEventListener('dataavailable', (event) => {
         chunks.push(event.data);
       });
 
@@ -110,7 +110,7 @@ export class ChatbotDrawerComponent implements OnInit {
         });
 
         chunks = [];
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
         this.mediaRecorder = null;
 
         try {
@@ -120,9 +120,7 @@ export class ChatbotDrawerComponent implements OnInit {
           formData.append('session_id', this.sessionId ?? '');
           formData.append('audio', audioBlob, 'audio.webm');
 
-          const response = await firstValueFrom(
-            this.backendPublicService.getVoiceQuery(formData)
-          );
+          const response = await firstValueFrom(this.backendPublicService.getVoiceQuery(formData));
 
           // Handle voice response similar to text response
           if (response && response.length > 0) {
@@ -196,9 +194,7 @@ export class ChatbotDrawerComponent implements OnInit {
         formData.append('session_id', this.sessionId ?? '');
         formData.append('message', message ?? '');
 
-        const response = await firstValueFrom(
-          this.backendPublicService.getQuery(formData)
-        );
+        const response = await firstValueFrom(this.backendPublicService.getQuery(formData));
 
         // Only add bot response to conversation
         if (response && response.length > 0) {

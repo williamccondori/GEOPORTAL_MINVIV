@@ -50,10 +50,7 @@
         >
           <p-fieldset legend="Filtros avanzados">
             <div class="app-space-vertical">
-              @for (
-                filter of layerInformationTable.filters;
-                track filter.name
-              ) {
+              @for (filter of layerInformationTable.filters; track filter.name) {
                 <div class="app-form-group">
                   <label [for]="filter.name">{{ filter.name }}:</label>
                   <p-select

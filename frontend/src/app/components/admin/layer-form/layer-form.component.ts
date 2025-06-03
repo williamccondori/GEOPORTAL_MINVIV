@@ -14,11 +14,7 @@ import { InputText } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TreeSelectModule } from 'primeng/treeselect';
 
-import {
-  FileUploadErrorEvent,
-  FileUploadEvent,
-  FileUploadModule,
-} from 'primeng/fileupload';
+import { FileUploadErrorEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
 import { firstValueFrom } from 'rxjs';
 import { CategoryNode } from '../../../models/category.model';
 import { Response } from '../../../models/response.model';
@@ -57,7 +53,7 @@ export class LayerFormComponent implements OnInit {
         value: undefined,
         disabled: false,
       },
-      [Validators.required]
+      [Validators.required],
     ),
     code: new FormControl<string>('', [
       Validators.required,
@@ -149,14 +145,12 @@ export class LayerFormComponent implements OnInit {
   }
 
   private async getCategoryStructure(): Promise<void> {
-    const categoryList = await firstValueFrom(
-      this.backendService.getCatalogStructure()
-    );
+    const categoryList = await firstValueFrom(this.backendService.getCatalogStructure());
     this.categoryTree = this.convertToTree(categoryList);
   }
 
   private convertToTree(nodes: CategoryNode[]): TreeNode<string>[] {
-    return nodes.map(node => ({
+    return nodes.map((node) => ({
       key: node.id.toString(),
       label: node.name,
       data: node.id,

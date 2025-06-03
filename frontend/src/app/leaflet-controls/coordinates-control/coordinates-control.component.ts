@@ -17,7 +17,7 @@ export class CoordinatesControlComponent implements OnInit {
   mapInformation: MapInformation = {} as MapInformation;
 
   ngOnInit() {
-    this.stateService.mapInformationState$.subscribe(state => {
+    this.stateService.mapInformationState$.subscribe((state) => {
       if (state) {
         this.mapInformation = state;
       }

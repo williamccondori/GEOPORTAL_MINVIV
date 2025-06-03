@@ -65,41 +65,36 @@ export class LayerPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.dialogSubscription = dialog.onClose.subscribe(
-      async (layerForm: LayerForm) => {
-        if (layerForm) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            const command = layerId
-              ? this.backendService.updateLayer(layerId, layerForm)
-              : this.backendService.createLayer(layerForm);
-            await firstValueFrom(command);
-            await this.getAllLayers();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'ÉXITO',
-              detail: Constants.SUCCESS_MESSAGE,
-            });
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
+    this.dialogSubscription = dialog.onClose.subscribe(async (layerForm: LayerForm) => {
+      if (layerForm) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          const command = layerId
+            ? this.backendService.updateLayer(layerId, layerForm)
+            : this.backendService.createLayer(layerForm);
+          await firstValueFrom(command);
+          await this.getAllLayers();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ÉXITO',
+            detail: Constants.SUCCESS_MESSAGE,
+          });
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
       }
-    );
+    });
   }
 
   onSearch($event: Event, table: Table): void {
-    return table.filterGlobal(
-      ($event.target as HTMLInputElement).value,
-      'contains'
-    );
+    return table.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   onDelete(layerId: string): void {

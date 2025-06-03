@@ -82,7 +82,7 @@ export class LocationDrawerComponent {
       try {
         this.stateService.setIsLoadingState(true);
         this.locations = await firstValueFrom(
-          this.backendPublicService.getAllLocations(locationRequest)
+          this.backendPublicService.getAllLocations(locationRequest),
         );
       } catch (e) {
         console.error(e);

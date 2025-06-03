@@ -38,8 +38,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
   @Input() maxFileSize = 5242880; // 5MB in bytes
   @Input() multiple = false;
   @Input() label = 'Seleccionar archivo';
-  @Input() placeholder =
-    'Arrastre y suelte un archivo aquí o haga clic para seleccionar';
+  @Input() placeholder = 'Arrastre y suelte un archivo aquí o haga clic para seleccionar';
   @Input() hint = 'Solo archivos ZIP hasta 5MB';
   @Input() required = false;
   @Input() disabled = false;
@@ -126,9 +125,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
         this.value = validFiles;
         this.uploadedFile = validFiles[0]; // Show first file in UI
         this.onChange(this.value);
-        this.showSuccessMessage(
-          `${validFiles.length} archivo(s) cargado(s) correctamente`
-        );
+        this.showSuccessMessage(`${validFiles.length} archivo(s) cargado(s) correctamente`);
       }
     } else {
       const file = selectedFiles[0];
@@ -168,9 +165,9 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
   private isFileTypeValid(file: File): boolean {
     if (!this.accept) return true;
 
-    const acceptedTypes = this.accept.split(',').map(type => type.trim());
+    const acceptedTypes = this.accept.split(',').map((type) => type.trim());
 
-    return acceptedTypes.some(acceptedType => {
+    return acceptedTypes.some((acceptedType) => {
       if (acceptedType.startsWith('.')) {
         // Extension check
         return file.name.toLowerCase().endsWith(acceptedType.toLowerCase());

@@ -35,24 +35,19 @@ export class BackendPublicService {
 
   getWmsInformation(url: string): Observable<WebMapServiceInformation> {
     return this.apiService.get<WebMapServiceInformation>(
-      `wms-layers/?url=${encodeURIComponent(url)}`
+      `wms-layers/?url=${encodeURIComponent(url)}`,
     );
   }
 
   getWmsFeatureInformation(
-    request: WebMapServiceFeatureRequest
+    request: WebMapServiceFeatureRequest,
   ): Observable<WebMapServiceFeature[]> {
-    return this.apiService.get<WebMapServiceFeature[]>(
-      `wms-layers/features/`,
-      request
-    );
+    return this.apiService.get<WebMapServiceFeature[]>(`wms-layers/features/`, request);
   }
 
-  getAllLocations(
-    locationRequest: LocationRequest
-  ): Observable<LocationResponse[]> {
+  getAllLocations(locationRequest: LocationRequest): Observable<LocationResponse[]> {
     return this.apiService.get<LocationResponse[]>(
-      `locations/?query=${encodeURIComponent(locationRequest.query)}`
+      `locations/?query=${encodeURIComponent(locationRequest.query)}`,
     );
   }
 
@@ -62,17 +57,15 @@ export class BackendPublicService {
 
   getLayersByCategoryId(
     categoryId: string,
-    includeWmsLayers: boolean
+    includeWmsLayers: boolean,
   ): Observable<InternalLayer[]> {
     return this.apiService.get<InternalLayer[]>(
-      `layers/?categoryId=${encodeURIComponent(categoryId)}&includeWmsLayers=${includeWmsLayers}`
+      `layers/?categoryId=${encodeURIComponent(categoryId)}&includeWmsLayers=${includeWmsLayers}`,
     );
   }
 
   getLayerInformationTable(layerId: string): Observable<LayerInformationTable> {
-    return this.apiService.get<LayerInformationTable>(
-      `layers/${layerId}/tables/`
-    );
+    return this.apiService.get<LayerInformationTable>(`layers/${layerId}/tables/`);
   }
 
   getQuery(formData: FormData): Observable<ChatResponse[]> {
@@ -80,9 +73,6 @@ export class BackendPublicService {
   }
 
   getVoiceQuery(formData: FormData): Observable<ChatResponse[]> {
-    return this.apiService.post<ChatResponse[]>(
-      `chats/voice-queries/`,
-      formData
-    );
+    return this.apiService.post<ChatResponse[]>(`chats/voice-queries/`, formData);
   }
 }

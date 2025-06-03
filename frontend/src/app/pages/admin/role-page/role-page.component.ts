@@ -144,10 +144,7 @@ export class RolePageComponent implements OnInit, OnDestroy {
   }
 
   onSearch($event: Event, table: Table) {
-    return table.filterGlobal(
-      ($event.target as HTMLInputElement).value,
-      'contains'
-    );
+    return table.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   private async getData() {

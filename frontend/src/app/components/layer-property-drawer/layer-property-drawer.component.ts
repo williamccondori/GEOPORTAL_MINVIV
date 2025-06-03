@@ -16,15 +16,11 @@ export class LayerPropertyDrawerComponent {
   private readonly stateService = inject(StateService);
 
   get isVisible(): Observable<boolean> {
-    return this.stateService.layerPropertyDrawerState$.pipe(
-      map(state => state.visible)
-    );
+    return this.stateService.layerPropertyDrawerState$.pipe(map((state) => state.visible));
   }
 
   get sources(): Observable<WebMapServiceFeature[][]> {
-    return this.stateService.layerPropertyDrawerState$.pipe(
-      map(state => state.data)
-    );
+    return this.stateService.layerPropertyDrawerState$.pipe(map((state) => state.data));
   }
 
   onHide(): void {

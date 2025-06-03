@@ -10,8 +10,7 @@ import { MapInformation } from '../models/map.model';
   providedIn: 'root',
 })
 export class StateService {
-  private mapInformationStateSubject =
-    new BehaviorSubject<MapInformation | null>(null);
+  private mapInformationStateSubject = new BehaviorSubject<MapInformation | null>(null);
   mapInformationState$ = this.mapInformationStateSubject.asObservable();
 
   setMapInformationState(mapInformation: MapInformation): void {
@@ -30,8 +29,7 @@ export class StateService {
   private searchDrawerStateSubject = new BehaviorSubject<boolean>(false);
   searchDrawerState$ = this.searchDrawerStateSubject.asObservable();
   private searchTabularDrawerStateSubject = new BehaviorSubject<boolean>(false);
-  searchTabularDrawerState$ =
-    this.searchTabularDrawerStateSubject.asObservable();
+  searchTabularDrawerState$ = this.searchTabularDrawerStateSubject.asObservable();
   private viewDrawerStateSubject = new BehaviorSubject<boolean>(false);
   viewDrawerState$ = this.viewDrawerStateSubject.asObservable();
   private baseLayerDrawerStateSubject = new BehaviorSubject<boolean>(false);
@@ -50,8 +48,7 @@ export class StateService {
     visible: boolean;
     data: WebMapServiceFeature[][];
   }>({ visible: false, data: [] });
-  layerPropertyDrawerState$ =
-    this.layerPropertyDrawerStateSubject.asObservable();
+  layerPropertyDrawerState$ = this.layerPropertyDrawerStateSubject.asObservable();
   layerLegendDrawerStateSubject = new BehaviorSubject<boolean>(false);
   layerLegendDrawerState$ = this.layerLegendDrawerStateSubject.asObservable();
 
@@ -91,10 +88,7 @@ export class StateService {
     this.layerInfoDrawerStateSubject.next(state);
   }
 
-  setLayerPropertyDrawerState(state: {
-    visible: boolean;
-    data: WebMapServiceFeature[][];
-  }): void {
+  setLayerPropertyDrawerState(state: { visible: boolean; data: WebMapServiceFeature[][] }): void {
     this.layerPropertyDrawerStateSubject.next(state);
   }
 
