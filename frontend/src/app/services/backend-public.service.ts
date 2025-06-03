@@ -8,6 +8,7 @@ import { LocationRequest, LocationResponse } from '../models/location.model';
 import { WebMapServiceInformation } from '../models/wms-info.model';
 
 import { CategoryNode } from '../models/category.model';
+import { ChatResponse } from '../models/chatbot.model';
 import {
   InternalLayer,
   LayerInformationTable,
@@ -15,7 +16,6 @@ import {
   WebMapServiceFeatureRequest,
 } from '../models/layer.model';
 import { ApiService } from './api.service';
-import { ChatResponse } from '../models/chatbot.model';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +64,10 @@ export class BackendPublicService {
     );
   }
 
+  getLayerById(layerId: string): Observable<InternalLayer> {
+    return this.apiService.get<InternalLayer>(`layers/${layerId}/`);
+  }
+
   getLayerInformationTable(layerId: string): Observable<LayerInformationTable> {
     return this.apiService.get<LayerInformationTable>(`layers/${layerId}/tables/`);
   }
@@ -74,5 +78,10 @@ export class BackendPublicService {
 
   getVoiceQuery(formData: FormData): Observable<ChatResponse[]> {
     return this.apiService.post<ChatResponse[]>(`chats/voice-queries/`, formData);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getFilteredLayer(layerId: string, filterColumns: any): Observable<any> {
+    return this.apiService.post<unknown>(`layers/${layerId}/filter/`, filterColumns);
   }
 }

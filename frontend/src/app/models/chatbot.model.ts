@@ -1,7 +1,8 @@
 export interface ChatResponse {
   message: string;
   initialMessage: string;
-  data: object | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any | null;
   action: string | null;
   actionWindow: string | null;
   actionControl: string | null;

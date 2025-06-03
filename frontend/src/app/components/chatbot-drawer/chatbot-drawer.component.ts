@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 
@@ -17,9 +18,10 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { firstValueFrom, Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import { ChatResponse, ChatMessage } from '../../models/chatbot.model';
+import { ChatMessage, ChatResponse } from '../../models/chatbot.model';
 import { Constants } from '../../models/constants';
 import { BackendPublicService } from '../../services/backend-public.service';
+import { LayerService } from '../../services/layer.service';
 import { StateService } from '../../services/state.service';
 
 @Component({
@@ -42,6 +44,7 @@ export class ChatbotDrawerComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly messageService = inject(MessageService);
   private readonly backendPublicService = inject(BackendPublicService);
+  private readonly layerService = inject(LayerService);
 
   sessionId: string | null = null;
   mediaRecorder: MediaRecorder | null = null;
@@ -200,6 +203,7 @@ export class ChatbotDrawerComponent implements OnInit {
         if (response && response.length > 0) {
           const chatResponse = response[0];
           if (chatResponse.message) {
+            await this.manageIntent(chatResponse);
             const botMessage: ChatMessage = {
               id: uuidv4(),
               content: '',
@@ -229,38 +233,6 @@ export class ChatbotDrawerComponent implements OnInit {
     }
   }
 
-  private addToChat(response: ChatResponse[]): void {
-    if (response && response.length > 0) {
-      const chatResponse = response[0];
-
-      // Add user message to conversation
-      if (chatResponse.initialMessage) {
-        const userMessage: ChatMessage = {
-          id: uuidv4(),
-          content: chatResponse.initialMessage,
-          isUser: true,
-          timestamp: new Date(),
-        };
-        this.conversation.push(userMessage);
-      }
-
-      // Add bot message with typing effect
-      if (chatResponse.message) {
-        const botMessage: ChatMessage = {
-          id: uuidv4(),
-          content: '',
-          isUser: false,
-          timestamp: new Date(),
-          isTyping: true,
-        };
-        this.conversation.push(botMessage);
-
-        // Simulate typing effect
-        this.typeMessage(botMessage, chatResponse.message);
-      }
-    }
-  }
-
   private typeMessage(message: ChatMessage, fullText: string): void {
     let currentIndex = 0;
     const typingSpeed = 50; // milliseconds per character
@@ -274,5 +246,37 @@ export class ChatbotDrawerComponent implements OnInit {
         clearInterval(typeInterval);
       }
     }, typingSpeed);
+  }
+
+  private async manageIntent(chatResponse: ChatResponse): Promise<void> {
+    if (chatResponse.action === 'activar_capa') {
+      const layerId: string = chatResponse.data?.layerId as string;
+      const layer = await firstValueFrom(this.backendPublicService.getLayerById(layerId));
+      if (layer) {
+        const activeLayer = {
+          id: layer.id,
+          name: layer.name,
+          title: layer.title || layer.name,
+          url: layer.url,
+          opacity: 1,
+          zIndex: 1,
+        };
+        this.layerService.onAddActiveLayer(activeLayer);
+      }
+    } else if (chatResponse.action === 'desactivar_capa') {
+      const layerId: string = chatResponse.data?.layerId as string;
+      if (layerId) {
+        this.layerService.onDeleteActiveLayer(layerId);
+      }
+    } else if (chatResponse.action === 'filtrar_suelo_urbano') {
+      const filterColumns = chatResponse.data;
+
+      const result = await firstValueFrom(
+        this.backendPublicService.getFilteredLayer('683c83d10cd4a888fb9a10c9', filterColumns),
+      );
+
+      console.log('Filtered:', result?.geometry);
+      console.log('Filtered:', result?.data);
+    }
   }
 }
