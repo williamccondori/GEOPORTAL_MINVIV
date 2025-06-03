@@ -39,7 +39,6 @@ export interface ActiveWmsLayer {
   url: string;
   opacity: number;
   zIndex: number;
-  cqlFilter?: string;
 }
 
 export interface LayerInformationOption {

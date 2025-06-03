@@ -92,7 +92,6 @@ export class ShareFormComponent implements OnInit {
               url: layer.url,
               opacity: layer.opacity,
               zIndex: layer.zIndex,
-              ...(layer.cqlFilter && { cqlFilter: layer.cqlFilter }),
             };
             return encodeURIComponent(JSON.stringify(layerInfo));
           })

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { AfterViewInit, Component, effect, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -8,13 +9,6 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { ToastModule } from 'primeng/toast';
 import { firstValueFrom } from 'rxjs';
-
-// Extend Leaflet WMSOptions to include CQL_FILTER
-declare module 'leaflet' {
-  interface WMSOptions extends TileLayerOptions {
-    CQL_FILTER?: string;
-  }
-}
 
 import { CoordinatesControlComponent } from '../../leaflet-controls/coordinates-control/coordinates-control.component';
 import { LayerToolsControlComponent } from '../../leaflet-controls/layer-tools-control/layer-tools-control.component';
@@ -74,28 +68,6 @@ export class MapComponent implements OnInit, AfterViewInit {
             // If the layer already exists, update its opacity and zIndex.
             existingLayer.setOpacity(activeLayer.opacity ?? 1);
             existingLayer.setZIndex(activeLayer.zIndex ?? 1);
-            // Check if the CQL filter has changed and recreate the layer if needed
-            const currentParams = existingLayer.options as L.WMSParams;
-            const newCqlFilter = activeLayer.cqlFilter || '';
-            const currentCqlFilter = (currentParams as L.WMSOptions).CQL_FILTER || '';
-
-            if (newCqlFilter !== currentCqlFilter) {
-              // Remove the old layer and create a new one with the updated filter
-              this.map!.removeLayer(existingLayer);
-              this.activeLayersMap.delete(activeLayer.name);
-
-              const layer = L.tileLayer.wms(activeLayer.url, {
-                layers: activeLayer.name,
-                format: 'image/png',
-                transparent: true,
-                attribution: activeLayer.title,
-                zIndex: activeLayer.zIndex ?? 1,
-                opacity: activeLayer.opacity ?? 1,
-                CQL_FILTER: activeLayer.cqlFilter || undefined,
-              });
-              this.map!.addLayer(layer);
-              this.activeLayersMap.set(activeLayer.name, layer);
-            }
           } else {
             // If the layer doesn't exist, create and add it.
             const layer = L.tileLayer.wms(activeLayer.url, {
@@ -105,7 +77,6 @@ export class MapComponent implements OnInit, AfterViewInit {
               attribution: activeLayer.title,
               zIndex: activeLayer.zIndex ?? 1,
               opacity: activeLayer.opacity ?? 1,
-              CQL_FILTER: activeLayer.cqlFilter || undefined,
             });
             this.map!.addLayer(layer);
             this.activeLayersMap.set(activeLayer.name, layer);
@@ -384,7 +355,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private processLayersFromUrl(urlParams: { [key: string]: string }): void {
+  private processLayersFromUrl(urlParams: Record<string, string>): void {
     const layersParam = urlParams['layers'];
     if (layersParam) {
       try {
@@ -406,7 +377,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 url: layerInfo.url,
                 opacity: layerInfo.opacity || 1,
                 zIndex: layerInfo.zIndex || 1,
-                ...(layerInfo.cqlFilter && { cqlFilter: layerInfo.cqlFilter }),
               };
               layersToActivate.push(activeLayer);
             }
