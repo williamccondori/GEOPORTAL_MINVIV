@@ -1,4 +1,5 @@
 import io
+from typing import Optional
 
 import google.cloud.dialogflow_v2 as dialogflow
 import speech_recognition as sr
@@ -10,9 +11,16 @@ from pydub import AudioSegment
 from app.config import settings
 from app.shared.domain.exceptions.application_exception import ApplicationException
 from app.web.application.dtos.chat_response_dto import ChatResponseDTO
+from app.web.domain.models.layer import Layer
+from app.web.domain.repositories.layer_information_repository import LayerInformationRepository
+from app.web.domain.repositories.layer_repository import LayerRepository
 
 
 class ChatService:
+    def __init__(self, layer_repository: LayerRepository, layer_information_repository: LayerInformationRepository):
+        self.layer_repository = layer_repository
+        self.layer_information_repository = layer_information_repository
+
     def __get_response_from_dialog_flow(self, session_id: str, message: str) -> QueryResult:
         self.client = dialogflow.SessionsClient()
         self.client_session = self.client.session_path(settings.DIALOGFLOW_PROJECT_ID, session_id)
@@ -30,12 +38,12 @@ class ChatService:
     async def __generate_result(self, result: QueryResult) -> list[ChatResponseDTO]:
         initial_message: str = result.query_text
 
-        intent = result.intent.name
+        intent = result.intent.display_name
 
         responses = []
 
-        # INTENCIÓN: filtrar_suelo_urbano o agregar_filtro_suelo_urbano.
-        if intent in ["filtrar_suelo_urbano", "agregar_filtro_suelo_urbano"]:
+        # INTENCIÓN: consultar_suelo_urbano_inicial o consultar_suelo_urbano.
+        if intent in ["consultar_suelo_urbano_inicial", "consultar_suelo_urbano"]:
             action: str = result.action
 
             if action == "filtrar_suelo_urbano":
@@ -46,15 +54,44 @@ class ChatService:
                 servicios = result.parameters.get("servicios", None)
                 zonificacion = result.parameters.get("zonificacion", None)
 
-                print(
-                    f"Categoria: {categoria}, Propietario: {propietario}, Provincia: {provincia}, Region: {region}, Servicios: {servicios}, Zonificacion: {zonificacion}")
+                mensaje = "🔍 Se ha filtrado el suelo urbano con los siguientes criterios:\n"
+                if categoria:
+                    mensaje += f"Categoría: {categoria}, "
+                if propietario:
+                    mensaje += f"Propietario: {propietario}, "
+                if provincia:
+                    mensaje += f"Provincia: {provincia}, "
+                if region:
+                    mensaje += f"Región: {region}, "
+                if servicios:
+                    mensaje += f"Servicios: {servicios}, "
+                if zonificacion:
+                    mensaje += f"Zonificación: {zonificacion}, "
+                mensaje += "Puedes consultar el suelo urbano filtrado en el visor."
+
+                responses.append(ChatResponseDTO(
+                    message=mensaje,
+                    initial_message=initial_message,
+                    action="filtrar_suelo_urbano",
+                    action_window="filtrar_suelo_urbano",
+                    data={
+                        "CATEGORÍA": categoria,
+                        "PROPIETARI": propietario,
+                        "PROVINCIA": provincia,
+                        "REGIÓN": region,
+                        "SERVICIOS": servicios,
+                        "ZONIFICACI": zonificacion
+                    }
+                ))
 
         # INTENCIÓN: activar o desactivar capa.
-        elif intent == "controlar_capa":
-            active_layer: str = result.parameters.get("capa", "")
+        elif intent == "controlar_capas":
+            active_layer_id: str = self.__get_layer_id_by_df_name(result.parameters.get("capa", ""))
             action_value: str = result.parameters.get("accion", "")
 
-            if not active_layer:
+            active_layer_name: str = await self.__get_layer_name_by_id(active_layer_id)
+
+            if not active_layer_id:
                 responses.append(ChatResponseDTO(
                     message="☹️ No se ha especificado qué capa controlar. Por favor, indícalo con más detalle.",
                     initial_message=initial_message,
@@ -64,18 +101,18 @@ class ChatService:
             else:
                 if action_value == "activar":
                     responses.append(ChatResponseDTO(
-                        message=f"✅ Se ha activado la capa: {active_layer}",
+                        message=f"✅ Se ha activado la capa: {active_layer_name}",
                         initial_message=initial_message,
                         action="activar_capa",
-                        data={"layerName": active_layer},
+                        data={"layerId": active_layer_id},
                         action_control="activar_capa"
                     ))
                 elif action_value == "desactivar":
                     responses.append(ChatResponseDTO(
-                        message=f"🚫 Se ha desactivado la capa: {active_layer}",
+                        message=f"🚫 Se ha desactivado la capa: {active_layer_name}",
                         initial_message=initial_message,
                         action="desactivar_capa",
-                        data={"layerName": active_layer},
+                        data={"layerId": active_layer_id},
                         action_control="desactivar_capa"
                     ))
                 else:
@@ -129,3 +166,18 @@ class ChatService:
                     f"Error al procesar el audio, no se pudo conectar al servicio de reconocimiento.")
 
         return await self.get_query(session_id, message)
+
+    @staticmethod
+    def __get_layer_id_by_df_name(df_name: str) -> str:
+        equivalents = {
+            "proyectos_suelo_urbano": "683c83d10cd4a888fb9a10c9",
+            "directorio_municipalidades": "683dc2017b8702bd1c562a4d",
+        }
+        return equivalents.get(df_name, "")
+
+    async def __get_layer_name_by_id(self, active_layer_id):
+        layer: Optional[Layer] = await self.layer_repository.find(active_layer_id)
+        if layer:
+            return layer.name
+        else:
+            return "Capa sin nombre"

@@ -8,3 +8,7 @@ class LayerInformationRepository(ABC):
     @abstractmethod
     async def get_table(self, collection_name) -> Optional[LayerInformationTable]:
         pass
+
+    @abstractmethod
+    async def get_geometry_and_table(self, collection_name, filters) -> dict:
+        pass

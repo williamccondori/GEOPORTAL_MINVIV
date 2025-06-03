@@ -43,8 +43,14 @@ def get_initial_settings_service(
     return InitialSettingsService(initial_settings_repository, base_layer_repository)
 
 
-def get_chat_service():
-    return ChatService()
+def get_chat_service(
+        layer_repository: LayerRepository = Depends(LayerRepositoryImpl),
+        layer_information_repository: LayerInformationRepository = Depends(LayerInformationRepositoryImpl)
+):
+    return ChatService(
+        layer_repository=layer_repository,
+        layer_information_repository=layer_information_repository
+    )
 
 
 def get_category_service(

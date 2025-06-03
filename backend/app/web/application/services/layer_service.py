@@ -21,6 +21,27 @@ class LayerService:
         self.category_repository = category_repository
         self.layer_information_repository = layer_information_repository
 
+    async def get_by_id(self, layer_id: str) -> LayerDTO:
+        layer: Optional[Layer] = await self.layer_repository.get(layer_id)
+        if not layer:
+            raise ApplicationException("No se ha encontrado la capa solicitada")
+
+        category = await self.category_repository.get(layer.category_id)
+        if category:
+            category_name = category.name
+        else:
+            category_name = "Sin categoría"
+
+        return LayerDTO(
+            id=layer.id,
+            category_name=category_name,
+            name=layer.code,
+            title=layer.name,
+            description=layer.description,
+            url=layer.wms_url,
+            download_url=layer.wfs_url
+        )
+
     async def get_all(self, layer_search_dto: LayerSearchDTO) -> list[LayerDTO]:
         result: list[LayerDTO] = []
 
@@ -90,3 +111,13 @@ class LayerService:
                 for x in table_information.filters
             ]
         )
+
+    async def filter_table(self, layer_id: str, filter_columns: dict) -> dict:
+        layer: Optional[Layer] = await self.layer_repository.get(layer_id)
+        if not layer:
+            raise ApplicationException("No se ha encontrado la capa solicitada")
+
+        results = await self.layer_information_repository.get_geometry_and_table(
+            layer.layer_information_name, filter_columns)
+
+        return results

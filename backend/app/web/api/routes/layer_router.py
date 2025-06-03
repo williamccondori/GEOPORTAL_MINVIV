@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 
 from app.shared.models.response import Response
 from app.web.api.dependencies import get_layer_service
@@ -16,9 +16,26 @@ async def get_all(
     return Response.correct(await service.get_all(layer_search_dto))
 
 
+@layer_router.get("/{layer_id}/", response_model=Response[LayerDTO])
+async def get_by_id(
+        layer_id: str,
+        service=Depends(get_layer_service)
+) -> Response[LayerDTO]:
+    return Response.correct(await service.get_by_id(layer_id))
+
+
 @layer_router.get("/{layer_id}/tables/", response_model=Response[LayerInformationTableDTO])
 async def get_table(
         layer_id: str,
         service=Depends(get_layer_service)
 ) -> Response[LayerInformationTableDTO]:
     return Response.correct(await service.get_table(layer_id))
+
+
+@layer_router.post("/{layer_id}/filter/", response_model=Response[dict])
+async def filter_table(
+        layer_id: str,
+        filter_columns: dict = Body(...),
+        service=Depends(get_layer_service)
+) -> Response[LayerInformationTableDTO]:
+    return Response.correct(await service.filter_table(layer_id, filter_columns))

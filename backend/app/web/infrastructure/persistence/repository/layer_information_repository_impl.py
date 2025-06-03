@@ -58,3 +58,28 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
             data=data,
             filters=filters
         )
+
+    async def get_geometry_and_table(self, collection_name, filters) -> dict:
+        collection: AsyncIOMotorCollection = database.get_collection(collection_name)
+
+        exclude_columns = ['geometry']
+        exclude_set = set(exclude_columns) if exclude_columns else set()
+        columns = [x for x in (await collection.find_one()).keys() if x not in exclude_set]
+
+        cursor = collection.find(filters)
+        data = []
+        async for doc in cursor:
+            row = {}
+            for col in columns:
+                value = doc.get(col)
+                if col == "_id" and value is not None:
+                    value = str(value)
+                row[col] = value
+            data.append(row)
+
+        geometry = [doc.get('geometry') for doc in data if 'geometry' in doc]
+
+        return {
+            "geometry": geometry,
+            "data": data
+        }

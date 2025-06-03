@@ -1,5 +1,10 @@
 import os
 
+# Se añaden variables de entorno para la configuración de la aplicación.
+
+os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\William\\Desktop\\geosnipa.json")
+os.environ.setdefault("DIALOGFLOW_SESSION_ID", "me")
+
 
 class Settings:
     MONGO_URI: str = os.getenv(
