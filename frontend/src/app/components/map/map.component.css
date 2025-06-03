@@ -1,0 +1,36 @@
+.geojson-tooltip {
+  max-width: 300px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.tooltip-row {
+  margin-bottom: 4px;
+  word-wrap: break-word;
+}
+
+.tooltip-row:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-row strong {
+  color: #333;
+  margin-right: 4px;
+}
+
+.custom-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.custom-tooltip .leaflet-tooltip-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}

@@ -275,8 +275,6 @@ export class ChatbotDrawerComponent implements OnInit {
         this.backendPublicService.getFilteredLayer('683c83d10cd4a888fb9a10c9', filterColumns),
       );
 
-      console.error('Filtered:', result);
-
       // Check if there's an existing filtered layer and remove it
       const existingFilteredLayers = this.layerService
         .activeGeoJsonLayers()

@@ -169,8 +169,6 @@ export class LayerDrawerComponent implements OnInit {
     this.stateService.setLayerDrawerState(false);
   }
 
-  async onSubmit(): Promise<void> {}
-
   private async getCategoryStructure(): Promise<void> {
     const categoryList = await firstValueFrom(this.backendPublicService.getCatalogStructure());
     this.categoryTree = this.convertToTree(categoryList);
@@ -188,7 +186,7 @@ export class LayerDrawerComponent implements OnInit {
 
   private async getAllLayers(categoryId: string): Promise<void> {
     this.layers = await firstValueFrom(
-      this.backendPublicService.getLayersByCategoryId(categoryId, false),
+      this.backendPublicService.getLayersByCategoryId(categoryId, true),
     );
   }
 }

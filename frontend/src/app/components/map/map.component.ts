@@ -33,6 +33,7 @@ import { StateService } from '../../services/state.service';
   imports: [ContextMenuModule, SpeedDialModule, ToastModule],
   providers: [MessageService],
   templateUrl: './map.component.html',
+  styleUrl: './map.component.css',
 })
 export class MapComponent implements OnInit, AfterViewInit {
   private readonly backendPublicService = inject(BackendPublicService);
@@ -123,6 +124,18 @@ export class MapComponent implements OnInit, AfterViewInit {
                 opacity: activeLayer.opacity ?? 1,
                 fillOpacity: 0.2,
                 ...activeLayer.style,
+              },
+              onEachFeature: (feature, layer) => {
+                if (feature.properties) {
+                  const tooltipContent = this.createTooltipContent(feature.properties);
+                  if (tooltipContent) {
+                    layer.bindTooltip(tooltipContent, {
+                      permanent: false,
+                      direction: 'auto',
+                      className: 'custom-tooltip',
+                    });
+                  }
+                }
               },
             });
             this.map!.addLayer(layer);
@@ -450,5 +463,26 @@ export class MapComponent implements OnInit, AfterViewInit {
         console.error('Failed to process layers from URL:', error);
       }
     }
+  }
+
+  private createTooltipContent(properties: Record<string, unknown>): string {
+    if (!properties || Object.keys(properties).length === 0) {
+      return '';
+    }
+
+    let content = '<div class="geojson-tooltip">';
+
+    // Add each property as a key-value pair
+    Object.entries(properties).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        content += `<div class="tooltip-row">`;
+        content += `<strong>${key}:</strong> ${value}`;
+        content += `</div>`;
+      }
+    });
+
+    content += '</div>';
+
+    return content;
   }
 }
