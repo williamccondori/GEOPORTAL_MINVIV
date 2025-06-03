@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ActiveWmsLayer, UserWmsLayer } from '../models/layer.model';
+import { ActiveWmsLayer, UserWmsLayer, ActiveGeoJsonLayer } from '../models/layer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +10,9 @@ export class LayerService {
 
   private readonly activeLayersSignal = signal<ActiveWmsLayer[]>([]);
   readonly activeLayers = this.activeLayersSignal.asReadonly();
+
+  private readonly activeGeoJsonLayersSignal = signal<ActiveGeoJsonLayer[]>([]);
+  readonly activeGeoJsonLayers = this.activeGeoJsonLayersSignal.asReadonly();
 
   onAddUserWmsLayer(userWmsLayer: UserWmsLayer): void {
     const existingLayer = this.layersSignal().find((layer) => layer.id === userWmsLayer.id);
@@ -36,6 +39,23 @@ export class LayerService {
 
   onDeleteAllActiveLayers(): void {
     this.activeLayersSignal.update(() => []);
+  }
+
+  onAddActiveGeoJsonLayer(layer: ActiveGeoJsonLayer): void {
+    const existingLayer = this.activeGeoJsonLayersSignal().find(
+      (activeLayer) => activeLayer.id === layer.id,
+    );
+    if (!existingLayer) {
+      this.activeGeoJsonLayersSignal.update((layers) => [...layers, layer]);
+    }
+  }
+
+  onDeleteActiveGeoJsonLayer(id: string): void {
+    this.activeGeoJsonLayersSignal.update((layers) => layers.filter((layer) => layer.id !== id));
+  }
+
+  onDeleteAllActiveGeoJsonLayers(): void {
+    this.activeGeoJsonLayersSignal.update(() => []);
   }
 
   updateOpacity(id: string, opacity: number): void {

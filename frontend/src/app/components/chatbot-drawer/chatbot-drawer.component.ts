@@ -275,8 +275,35 @@ export class ChatbotDrawerComponent implements OnInit {
         this.backendPublicService.getFilteredLayer('683c83d10cd4a888fb9a10c9', filterColumns),
       );
 
-      console.log('Filtered:', result?.geometry);
-      console.log('Filtered:', result?.data);
+      console.error('Filtered:', result.geojson);
+
+      // Check if there's an existing filtered layer and remove it
+      const existingFilteredLayers = this.layerService
+        .activeGeoJsonLayers()
+        .filter((layer) => layer.id.startsWith('filtered_suelo_urbano'));
+      existingFilteredLayers.forEach((layer) => {
+        this.layerService.onDeleteActiveGeoJsonLayer(layer.id);
+      });
+
+      // Add the new filtered GeoJSON layer to the map
+      if (result.geojson) {
+        const filteredLayer = {
+          id: `filtered_suelo_urbano_${Date.now()}`,
+          name: 'Suelo Urbano Filtrado',
+          title: 'Suelo Urbano Filtrado',
+          geojson: result.geojson,
+          opacity: 0.8,
+          zIndex: 1000,
+          style: {
+            color: '#ff6b35',
+            weight: 2,
+            opacity: 0.8,
+            fillOpacity: 0.4,
+            fillColor: '#ff6b35',
+          },
+        };
+        this.layerService.onAddActiveGeoJsonLayer(filteredLayer);
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+import * as L from 'leaflet';
+
 export interface Layer {
   id: string;
   categoryName: string;
@@ -39,6 +41,16 @@ export interface ActiveWmsLayer {
   url: string;
   opacity: number;
   zIndex: number;
+}
+
+export interface ActiveGeoJsonLayer {
+  id: string;
+  name: string;
+  title: string;
+  geojson: GeoJSON.FeatureCollection | GeoJSON.Feature; // GeoJSON data
+  opacity: number;
+  zIndex: number;
+  style?: L.PathOptions; // Leaflet style options
 }
 
 export interface LayerInformationOption {

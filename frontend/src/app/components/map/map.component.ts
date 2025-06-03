@@ -16,7 +16,11 @@ import { LogoControlComponent } from '../../leaflet-controls/logo-control/logo-c
 import { ToolsControlComponent } from '../../leaflet-controls/tools-control/tools-control.component';
 import { Constants } from '../../models/constants';
 import { InitialSettings } from '../../models/initial-settings.model';
-import { ActiveWmsLayer, WebMapServiceFeatureRequest } from '../../models/layer.model';
+import {
+  ActiveWmsLayer,
+  WebMapServiceFeatureRequest,
+  ActiveGeoJsonLayer,
+} from '../../models/layer.model';
 import { MapInformation } from '../../models/map.model';
 import { BackendPublicService } from '../../services/backend-public.service';
 import { ComponentInjectorService } from '../../services/component-injector.service';
@@ -38,6 +42,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   private readonly layerService = inject(LayerService);
   private readonly route = inject(ActivatedRoute);
   private readonly activeLayersMap = new Map<string, L.TileLayer.WMS>();
+  private readonly activeGeoJsonLayersMap = new Map<string, L.GeoJSON>();
 
   map?: L.Map;
   rightClickLatLng?: L.LatLng;
@@ -80,6 +85,48 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
             this.map!.addLayer(layer);
             this.activeLayersMap.set(activeLayer.name, layer);
+          }
+        });
+      }
+    });
+
+    // Effect for handling GeoJSON layers
+    effect(() => {
+      const activeGeoJsonLayers: ActiveGeoJsonLayer[] = this.layerService.activeGeoJsonLayers();
+
+      if (this.map) {
+        const currentGeoJsonLayerIds = new Set(activeGeoJsonLayers.map((layer) => layer.id));
+
+        // Remove GeoJSON layers that are no longer active.
+        this.activeGeoJsonLayersMap.forEach((leafletLayer, layerId) => {
+          if (!currentGeoJsonLayerIds.has(layerId)) {
+            this.map!.removeLayer(leafletLayer);
+            this.activeGeoJsonLayersMap.delete(layerId);
+          }
+        });
+
+        // Add new active GeoJSON layers or update existing ones.
+        activeGeoJsonLayers.forEach((activeLayer) => {
+          const existingLayer = this.activeGeoJsonLayersMap.get(activeLayer.id);
+          if (existingLayer) {
+            // If the layer already exists, update its opacity and zIndex.
+            existingLayer.setStyle({
+              ...activeLayer.style,
+              opacity: activeLayer.opacity ?? 1,
+            });
+          } else {
+            // If the layer doesn't exist, create and add it.
+            const layer = L.geoJSON(activeLayer.geojson, {
+              style: {
+                color: '#3388ff',
+                weight: 2,
+                opacity: activeLayer.opacity ?? 1,
+                fillOpacity: 0.2,
+                ...activeLayer.style,
+              },
+            });
+            this.map!.addLayer(layer);
+            this.activeGeoJsonLayersMap.set(activeLayer.id, layer);
           }
         });
       }
