@@ -1,7 +1,6 @@
 from typing import Counter, Optional
 
 from motor.motor_asyncio import AsyncIOMotorCollection
-from pymongo import ASCENDING
 
 from app.shared.db.base import database
 from app.web.domain.models.layer_information_table import LayerInformationTable, LayerInformationFilter, \
@@ -71,36 +70,29 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
 
     async def get_geometry_and_table(self, collection_name: str, filters: dict) -> dict:
         collection: AsyncIOMotorCollection = database.get_collection(collection_name)
-
-        # Construir filtros insensibles a mayúsculas/minúsculas y parciales
         mongo_filter = self.__build_case_insensitive_filter(filters)
 
-        # Excluir columnas no deseadas
-        exclude_columns = {"geometry"}
-        example_doc = await collection.find_one(mongo_filter)
-        if not example_doc:
-            return {"geometry": [], "data": []}
-
-        columns = [key for key in example_doc.keys() if key not in exclude_columns]
-
-        # Consultar documentos con filtros aplicados
-        cursor = collection.find(mongo_filter).sort("_id", ASCENDING)
-        data = []
-        geometry = []
+        cursor = collection.find(mongo_filter)
+        features = []
 
         async for doc in cursor:
-            row = {}
-            for col in columns:
-                value = doc.get(col)
-                if col == "_id" and value is not None:
-                    value = str(value)
-                row[col] = value
-            data.append(row)
+            geometry = doc.get("geometry")
+            if not geometry:
+                continue
 
-            if "geometry" in doc:
-                geometry.append(doc["geometry"])
+            # Eliminar _id u otras claves no deseadas
+            properties = {k: v for k, v in doc.items() if k != "geometry"}
+            if "_id" in properties:
+                properties["_id"] = str(properties["_id"])
+
+            feature = {
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": properties
+            }
+            features.append(feature)
 
         return {
-            "geometry": geometry,
-            "data": data
+            "type": "FeatureCollection",
+            "features": features
         }
