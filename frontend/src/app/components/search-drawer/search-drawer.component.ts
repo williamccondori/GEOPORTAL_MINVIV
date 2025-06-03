@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import {
@@ -177,9 +178,82 @@ export class SearchDrawerComponent implements OnInit {
     this.filtersFormGroup = this.fb.group(group);
   }
 
-  onSubmitFilters(): void {
+  async onSubmitFilters(): Promise<void> {
     if (this.filtersFormGroup.valid && this.layerInformationTable) {
-      const formValues = this.filtersFormGroup.value;
+      try {
+        this.stateService.setIsLoadingState(true);
+
+        const formValues = this.filtersFormGroup.value;
+        const layerId = this.formGroup.get('layerId')?.value;
+
+        if (!layerId) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'ADVERTENCIA',
+            detail: 'Debe seleccionar una capa antes de aplicar filtros.',
+          });
+          return;
+        }
+
+        const selectedLayer = this.layers.find((layer) => layer.id === layerId);
+        const layerName = selectedLayer?.title || selectedLayer?.name || 'Capa';
+
+        const result = await firstValueFrom(
+          this.backendPublicService.getFilteredLayer(layerId, formValues),
+        );
+
+        // Check if there's an existing filtered layer and remove it
+        const existingFilteredLayers = this.layerService
+          .activeGeoJsonLayers()
+          .filter((layer) => layer.id.startsWith(`filtered_${layerId}`));
+        existingFilteredLayers.forEach((layer) => {
+          this.layerService.onDeleteActiveGeoJsonLayer(layer.id);
+        });
+
+        // Add the new filtered GeoJSON layer to the map
+        if (result) {
+          const filteredLayer = {
+            id: `filtered_${layerId}_${Date.now()}`,
+            name: `${layerName} Filtrada`,
+            title: `${layerName} Filtrada`,
+            geojson: result,
+            opacity: 0.8,
+            zIndex: 1000,
+            style: {
+              color: '#ff6b35',
+              weight: 2,
+              opacity: 0.8,
+              fillOpacity: 0.4,
+              fillColor: '#ff6b35',
+            },
+          };
+          this.layerService.onAddActiveGeoJsonLayer(filteredLayer);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ÉXITO',
+            detail: 'Filtros aplicados correctamente y capa agregada al mapa.',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'INFORMACIÓN',
+            detail: 'No se encontraron resultados con los filtros aplicados.',
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ERROR',
+          detail: Constants.ERROR_MESSAGE,
+        });
+      } finally {
+        this.stateService.setIsLoadingState(false);
+      }
+    } else {
+      this.filtersFormGroup.markAllAsTouched();
+      this.filtersFormGroup.updateValueAndValidity();
     }
   }
 

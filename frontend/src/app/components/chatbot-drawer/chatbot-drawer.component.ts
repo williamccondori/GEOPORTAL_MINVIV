@@ -275,7 +275,7 @@ export class ChatbotDrawerComponent implements OnInit {
         this.backendPublicService.getFilteredLayer('683c83d10cd4a888fb9a10c9', filterColumns),
       );
 
-      console.error('Filtered:', result.geojson);
+      console.error('Filtered:', result);
 
       // Check if there's an existing filtered layer and remove it
       const existingFilteredLayers = this.layerService
@@ -286,12 +286,12 @@ export class ChatbotDrawerComponent implements OnInit {
       });
 
       // Add the new filtered GeoJSON layer to the map
-      if (result.geojson) {
+      if (result) {
         const filteredLayer = {
           id: `filtered_suelo_urbano_${Date.now()}`,
           name: 'Suelo Urbano Filtrado',
           title: 'Suelo Urbano Filtrado',
-          geojson: result.geojson,
+          geojson: result,
           opacity: 0.8,
           zIndex: 1000,
           style: {
