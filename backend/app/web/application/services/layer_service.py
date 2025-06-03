@@ -84,7 +84,7 @@ class LayerService:
                     category_name=category_name,
                     name=wms_layer.code,
                     title=wms_layer.name,
-                    description=wms_layer.description,
+                    description="WMS",
                     url=wms_layer.url
                 ))
 
