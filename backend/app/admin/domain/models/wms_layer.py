@@ -6,8 +6,8 @@ from app.shared.domain.entities.base import Base
 
 class WmsLayer(Base):
     id: Optional[str] = None
-    category_id: str = ""
-    code: str = ""
+    category_id: Optional[str] = None
+    code: Optional[str] = None
     name: str
     url: str
     attribution: str
