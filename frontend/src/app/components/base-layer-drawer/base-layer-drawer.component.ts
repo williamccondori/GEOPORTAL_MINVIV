@@ -11,11 +11,12 @@ import {BaseLayer} from '../../models/base-layer.model';
 import {Constants} from '../../models/constants';
 import {BackendPublicService} from '../../services/backend-public.service';
 import {StateService} from '../../services/state.service';
+import {BaseLayerMapComponent} from '../base-layer-map/base-layer-map.component';
 
 @Component({
   standalone: true,
   selector: 'app-base-layer-drawer',
-  imports: [DrawerModule, AsyncPipe, CardModule, ToastModule],
+  imports: [DrawerModule, AsyncPipe, CardModule, ToastModule, BaseLayerMapComponent],
   providers: [MessageService],
   templateUrl: './base-layer-drawer.component.html',
 })

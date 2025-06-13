@@ -16,6 +16,8 @@ import {Constants} from '../../models/constants';
 import {InternalLayer} from '../../models/layer.model';
 import {BackendPublicService} from '../../services/backend-public.service';
 import {StateService} from '../../services/state.service';
+import {LayerTdComponent} from '../layer-td/layer-td.component';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   standalone: true,
@@ -36,6 +38,7 @@ export class SearchTabularDrawerComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly messageService = inject(MessageService);
   private readonly backendPublicService = inject(BackendPublicService);
+  private readonly dialogService = inject(DialogService);
 
   categoryNodes: CategoryNode[] = [];
   categoryTree: TreeNode<string>[] = [];
@@ -158,5 +161,30 @@ export class SearchTabularDrawerComponent implements OnInit {
   private clearTable(): void {
     this.columns = [];
     this.data = [];
+  }
+
+  // lKmwu8R1REUJAd2AxqGr
+  onShowMap(view: any) {
+    console.log(view);
+    if (view.hasOwnProperty('PROYECTO')) {
+      this.dialogService.open(LayerTdComponent, {
+        header: 'Información del terreno',
+        width: '30vw',
+        modal: true,
+        breakpoints: {
+          '1400px': '35vw',
+          '1200px': '40vw',
+          '960px': '50vw',
+          '640px': '80vw',
+          '480px': '95vw',
+        },
+        closable: true,
+        data: {
+          id: view._id,
+        },
+      });
+    } else {
+    }
+
   }
 }
