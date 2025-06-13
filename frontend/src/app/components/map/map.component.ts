@@ -1,31 +1,27 @@
 /* eslint-disable complexity */
-import { AfterViewInit, Component, effect, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {AfterViewInit, Component, effect, inject, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 import * as L from 'leaflet';
 import 'leaflet-minimap';
-import { MenuItem, MessageService } from 'primeng/api';
-import { ContextMenuModule } from 'primeng/contextmenu';
-import { SpeedDialModule } from 'primeng/speeddial';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom } from 'rxjs';
+import {MenuItem, MessageService} from 'primeng/api';
+import {ContextMenuModule} from 'primeng/contextmenu';
+import {SpeedDialModule} from 'primeng/speeddial';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom} from 'rxjs';
 
-import { CoordinatesControlComponent } from '../../leaflet-controls/coordinates-control/coordinates-control.component';
-import { LayerToolsControlComponent } from '../../leaflet-controls/layer-tools-control/layer-tools-control.component';
-import { LogoControlComponent } from '../../leaflet-controls/logo-control/logo-control.component';
-import { ToolsControlComponent } from '../../leaflet-controls/tools-control/tools-control.component';
-import { Constants } from '../../models/constants';
-import { InitialSettings } from '../../models/initial-settings.model';
-import {
-  ActiveWmsLayer,
-  WebMapServiceFeatureRequest,
-  ActiveGeoJsonLayer,
-} from '../../models/layer.model';
-import { MapInformation } from '../../models/map.model';
-import { BackendPublicService } from '../../services/backend-public.service';
-import { ComponentInjectorService } from '../../services/component-injector.service';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
+import {CoordinatesControlComponent} from '../../leaflet-controls/coordinates-control/coordinates-control.component';
+import {LayerToolsControlComponent} from '../../leaflet-controls/layer-tools-control/layer-tools-control.component';
+import {LogoControlComponent} from '../../leaflet-controls/logo-control/logo-control.component';
+import {ToolsControlComponent} from '../../leaflet-controls/tools-control/tools-control.component';
+import {Constants} from '../../models/constants';
+import {InitialSettings} from '../../models/initial-settings.model';
+import {ActiveGeoJsonLayer, ActiveWmsLayer, WebMapServiceFeatureRequest,} from '../../models/layer.model';
+import {MapInformation} from '../../models/map.model';
+import {BackendPublicService} from '../../services/backend-public.service';
+import {ComponentInjectorService} from '../../services/component-injector.service';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,
@@ -186,24 +182,24 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.rightClickLatLng = event.latlng;
     });
 
-    const { element: toolsElement } =
+    const {element: toolsElement} =
       this.componentInjectorService.createComponent(ToolsControlComponent);
-    const toolsControl = new L.Control({ position: 'topright' });
+    const toolsControl = new L.Control({position: 'topright'});
     toolsControl.onAdd = () => toolsElement;
     this.map.addControl(toolsControl);
 
     // Logo control.
-    const { element: logoElement } =
+    const {element: logoElement} =
       this.componentInjectorService.createComponent(LogoControlComponent);
-    const logoControl = new L.Control({ position: 'bottomright' });
+    const logoControl = new L.Control({position: 'bottomright'});
     logoControl.onAdd = () => logoElement;
     this.map.addControl(logoControl);
 
     // Coordinates control.
-    const { element: coordinatesElement } = this.componentInjectorService.createComponent(
+    const {element: coordinatesElement} = this.componentInjectorService.createComponent(
       CoordinatesControlComponent,
     );
-    const coordinatesControl = new L.Control({ position: 'bottomright' });
+    const coordinatesControl = new L.Control({position: 'bottomright'});
     coordinatesControl.onAdd = () => coordinatesElement;
     this.map.addControl(coordinatesControl);
 
@@ -215,10 +211,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(scaleControl);
 
     // Layer tools control.
-    const { element: layerToolsElement } = this.componentInjectorService.createComponent(
+    const {element: layerToolsElement} = this.componentInjectorService.createComponent(
       LayerToolsControlComponent,
     );
-    const layerToolsControl = new L.Control({ position: 'bottomleft' });
+    const layerToolsControl = new L.Control({position: 'bottomleft'});
     layerToolsControl.onAdd = () => layerToolsElement;
     this.map.addControl(layerToolsControl);
 

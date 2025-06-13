@@ -22,60 +22,60 @@
         />
       </div>
       @if (activeWmsLayer) {
-        <p-fieldset legend="Transparencia">
-          <div class="app-form-group">
-            <label for="opacity">Transparencia:</label>
-            <p-slider
-              formControlName="opacity"
-              [min]="0"
-              [max]="1"
-              [step]="0.05"
-              fluid
-            />
-          </div>
-        </p-fieldset>
-        <p-fieldset legend="Orden de visualización">
-          <p-buttongroup>
-            <p-button
-              icon="pi pi-angle-double-up"
-              size="large"
-              pTooltip="Mover al frente"
-              (click)="onMoveToFront(activeWmsLayer.id)"
-              (keydown.enter)="onMoveToFront(activeWmsLayer.id)"
-              (keydown.space)="onMoveToFront(activeWmsLayer.id)"
-            />
-            <p-button
-              icon="pi pi-angle-up"
-              size="large"
-              pTooltip="Mover hacia arriba"
-              (click)="onMoveUp(activeWmsLayer.id)"
-              (keydown.enter)="onMoveUp(activeWmsLayer.id)"
-              (keydown.space)="onMoveUp(activeWmsLayer.id)"
-            />
-            <p-button
-              icon="pi pi-angle-down"
-              size="large"
-              pTooltip="Mover hacia abajo"
-              (click)="onMoveDown(activeWmsLayer.id)"
-              (keydown.enter)="onMoveDown(activeWmsLayer.id)"
-              (keydown.space)="onMoveDown(activeWmsLayer.id)"
-            />
-            <p-button
-              icon="pi pi-angle-double-down"
-              size="large"
-              pTooltip="Mover al fondo"
-              (click)="onMoveToBack(activeWmsLayer.id)"
-              (keydown.enter)="onMoveToBack(activeWmsLayer.id)"
-              (keydown.space)="onMoveToBack(activeWmsLayer.id)"
-            />
-          </p-buttongroup>
-        </p-fieldset>
-        <p-fieldset legend="Información de la capa">
-          <p-table
-            [value]="layerInformation"
-            size="small"
-            styleClass="p-datatable-sm p-datatable-no-header layer-info-table"
-            [style]="{ width: '100%' }"
+      <p-fieldset legend="Transparencia">
+        <div class="app-form-group">
+          <label for="opacity">Transparencia:</label>
+          <p-slider
+            formControlName="opacity"
+            [min]="0"
+            [max]="1"
+            [step]="0.05"
+            fluid
+          />
+        </div>
+      </p-fieldset>
+      <p-fieldset legend="Orden de visualización">
+        <p-buttongroup>
+          <p-button
+            icon="pi pi-angle-double-up"
+            size="large"
+            pTooltip="Mover al frente"
+            (click)="onMoveToFront(activeWmsLayer.id)"
+            (keydown.enter)="onMoveToFront(activeWmsLayer.id)"
+            (keydown.space)="onMoveToFront(activeWmsLayer.id)"
+          />
+          <p-button
+            icon="pi pi-angle-up"
+            size="large"
+            pTooltip="Mover hacia arriba"
+            (click)="onMoveUp(activeWmsLayer.id)"
+            (keydown.enter)="onMoveUp(activeWmsLayer.id)"
+            (keydown.space)="onMoveUp(activeWmsLayer.id)"
+          />
+          <p-button
+            icon="pi pi-angle-down"
+            size="large"
+            pTooltip="Mover hacia abajo"
+            (click)="onMoveDown(activeWmsLayer.id)"
+            (keydown.enter)="onMoveDown(activeWmsLayer.id)"
+            (keydown.space)="onMoveDown(activeWmsLayer.id)"
+          />
+          <p-button
+            icon="pi pi-angle-double-down"
+            size="large"
+            pTooltip="Mover al fondo"
+            (click)="onMoveToBack(activeWmsLayer.id)"
+            (keydown.enter)="onMoveToBack(activeWmsLayer.id)"
+            (keydown.space)="onMoveToBack(activeWmsLayer.id)"
+          />
+        </p-buttongroup>
+      </p-fieldset>
+      <p-fieldset legend="Información de la capa">
+        <p-table
+          [value]="layerInformation"
+          size="small"
+          styleClass="p-datatable-sm p-datatable-no-header layer-info-table"
+          [style]="{ width: '100%' }"
           >
             <ng-template
               pTemplate="body"

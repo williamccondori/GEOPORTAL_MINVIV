@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {Router, RouterOutlet} from '@angular/router';
 
-import { MenuItem } from 'primeng/api';
-import { MenubarModule } from 'primeng/menubar';
+import {MenuItem} from 'primeng/api';
+import {MenubarModule} from 'primeng/menubar';
 
 @Component({
   standalone: true,

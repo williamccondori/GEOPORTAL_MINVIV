@@ -1,11 +1,11 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, Signal } from '@angular/core';
-import { DrawerModule } from 'primeng/drawer';
-import { FieldsetModule } from 'primeng/fieldset';
-import { Observable } from 'rxjs';
-import { ActiveWmsLayer } from '../../models/layer.model';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject, Signal} from '@angular/core';
+import {DrawerModule} from 'primeng/drawer';
+import {FieldsetModule} from 'primeng/fieldset';
+import {Observable} from 'rxjs';
+import {ActiveWmsLayer} from '../../models/layer.model';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   selector: 'app-layer-legend-drawer',

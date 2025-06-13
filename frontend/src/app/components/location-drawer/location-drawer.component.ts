@@ -1,29 +1,23 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DividerModule } from 'primeng/divider';
-import { DrawerModule } from 'primeng/drawer';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { TabsModule } from 'primeng/tabs';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom, Observable } from 'rxjs';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {DividerModule} from 'primeng/divider';
+import {DrawerModule} from 'primeng/drawer';
+import {InputGroup} from 'primeng/inputgroup';
+import {InputTextModule} from 'primeng/inputtext';
+import {TableModule} from 'primeng/table';
+import {TabsModule} from 'primeng/tabs';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom, Observable} from 'rxjs';
 
-import { Constants } from '../../models/constants';
-import { LocationRequest, LocationResponse } from '../../models/location.model';
-import { BackendPublicService } from '../../services/backend-public.service';
-import { StateService } from '../../services/state.service';
+import {Constants} from '../../models/constants';
+import {LocationRequest, LocationResponse} from '../../models/location.model';
+import {BackendPublicService} from '../../services/backend-public.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,

@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 
 import * as L from 'leaflet';
 
-import { BaseLayer } from '../../models/base-layer.model';
+import {BaseLayer} from '../../models/base-layer.model';
 
 @Component({
   standalone: true,

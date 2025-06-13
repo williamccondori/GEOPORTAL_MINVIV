@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
-import { AccordionModule } from 'primeng/accordion';
-import { CardModule } from 'primeng/card';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
+import {AccordionModule} from 'primeng/accordion';
+import {CardModule} from 'primeng/card';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
 
 @Component({
   standalone: true,
@@ -10,4 +10,5 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
   imports: [AccordionModule, CardModule, ScrollPanelModule],
   templateUrl: './summary-control.component.html',
 })
-export class SummaryControlComponent {}
+export class SummaryControlComponent {
+}

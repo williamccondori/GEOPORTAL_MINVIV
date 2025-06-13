@@ -29,16 +29,16 @@
           pSize="large"
         />
         @if (passwordControl.hasError('required') && passwordControl.touched) {
-          <p-message
-            severity="error"
-            text="La contraseña es obligatoria."
-          ></p-message>
+        <p-message
+          severity="error"
+          text="La contraseña es obligatoria."
+        ></p-message>
         }
         @if (passwordControl.hasError('pattern') && passwordControl.touched) {
-          <p-message
-            severity="error"
-            text="Debe tener 6-20 caracteres, una mayúscula, una minúscula y un número."
-          ></p-message>
+        <p-message
+          severity="error"
+          text="Debe tener 6-20 caracteres, una mayúscula, una minúscula y un número."
+        ></p-message>
         }
       </div>
       <p-button

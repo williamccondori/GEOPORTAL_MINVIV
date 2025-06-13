@@ -1,16 +1,16 @@
-import { registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {registerLocaleData} from '@angular/common';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import localeEsPe from '@angular/common/locales/es-PE';
-import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter } from '@angular/router';
+import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {provideRouter} from '@angular/router';
 
-import { definePreset } from '@primeng/themes';
+import {definePreset} from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
-import { providePrimeNG } from 'primeng/config';
+import {providePrimeNG} from 'primeng/config';
 
-import { routes } from './app.routes';
-import { authInterceptor } from './auth.interceptor';
+import {routes} from './app.routes';
+import {authInterceptor} from './auth.interceptor';
 
 registerLocaleData(localeEsPe, 'es-PE');
 
@@ -44,7 +44,7 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     {

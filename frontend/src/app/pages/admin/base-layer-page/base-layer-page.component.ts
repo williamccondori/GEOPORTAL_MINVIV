@@ -1,21 +1,21 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogService } from 'primeng/dynamicdialog';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom, Subscription } from 'rxjs';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {DialogService} from 'primeng/dynamicdialog';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {InputTextModule} from 'primeng/inputtext';
+import {Table, TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom, Subscription} from 'rxjs';
 
-import { BaseLayerFormComponent } from '../../../components/admin/base-layer-form/base-layer-form.component';
-import { BaseLayer } from '../../../models/base-layer.model';
-import { Constants } from '../../../models/constants';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
+import {BaseLayerFormComponent} from '../../../components/admin/base-layer-form/base-layer-form.component';
+import {BaseLayer} from '../../../models/base-layer.model';
+import {Constants} from '../../../models/constants';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
 
 @Component({
   standalone: true,

@@ -14,10 +14,10 @@
       placeholder="Seleccione una categoría"
     ></p-tree-select>
     @if (
-      formGroup.get('categoryParent')?.errors?.['required'] &&
-      formGroup.get('categoryParent')?.touched
+    formGroup.get('categoryParent')?.errors?.['required'] &&
+    formGroup.get('categoryParent')?.touched
     ) {
-      <small class="app-description-error">La categoría es obligatoria.</small>
+    <small class="app-description-error">La categoría es obligatoria.</small>
     }
   </div>
   <div class="app-form-group">
@@ -31,12 +31,12 @@
       [fluid]="true"
     />
     @if (formGroup.get('code')?.errors?.['required'] && formGroup.get('code')?.touched) {
-      <small class="app-description-error">El código es obligatorio.</small>
+    <small class="app-description-error">El código es obligatorio.</small>
     }
     @if (formGroup.get('code')?.errors?.['pattern']) {
-      <small class="app-description-error">
-        El código debe contener solo letras, números y guiones bajos.
-      </small>
+    <small class="app-description-error">
+      El código debe contener solo letras, números y guiones bajos.
+    </small>
     }
   </div>
   <div class="app-form-group">
@@ -50,7 +50,7 @@
       [fluid]="true"
     />
     @if (formGroup.get('name')?.errors?.['required'] && formGroup.get('name')?.touched) {
-      <small class="app-description-error">El nombre es obligatorio.</small>
+    <small class="app-description-error">El nombre es obligatorio.</small>
     }
   </div>
   <div class="app-form-group">
@@ -66,9 +66,9 @@
       [fluid]="true"
     ></textarea>
     @if (
-      formGroup.get('description')?.errors?.['required'] && formGroup.get('description')?.touched
+    formGroup.get('description')?.errors?.['required'] && formGroup.get('description')?.touched
     ) {
-      <small class="app-description-error"> La descripción es obligatoria. </small>
+    <small class="app-description-error"> La descripción es obligatoria. </small>
     }
   </div>
   <div class="app-form-group">
@@ -88,9 +88,9 @@
     >
       <ng-template #content>
         @for (item of files; track item) {
-          <div class="file-list-item">
-            <span>
-              <b>{{ item.name }}</b>
+        <div class="file-list-item">
+          <span>
+            <b>{{ item.name }}</b>
               ({{ item.size | number }} bytes)
             </span>
             <p-button
@@ -104,10 +104,10 @@
       </ng-template>
     </p-fileupload>
     @if (
-      formGroup.get('shapeFileName')?.errors?.['required'] &&
-      formGroup.get('shapeFileName')?.touched
+    formGroup.get('shapeFileName')?.errors?.['required'] &&
+    formGroup.get('shapeFileName')?.touched
     ) {
-      <small class="app-description-error"> El archivo SHAPEFILE es obligatorio. </small>
+    <small class="app-description-error"> El archivo SHAPEFILE es obligatorio. </small>
     }
   </div>
   <p-button

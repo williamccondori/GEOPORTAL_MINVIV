@@ -1,21 +1,21 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
-import { BaseLayer } from '../models/base-layer.model';
-import { InitialSettings } from '../models/initial-settings.model';
-import { LocationRequest, LocationResponse } from '../models/location.model';
-import { WebMapServiceInformation } from '../models/wms-info.model';
+import {BaseLayer} from '../models/base-layer.model';
+import {InitialSettings} from '../models/initial-settings.model';
+import {LocationRequest, LocationResponse} from '../models/location.model';
+import {WebMapServiceInformation} from '../models/wms-info.model';
 
-import { CategoryNode } from '../models/category.model';
-import { ChatResponse } from '../models/chatbot.model';
+import {CategoryNode} from '../models/category.model';
+import {ChatResponse} from '../models/chatbot.model';
 import {
   InternalLayer,
   LayerInformationTable,
   WebMapServiceFeature,
   WebMapServiceFeatureRequest,
 } from '../models/layer.model';
-import { ApiService } from './api.service';
+import {ApiService} from './api.service';
 
 @Injectable({
   providedIn: 'root',

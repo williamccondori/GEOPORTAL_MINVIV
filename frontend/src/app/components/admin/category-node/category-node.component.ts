@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
 
-import { CategoryNode } from '../../../models/category.model';
+import {CategoryNode} from '../../../models/category.model';
 
 @Component({
   selector: 'app-category-node',

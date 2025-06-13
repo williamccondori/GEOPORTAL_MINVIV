@@ -1,18 +1,10 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {Component, inject} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextModule } from 'primeng/inputtext';
-
-import { View } from '../../../models/view.model';
-import { WmsLayer } from '../../../models/wms-layer.model';
+import {ButtonModule} from 'primeng/button';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {InputTextModule} from 'primeng/inputtext';
+import {WmsLayer} from '../../../models/wms-layer.model';
 
 @Component({
   standalone: true,

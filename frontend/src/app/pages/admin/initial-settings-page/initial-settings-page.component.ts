@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
-import { InitialSettingsFormComponent } from '../../../components/admin/initial-settings-form/initial-settings-form.component';
+import {
+  InitialSettingsFormComponent
+} from '../../../components/admin/initial-settings-form/initial-settings-form.component';
 
 @Component({
   standalone: true,
@@ -8,4 +10,5 @@ import { InitialSettingsFormComponent } from '../../../components/admin/initial-
   imports: [InitialSettingsFormComponent],
   templateUrl: './initial-settings-page.component.html',
 })
-export class InitialSettingsPageComponent {}
+export class InitialSettingsPageComponent {
+}

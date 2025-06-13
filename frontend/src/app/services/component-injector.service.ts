@@ -26,7 +26,7 @@ export class ComponentInjectorService {
     this.appRef.attachView(componentRef.hostView);
     const element = componentRef.location.nativeElement as HTMLElement;
 
-    return { element, ref: componentRef };
+    return {element, ref: componentRef};
   }
 
   destroyComponent<T>(ref: ComponentRef<T>): void {

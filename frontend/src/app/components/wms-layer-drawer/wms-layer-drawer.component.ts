@@ -1,35 +1,26 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { DrawerModule } from 'primeng/drawer';
-import { DialogService } from 'primeng/dynamicdialog';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom, Observable } from 'rxjs';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {DividerModule} from 'primeng/divider';
+import {DrawerModule} from 'primeng/drawer';
+import {DialogService} from 'primeng/dynamicdialog';
+import {FieldsetModule} from 'primeng/fieldset';
+import {InputGroupModule} from 'primeng/inputgroup';
+import {InputTextModule} from 'primeng/inputtext';
+import {TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom, Observable} from 'rxjs';
 
-import { Constants } from '../../models/constants';
-import {
-  WebMapServiceInformation,
-  WebMapServiceInformationTable,
-} from '../../models/wms-info.model';
-import { BackendPublicService } from '../../services/backend-public.service';
-import { StateService } from '../../services/state.service';
-import { WmsLayerListComponent } from '../wms-layer-list/wms-layer-list.component';
-import { LayerService } from '../../services/layer.service';
-import { ActiveWmsLayer } from '../../models/layer.model';
+import {Constants} from '../../models/constants';
+import {WebMapServiceInformation, WebMapServiceInformationTable,} from '../../models/wms-info.model';
+import {BackendPublicService} from '../../services/backend-public.service';
+import {StateService} from '../../services/state.service';
+import {WmsLayerListComponent} from '../wms-layer-list/wms-layer-list.component';
+import {LayerService} from '../../services/layer.service';
+import {ActiveWmsLayer} from '../../models/layer.model';
 
 @Component({
   standalone: true,
@@ -185,12 +176,12 @@ export class WmsLayerDrawerComponent {
     wmsInformation: WebMapServiceInformation,
   ): WebMapServiceInformationTable[] {
     return [
-      { key: 'URL', value: wmsInformation.url },
-      { key: 'Nombre', value: wmsInformation.name },
-      { key: 'Título', value: wmsInformation.title },
-      { key: 'Versión', value: wmsInformation.version },
-      { key: 'Descripción', value: wmsInformation.description },
-      { key: 'Palabras clave', value: wmsInformation.keywords.join(', ') },
+      {key: 'URL', value: wmsInformation.url},
+      {key: 'Nombre', value: wmsInformation.name},
+      {key: 'Título', value: wmsInformation.title},
+      {key: 'Versión', value: wmsInformation.version},
+      {key: 'Descripción', value: wmsInformation.description},
+      {key: 'Palabras clave', value: wmsInformation.keywords.join(', ')},
       {
         key: 'Operaciones disponibles',
         value: wmsInformation.operations.join(', '),

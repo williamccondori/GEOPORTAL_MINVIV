@@ -1,29 +1,23 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { MessageService, TreeNode } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { TreeSelectModule } from 'primeng/treeselect';
+import {MessageService, TreeNode} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {InputText} from 'primeng/inputtext';
+import {TextareaModule} from 'primeng/textarea';
+import {TreeSelectModule} from 'primeng/treeselect';
 
-import { FileUploadErrorEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
-import { firstValueFrom } from 'rxjs';
-import { CategoryNode } from '../../../models/category.model';
-import { Response } from '../../../models/response.model';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
-import { HttpResponse } from '@angular/common/http';
-import { LayerForm } from '../../../models/layer.model';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Constants } from '../../../models/constants';
+import {FileUploadErrorEvent, FileUploadEvent, FileUploadModule} from 'primeng/fileupload';
+import {firstValueFrom} from 'rxjs';
+import {CategoryNode} from '../../../models/category.model';
+import {Response} from '../../../models/response.model';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
+import {HttpResponse} from '@angular/common/http';
+import {LayerForm} from '../../../models/layer.model';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {Constants} from '../../../models/constants';
 
 @Component({
   selector: 'app-layer-form',
@@ -95,13 +89,13 @@ export class LayerFormComponent implements OnInit {
 
   onUpload(event: FileUploadEvent): void {
     // Agregar el archivo al arreglo de archivos.
-    const { files } = event;
+    const {files} = event;
     if (files && files.length > 0) {
       this.files = files;
     }
 
     // Agregar al formulario el nombre del archivo guardado.
-    const { originalEvent } = event;
+    const {originalEvent} = event;
     if (originalEvent instanceof HttpResponse) {
       const responseAPI: Response<string> = originalEvent?.body;
       this.formGroup.patchValue({
@@ -111,7 +105,7 @@ export class LayerFormComponent implements OnInit {
   }
 
   onUploadError(event: FileUploadErrorEvent): void {
-    const { error } = event;
+    const {error} = event;
     const errorAPI: Response<string> | null = error?.error;
     this.messageService.add({
       severity: 'error',

@@ -1,9 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 
-import { TagModule } from 'primeng/tag';
+import {TagModule} from 'primeng/tag';
 
-import { MapInformation } from '../../models/map.model';
-import { StateService } from '../../services/state.service';
+import {MapInformation} from '../../models/map.model';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,

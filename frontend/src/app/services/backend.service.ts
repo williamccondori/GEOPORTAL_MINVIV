@@ -1,16 +1,16 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
-import { BaseLayer } from '../models/base-layer.model';
-import { Category, CategoryNode } from '../models/category.model';
-import { InitialSettings } from '../models/initial-settings.model';
-import { Role } from '../models/role.model';
-import { User } from '../models/user.model';
-import { WmsLayer } from '../models/wms-layer.model';
+import {BaseLayer} from '../models/base-layer.model';
+import {Category, CategoryNode} from '../models/category.model';
+import {InitialSettings} from '../models/initial-settings.model';
+import {Role} from '../models/role.model';
+import {User} from '../models/user.model';
+import {WmsLayer} from '../models/wms-layer.model';
 
-import { ApiService } from './api.service';
-import { Layer, LayerForm } from '../models/layer.model';
+import {ApiService} from './api.service';
+import {Layer, LayerForm} from '../models/layer.model';
 
 @Injectable({
   providedIn: 'root',

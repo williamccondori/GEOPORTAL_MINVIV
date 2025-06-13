@@ -1,11 +1,11 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { DrawerModule } from 'primeng/drawer';
-import { TabViewModule } from 'primeng/tabview';
-import { TableModule } from 'primeng/table';
-import { map, Observable } from 'rxjs';
-import { WebMapServiceFeature } from '../../models/layer.model';
-import { StateService } from '../../services/state.service';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject} from '@angular/core';
+import {DrawerModule} from 'primeng/drawer';
+import {TabViewModule} from 'primeng/tabview';
+import {TableModule} from 'primeng/table';
+import {map, Observable} from 'rxjs';
+import {WebMapServiceFeature} from '../../models/layer.model';
+import {StateService} from '../../services/state.service';
 
 @Component({
   selector: 'app-layer-property-drawer',

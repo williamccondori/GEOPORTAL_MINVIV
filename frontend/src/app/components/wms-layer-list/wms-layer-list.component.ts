@@ -1,21 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { FieldsetModule } from 'primeng/fieldset';
-import { IconFieldModule } from 'primeng/iconfield';
-import { ImageModule } from 'primeng/image';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { RippleModule } from 'primeng/ripple';
-import { SelectModule } from 'primeng/select';
-import { Table, TableModule } from 'primeng/table';
+import {ButtonModule} from 'primeng/button';
+import {DynamicDialogConfig} from 'primeng/dynamicdialog';
+import {FieldsetModule} from 'primeng/fieldset';
+import {IconFieldModule} from 'primeng/iconfield';
+import {ImageModule} from 'primeng/image';
+import {InputIconModule} from 'primeng/inputicon';
+import {InputTextModule} from 'primeng/inputtext';
+import {RippleModule} from 'primeng/ripple';
+import {SelectModule} from 'primeng/select';
+import {Table, TableModule} from 'primeng/table';
 
-import { WebMapServiceLayer } from '../../models/wms-info.model';
-import { WmsLayerExtensionMapComponent } from '../wms-layer-extension-map/wms-layer-extension-map.component';
-import { LayerService } from '../../services/layer.service';
-import { UserWmsLayer } from '../../models/layer.model';
+import {WebMapServiceLayer} from '../../models/wms-info.model';
+import {WmsLayerExtensionMapComponent} from '../wms-layer-extension-map/wms-layer-extension-map.component';
+import {LayerService} from '../../services/layer.service';
+import {UserWmsLayer} from '../../models/layer.model';
 
 @Component({
   standalone: true,

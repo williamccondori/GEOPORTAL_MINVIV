@@ -1,25 +1,19 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { Router } from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {Router} from '@angular/router';
 
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom } from 'rxjs';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {InputTextModule} from 'primeng/inputtext';
+import {MessageModule} from 'primeng/message';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom} from 'rxjs';
 
-import { Constants } from '../../models/constants';
-import { Login } from '../../models/login.model';
-import { AuthService } from '../../services/auth.service';
-import { StateService } from '../../services/state.service';
+import {Constants} from '../../models/constants';
+import {Login} from '../../models/login.model';
+import {AuthService} from '../../services/auth.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,

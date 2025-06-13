@@ -59,9 +59,9 @@
       <ng-template pTemplate="header">
         <tr>
           @for (column of columns; track column) {
-            @if (column !== '_id') {
-              <th>{{ column }}</th>
-            }
+          @if (column !== '_id') {
+          <th>{{ column }}</th>
+          }
           }
           <th>Acciones</th>
         </tr>
@@ -72,9 +72,9 @@
       >
         <tr>
           @for (column of columns; track column) {
-            @if (column !== '_id') {
-              <td>{{ view[column] }}</td>
-            }
+          @if (column !== '_id') {
+          <td>{{ view[column] }}</td>
+          }
           }
           <td>
             <p-button

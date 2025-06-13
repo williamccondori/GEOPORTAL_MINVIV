@@ -1,12 +1,12 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ToastModule } from 'primeng/toast';
-import { Subscription } from 'rxjs';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { StateService } from './services/state.service';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {DialogService} from 'primeng/dynamicdialog';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {ToastModule} from 'primeng/toast';
+import {Subscription} from 'rxjs';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {StateService} from './services/state.service';
 
 @Component({
   selector: 'app-root',

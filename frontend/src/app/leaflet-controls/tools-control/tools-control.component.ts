@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject} from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
-import { TooltipModule } from 'primeng/tooltip';
+import {ButtonModule} from 'primeng/button';
+import {DialogService} from 'primeng/dynamicdialog';
+import {TooltipModule} from 'primeng/tooltip';
 
-import { ShareFormComponent } from '../../components/share-form/share-form.component';
-import { StateService } from '../../services/state.service';
+import {ShareFormComponent} from '../../components/share-form/share-form.component';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,

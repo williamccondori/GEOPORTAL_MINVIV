@@ -15,19 +15,19 @@
   >
     <ng-template pTemplate="content">
       @if (!uploadedFile) {
-        <div class="upload-area">
-          <i class="pi pi-cloud-upload upload-icon"></i>
-          <p class="upload-text">{{ placeholder }}</p>
+      <div class="upload-area">
+        <i class="pi pi-cloud-upload upload-icon"></i>
+        <p class="upload-text">{{ placeholder }}</p>
           <p class="upload-hint">{{ hint }}</p>
         </div>
       }
 
       @if (uploadedFile) {
-        <div class="file-info">
-          <div class="file-details">
-            <i class="pi pi-file file-icon"></i>
-            <div class="file-text">
-              <span class="file-name"> {{ uploadedFile.name }}{{ getFileCount() }} </span>
+      <div class="file-info">
+        <div class="file-details">
+          <i class="pi pi-file file-icon"></i>
+          <div class="file-text">
+            <span class="file-name"> {{ uploadedFile.name }}{{ getFileCount() }} </span>
               <span class="file-size">{{ getFileSize() }}</span>
             </div>
           </div>

@@ -1,23 +1,23 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
 
-import { CardModule } from 'primeng/card';
-import { DrawerModule } from 'primeng/drawer';
+import {CardModule} from 'primeng/card';
+import {DrawerModule} from 'primeng/drawer';
 
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TableModule } from 'primeng/table';
-import { TooltipModule } from 'primeng/tooltip';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { firstValueFrom, Observable } from 'rxjs';
-import { CategoryNode } from '../../models/category.model';
-import { Constants } from '../../models/constants';
-import { ActiveWmsLayer, InternalLayer } from '../../models/layer.model';
-import { BackendPublicService } from '../../services/backend-public.service';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ConfirmationService, MessageService, TreeNode} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TableModule} from 'primeng/table';
+import {TooltipModule} from 'primeng/tooltip';
+import {TreeSelectModule} from 'primeng/treeselect';
+import {firstValueFrom, Observable} from 'rxjs';
+import {CategoryNode} from '../../models/category.model';
+import {Constants} from '../../models/constants';
+import {ActiveWmsLayer, InternalLayer} from '../../models/layer.model';
+import {BackendPublicService} from '../../services/backend-public.service';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,
@@ -61,25 +61,25 @@ export class LayerDrawerComponent implements OnInit {
     this.formGroup
       .get('categoryParent')
       ?.valueChanges.subscribe(async (value: TreeNode<string> | undefined) => {
-        this.layers = [];
-        if (value) {
-          try {
-            this.stateService.setIsLoadingState(true);
-            await this.getAllLayers(value.key!);
-          } catch (e) {
-            console.error(e);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'ERROR',
-              detail: Constants.ERROR_MESSAGE,
-            });
-          } finally {
-            this.stateService.setIsLoadingState(false);
-          }
-        } else {
-          this.formGroup.get('layerId')?.setValue('');
+      this.layers = [];
+      if (value) {
+        try {
+          this.stateService.setIsLoadingState(true);
+          await this.getAllLayers(value.key!);
+        } catch (e) {
+          console.error(e);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ERROR',
+            detail: Constants.ERROR_MESSAGE,
+          });
+        } finally {
+          this.stateService.setIsLoadingState(false);
         }
-      });
+      } else {
+        this.formGroup.get('layerId')?.setValue('');
+      }
+    });
   }
 
   async onDrawerOpen(): Promise<void> {

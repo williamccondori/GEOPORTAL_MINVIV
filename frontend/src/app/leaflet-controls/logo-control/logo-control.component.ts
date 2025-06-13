@@ -1,5 +1,5 @@
-import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import {NgOptimizedImage} from '@angular/common';
+import {Component} from '@angular/core';
 
 @Component({
   standalone: true,

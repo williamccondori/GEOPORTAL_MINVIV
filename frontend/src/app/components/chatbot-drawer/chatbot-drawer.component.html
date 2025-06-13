@@ -11,14 +11,14 @@
   >
     <div class="chat-messages">
       @for (message of conversation; track message.id) {
-        <div [class]="message.isUser ? 'message-user' : 'message-me'">
-          <div class="message-content">
-            <p>{{ message.content }}</p>
+      <div [class]="message.isUser ? 'message-user' : 'message-me'">
+        <div class="message-content">
+          <p>{{ message.content }}</p>
             @if (message.isTyping) {
-              <span class="typing-indicator">...</span>
-            }
-          </div>
-        </div>
+      <span class="typing-indicator">...</span>
+      }
+      </div>
+    </div>
       }
     </div>
     <form

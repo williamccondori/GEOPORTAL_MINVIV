@@ -1,22 +1,22 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, effect } from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {Component, effect, inject} from '@angular/core';
 
-import { CardModule } from 'primeng/card';
-import { DrawerModule } from 'primeng/drawer';
+import {CardModule} from 'primeng/card';
+import {DrawerModule} from 'primeng/drawer';
 
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SelectModule } from 'primeng/select';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
-import { ActiveWmsLayer } from '../../models/layer.model';
-import { Observable } from 'rxjs';
-import { SliderModule } from 'primeng/slider';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { ButtonGroupModule } from 'primeng/buttongroup';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TableModule } from 'primeng/table';
-import { ImageModule } from 'primeng/image';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {SelectModule} from 'primeng/select';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
+import {ActiveWmsLayer} from '../../models/layer.model';
+import {Observable} from 'rxjs';
+import {SliderModule} from 'primeng/slider';
+import {ButtonModule} from 'primeng/button';
+import {TooltipModule} from 'primeng/tooltip';
+import {ButtonGroupModule} from 'primeng/buttongroup';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TableModule} from 'primeng/table';
+import {ImageModule} from 'primeng/image';
 
 interface LayerInformationItem {
   property: string;
@@ -63,7 +63,7 @@ export class LayerInfoDrawerComponent {
         this.activeWmsLayer = activeLayer;
         this.updateLayerInformation(activeLayer);
         // Update the opacity form control with the selected layer's opacity
-        this.formGroup.get('opacity')?.setValue(activeLayer.opacity, { emitEvent: false });
+        this.formGroup.get('opacity')?.setValue(activeLayer.opacity, {emitEvent: false});
       } else {
         this.activeWmsLayer = null;
         this.layerInformation = [];
@@ -84,13 +84,14 @@ export class LayerInfoDrawerComponent {
       if (currentSelectedId) {
         const stillExists = activeLayers.some((layer) => layer.id === currentSelectedId);
         if (!stillExists) {
-          this.formGroup.get('activeLayerId')?.setValue(null, { emitEvent: false });
+          this.formGroup.get('activeLayerId')?.setValue(null, {emitEvent: false});
           this.activeWmsLayer = null;
           this.layerInformation = [];
         }
       }
     });
   }
+
   onOpacityChange(id: string, opacity: number): void {
     this.layerService.updateOpacity(id, opacity);
   }
@@ -114,7 +115,7 @@ export class LayerInfoDrawerComponent {
   onRemoveActiveLayer(id: string): void {
     this.layerService.onDeleteActiveLayer(id);
     // Clear the form selection
-    this.formGroup.get('activeLayerId')?.setValue(null, { emitEvent: false });
+    this.formGroup.get('activeLayerId')?.setValue(null, {emitEvent: false});
     this.activeWmsLayer = null;
     this.layerInformation = [];
   }
@@ -129,10 +130,10 @@ export class LayerInfoDrawerComponent {
 
   private updateLayerInformation(layer: ActiveWmsLayer): void {
     this.layerInformation = [
-      { property: 'ID', value: layer.id },
-      { property: 'Nombre', value: layer.name },
-      { property: 'Título', value: layer.title },
-      { property: 'URL', value: layer.url },
+      {property: 'ID', value: layer.id},
+      {property: 'Nombre', value: layer.name},
+      {property: 'Título', value: layer.title},
+      {property: 'URL', value: layer.url},
     ];
   }
 

@@ -22,13 +22,13 @@
       </p-inputgroup>
     </form>
     @if (wmsInformationTable.length > 0) {
-      <p-fieldset legend="Información del servicio">
-        <p-table
-          [value]="wmsInformationTable"
-          autoLayout
-          stripedRows
-          showGridlines
-          [tableStyle]="{ width: '100%' }"
+    <p-fieldset legend="Información del servicio">
+      <p-table
+        [value]="wmsInformationTable"
+        autoLayout
+        stripedRows
+        showGridlines
+        [tableStyle]="{ width: '100%' }"
           size="small"
         >
           <ng-template pTemplate="header">
@@ -43,18 +43,18 @@
             <tr>
               <td>
                 <b>
-                  {{ wmsInformation.key }}
-                </b>
-              </td>
-              <td class="wrap-cell">
-                {{ wmsInformation.value }}
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <p-divider></p-divider>
-        <p-button
-          [label]="`Ver capas (${wmsInformation.layers.length})`"
+    {{ wmsInformation.key }}
+    </b>
+  </td>
+  <td class="wrap-cell">
+    {{ wmsInformation.value }}
+    </td>
+  </tr>
+</ng-template>
+</p-table>
+<p-divider></p-divider>
+<p-button
+[label]="`Ver capas (${wmsInformation.layers.length})`"
           fluid
           icon="pi pi-eye"
           (click)="onShowLayers()"

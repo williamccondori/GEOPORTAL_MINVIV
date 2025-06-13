@@ -1,28 +1,22 @@
 /* eslint-disable complexity */
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
 
-import { DrawerModule } from 'primeng/drawer';
+import {DrawerModule} from 'primeng/drawer';
 
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { firstValueFrom, Observable } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
-import { ChatMessage, ChatResponse } from '../../models/chatbot.model';
-import { Constants } from '../../models/constants';
-import { BackendPublicService } from '../../services/backend-public.service';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {InputGroupModule} from 'primeng/inputgroup';
+import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
+import {InputTextModule} from 'primeng/inputtext';
+import {firstValueFrom, Observable} from 'rxjs';
+import {v4 as uuidv4} from 'uuid';
+import {ChatMessage, ChatResponse} from '../../models/chatbot.model';
+import {Constants} from '../../models/constants';
+import {BackendPublicService} from '../../services/backend-public.service';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   standalone: true,
@@ -180,7 +174,7 @@ export class ChatbotDrawerComponent implements OnInit {
         this.stateService.setIsLoadingState(true);
 
         const formValues = this.formGroup.getRawValue();
-        const { message } = formValues;
+        const {message} = formValues;
 
         // Add user message to conversation immediately
         if (message) {

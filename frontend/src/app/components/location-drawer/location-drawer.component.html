@@ -32,35 +32,35 @@
           </form>
           <p-divider></p-divider>
           @if (locations.length > 0) {
-            <div class="app-space-vertical">
-              <div>
-                <p-button
-                  label="Limpiar"
-                  severity="danger"
-                  type="button"
-                  icon="pi pi-trash"
-                  fluid
-                  (click)="onClear()"
-                />
-              </div>
-              <p-table
-                [value]="locations"
-                [stripedRows]="true"
-                [showGridlines]="true"
-                size="small"
+          <div class="app-space-vertical">
+            <div>
+              <p-button
+                label="Limpiar"
+                severity="danger"
+                type="button"
+                icon="pi pi-trash"
+                fluid
+                (click)="onClear()"
+              />
+            </div>
+            <p-table
+              [value]="locations"
+              [stripedRows]="true"
+              [showGridlines]="true"
+              size="small"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Nombre</th>
+                  <th>Ver</th>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-location
               >
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Ver</th>
-                  </tr>
-                </ng-template>
-                <ng-template
-                  pTemplate="body"
-                  let-location
-                >
-                  <tr>
-                    <td>{{ location.name }}</td>
+                <tr>
+                  <td>{{ location.name }}</td>
                     <td>
                       <p-button
                         icon="pi pi-eye"

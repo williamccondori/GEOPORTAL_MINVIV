@@ -139,9 +139,9 @@
         >
           <ul>
             @for (keyword of layer.keywords; track keyword) {
-              <li>
-                {{ keyword }}
-              </li>
+            <li>
+            {{ keyword }}
+            </li>
             }
           </ul>
         </p-fieldset>
@@ -151,24 +151,24 @@
         >
           <ul class="app-list-description">
             @for (style of layer.styles; track style.title) {
-              <li>
-                <div>{{ style.title }}</div>
+            <li>
+              <div>{{ style.title }}</div>
                 <div>
                   <a
                     class="wrap-cell"
                     href="{{ style.legend }}"
                     target="_blank"
                   >
-                    {{ style.legend }}
-                  </a>
-                </div>
-                <div class="p-1">
-                  <p-image
-                    [src]="style.legend"
-                    [alt]="style.title"
-                  />
-                </div>
-              </li>
+            {{ style.legend }}
+            </a>
+          </div>
+          <div class="p-1">
+            <p-image
+              [src]="style.legend"
+              [alt]="style.title"
+            />
+          </div>
+        </li>
             }
           </ul>
         </p-fieldset>

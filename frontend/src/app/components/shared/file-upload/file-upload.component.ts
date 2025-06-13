@@ -1,14 +1,8 @@
-import { Component, Input, forwardRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NG_VALIDATORS,
-  Validator,
-  ValidationErrors,
-} from '@angular/forms';
-import { FileUploadModule } from 'primeng/fileupload';
-import { MessageService } from 'primeng/api';
+import {Component, forwardRef, inject, Input} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator,} from '@angular/forms';
+import {FileUploadModule} from 'primeng/fileupload';
+import {MessageService} from 'primeng/api';
 
 type FileValue = File | File[] | null;
 
@@ -78,7 +72,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
   // Validator implementation
   validate(): ValidationErrors | null {
     if (this.required && !this.value) {
-      return { required: true };
+      return {required: true};
     }
 
     if (this.value) {
@@ -87,7 +81,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
       for (const file of files) {
         // Check file type
         if (this.accept && !this.isFileTypeValid(file)) {
-          return { invalidFileType: { allowedTypes: this.accept } };
+          return {invalidFileType: {allowedTypes: this.accept}};
         }
 
         // Check file size

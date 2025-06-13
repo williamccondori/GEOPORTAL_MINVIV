@@ -1,16 +1,16 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
-import { firstValueFrom, Subscription } from 'rxjs';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {DialogService} from 'primeng/dynamicdialog';
+import {firstValueFrom, Subscription} from 'rxjs';
 
-import { CategoryFormComponent } from '../../../components/admin/category-form/category-form.component';
-import { CategoryNodeComponent } from '../../../components/admin/category-node/category-node.component';
-import { Category, CategoryNode, CategoryParameter } from '../../../models/category.model';
-import { Constants } from '../../../models/constants';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
+import {CategoryFormComponent} from '../../../components/admin/category-form/category-form.component';
+import {CategoryNodeComponent} from '../../../components/admin/category-node/category-node.component';
+import {Category, CategoryNode, CategoryParameter} from '../../../models/category.model';
+import {Constants} from '../../../models/constants';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
 
 @Component({
   selector: 'app-category-page',

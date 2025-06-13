@@ -1,18 +1,18 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {Component, effect, inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { ToastModule } from 'primeng/toast';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {FieldsetModule} from 'primeng/fieldset';
+import {InputGroupModule} from 'primeng/inputgroup';
+import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
+import {InputTextModule} from 'primeng/inputtext';
+import {TextareaModule} from 'primeng/textarea';
+import {ToastModule} from 'primeng/toast';
 
-import { MapInformation } from '../../models/map.model';
-import { LayerService } from '../../services/layer.service';
-import { StateService } from '../../services/state.service';
+import {MapInformation} from '../../models/map.model';
+import {LayerService} from '../../services/layer.service';
+import {StateService} from '../../services/state.service';
 
 @Component({
   selector: 'app-share-form',

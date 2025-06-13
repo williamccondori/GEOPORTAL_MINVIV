@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { ActiveWmsLayer, UserWmsLayer, ActiveGeoJsonLayer } from '../models/layer.model';
+import {Injectable, signal} from '@angular/core';
+import {ActiveGeoJsonLayer, ActiveWmsLayer, UserWmsLayer} from '../models/layer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +33,7 @@ export class LayerService {
       this.activeLayersSignal.update((layers) => [...layers, layer]);
     }
   }
+
   onDeleteActiveLayer(id: string): void {
     this.activeLayersSignal.update((layers) => layers.filter((layer) => layer.id !== id));
   }
@@ -60,7 +61,7 @@ export class LayerService {
 
   updateOpacity(id: string, opacity: number): void {
     this.activeLayersSignal.update((layers) =>
-      layers.map((layer) => (layer.id === id ? { ...layer, opacity } : layer)),
+      layers.map((layer) => (layer.id === id ? {...layer, opacity} : layer)),
     );
   }
 
@@ -70,7 +71,7 @@ export class LayerService {
       if (layerIndex === -1) return layers;
 
       const maxZIndex = Math.max(...layers.map((l) => l.zIndex), 0);
-      return layers.map((layer) => (layer.id === id ? { ...layer, zIndex: maxZIndex + 1 } : layer));
+      return layers.map((layer) => (layer.id === id ? {...layer, zIndex: maxZIndex + 1} : layer));
     });
   }
 
@@ -80,7 +81,7 @@ export class LayerService {
       if (layerIndex === -1) return layers;
 
       const minZIndex = Math.min(...layers.map((l) => l.zIndex), 1);
-      return layers.map((layer) => (layer.id === id ? { ...layer, zIndex: minZIndex - 1 } : layer));
+      return layers.map((layer) => (layer.id === id ? {...layer, zIndex: minZIndex - 1} : layer));
     });
   }
 
@@ -98,9 +99,9 @@ export class LayerService {
 
       return layers.map((layer) => {
         if (layer.id === currentLayer.id) {
-          return { ...layer, zIndex: nextLayer.zIndex };
+          return {...layer, zIndex: nextLayer.zIndex};
         } else if (layer.id === nextLayer.id) {
-          return { ...layer, zIndex: currentLayer.zIndex };
+          return {...layer, zIndex: currentLayer.zIndex};
         }
         return layer;
       });
@@ -121,9 +122,9 @@ export class LayerService {
 
       return layers.map((layer) => {
         if (layer.id === currentLayer.id) {
-          return { ...layer, zIndex: prevLayer.zIndex };
+          return {...layer, zIndex: prevLayer.zIndex};
         } else if (layer.id === prevLayer.id) {
-          return { ...layer, zIndex: currentLayer.zIndex };
+          return {...layer, zIndex: currentLayer.zIndex};
         }
         return layer;
       });

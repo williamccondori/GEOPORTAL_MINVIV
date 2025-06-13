@@ -1,22 +1,22 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogService } from 'primeng/dynamicdialog';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { Table, TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { firstValueFrom, Subscription } from 'rxjs';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {DialogService} from 'primeng/dynamicdialog';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {InputTextModule} from 'primeng/inputtext';
+import {Table, TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {firstValueFrom, Subscription} from 'rxjs';
 
-import { LayerFormComponent } from '../../../components/admin/layer-form/layer-form.component';
-import { Constants } from '../../../models/constants';
-import { Layer, LayerForm } from '../../../models/layer.model';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
-import { TagModule } from 'primeng/tag';
+import {LayerFormComponent} from '../../../components/admin/layer-form/layer-form.component';
+import {Constants} from '../../../models/constants';
+import {Layer, LayerForm} from '../../../models/layer.model';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
+import {TagModule} from 'primeng/tag';
 
 @Component({
   selector: 'app-layer-page',

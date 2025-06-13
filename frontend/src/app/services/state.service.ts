@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 
-import { BaseLayer } from '../models/base-layer.model';
-import { WebMapServiceFeature } from '../models/layer.model';
-import { MapInformation } from '../models/map.model';
+import {BaseLayer} from '../models/base-layer.model';
+import {WebMapServiceFeature} from '../models/layer.model';
+import {MapInformation} from '../models/map.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +47,7 @@ export class StateService {
   private layerPropertyDrawerStateSubject = new BehaviorSubject<{
     visible: boolean;
     data: WebMapServiceFeature[][];
-  }>({ visible: false, data: [] });
+  }>({visible: false, data: []});
   layerPropertyDrawerState$ = this.layerPropertyDrawerStateSubject.asObservable();
   layerLegendDrawerStateSubject = new BehaviorSubject<boolean>(false);
   layerLegendDrawerState$ = this.layerLegendDrawerStateSubject.asObservable();

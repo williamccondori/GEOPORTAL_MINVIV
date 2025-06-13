@@ -1,21 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { firstValueFrom } from 'rxjs';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {InputTextModule} from 'primeng/inputtext';
+import {firstValueFrom} from 'rxjs';
 
-import { Constants } from '../../../models/constants';
-import { User } from '../../../models/user.model';
-import { BackendService } from '../../../services/backend.service';
+import {Constants} from '../../../models/constants';
+import {User} from '../../../models/user.model';
+import {BackendService} from '../../../services/backend.service';
 
 @Component({
   standalone: true,

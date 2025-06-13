@@ -1,27 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { MessageService, TreeNode } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { firstValueFrom } from 'rxjs';
+import {MessageService, TreeNode} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {InputTextModule} from 'primeng/inputtext';
+import {SelectModule} from 'primeng/select';
+import {TextareaModule} from 'primeng/textarea';
+import {TreeSelectModule} from 'primeng/treeselect';
+import {firstValueFrom} from 'rxjs';
 
-import { Category, CategoryNode, CategoryParameter } from '../../../models/category.model';
-import { Constants } from '../../../models/constants';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
+import {Category, CategoryNode, CategoryParameter} from '../../../models/category.model';
+import {Constants} from '../../../models/constants';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
 
 @Component({
   selector: 'app-category-form',
@@ -134,7 +128,7 @@ export class CategoryFormComponent implements OnInit {
 
     const flatten = (nodes: TreeNode<string>[]) => {
       for (const node of nodes) {
-        flat.push({ ...node });
+        flat.push({...node});
         if (node.children && node.children.length > 0) {
           flatten(node.children);
         }

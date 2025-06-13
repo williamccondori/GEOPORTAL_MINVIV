@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
 
 import * as L from 'leaflet';
 

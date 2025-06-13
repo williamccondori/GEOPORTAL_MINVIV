@@ -1,11 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 
-import { jwtDecode } from 'jwt-decode';
-import { Observable } from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
+import {Observable} from 'rxjs';
 
-import { AccessToken, Login } from '../models/login.model';
+import {AccessToken, Login} from '../models/login.model';
 
-import { ApiService } from './api.service';
+import {ApiService} from './api.service';
 
 @Injectable({
   providedIn: 'root',

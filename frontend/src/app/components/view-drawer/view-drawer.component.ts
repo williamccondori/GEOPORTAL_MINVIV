@@ -1,18 +1,18 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {Component, inject, OnDestroy} from '@angular/core';
 
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DrawerModule } from 'primeng/drawer';
-import { DialogService } from 'primeng/dynamicdialog';
-import { TableModule } from 'primeng/table';
-import { Subscription } from 'rxjs';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {DrawerModule} from 'primeng/drawer';
+import {DialogService} from 'primeng/dynamicdialog';
+import {TableModule} from 'primeng/table';
+import {Subscription} from 'rxjs';
 
-import { Constants } from '../../models/constants';
-import { View } from '../../models/view.model';
-import { StateService } from '../../services/state.service';
-import { ViewFormComponent } from '../view-form/view-form.component';
+import {Constants} from '../../models/constants';
+import {View} from '../../models/view.model';
+import {StateService} from '../../services/state.service';
+import {ViewFormComponent} from '../view-form/view-form.component';
 
 @Component({
   standalone: true,

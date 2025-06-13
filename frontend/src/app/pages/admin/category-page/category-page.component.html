@@ -8,13 +8,13 @@
   </div>
   <ul class="process-list">
     @for (item of categories; track item.id) {
-      <li>
-        <app-category-node
-          [node]="item"
-          [onOpenForm]="onOpenForm.bind(this)"
-          [onDelete]="onDelete.bind(this)"
-        ></app-category-node>
-      </li>
+    <li>
+      <app-category-node
+        [node]="item"
+        [onOpenForm]="onOpenForm.bind(this)"
+        [onDelete]="onDelete.bind(this)"
+      ></app-category-node>
+    </li>
     }
   </ul>
 </div>

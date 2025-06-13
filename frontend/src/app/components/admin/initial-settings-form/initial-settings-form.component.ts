@@ -1,28 +1,22 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 
-import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
-import { ToastModule } from 'primeng/toast';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { firstValueFrom } from 'rxjs';
+import {MessageService} from 'primeng/api';
+import {ButtonModule} from 'primeng/button';
+import {FieldsetModule} from 'primeng/fieldset';
+import {InputTextModule} from 'primeng/inputtext';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {SelectModule} from 'primeng/select';
+import {ToastModule} from 'primeng/toast';
+import {ToggleSwitchModule} from 'primeng/toggleswitch';
+import {firstValueFrom} from 'rxjs';
 
-import { BaseLayer } from '../../../models/base-layer.model';
-import { Constants } from '../../../models/constants';
-import { InitialSettings } from '../../../models/initial-settings.model';
-import { WmsLayer } from '../../../models/wms-layer.model';
-import { BackendService } from '../../../services/backend.service';
-import { StateService } from '../../../services/state.service';
+import {BaseLayer} from '../../../models/base-layer.model';
+import {Constants} from '../../../models/constants';
+import {InitialSettings} from '../../../models/initial-settings.model';
+import {WmsLayer} from '../../../models/wms-layer.model';
+import {BackendService} from '../../../services/backend.service';
+import {StateService} from '../../../services/state.service';
 
 @Component({
   standalone: true,

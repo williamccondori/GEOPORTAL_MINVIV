@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { TooltipModule } from 'primeng/tooltip';
+import {Component} from '@angular/core';
+import {TooltipModule} from 'primeng/tooltip';
 
 @Component({
   selector: 'app-map-sidebar',
@@ -7,4 +7,5 @@ import { TooltipModule } from 'primeng/tooltip';
   templateUrl: './map-sidebar.component.html',
   styleUrl: './map-sidebar.component.css',
 })
-export class MapSidebarComponent {}
+export class MapSidebarComponent {
+}
