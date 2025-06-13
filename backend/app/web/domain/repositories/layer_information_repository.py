@@ -12,3 +12,6 @@ class LayerInformationRepository(ABC):
     @abstractmethod
     async def get_geometry_and_table(self, collection_name, filters) -> dict:
         pass
+
+    async def get_geojson(self, layer_id):
+        pass

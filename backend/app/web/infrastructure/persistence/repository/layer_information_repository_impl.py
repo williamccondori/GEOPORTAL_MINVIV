@@ -80,3 +80,30 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
             "type": "FeatureCollection",
             "features": features
         }
+
+    async def get_geojson(self, layer_id: str) -> dict:
+        collection: AsyncIOMotorCollection = database.get_collection(layer_id)
+        cursor = collection.find({})
+
+        features = []
+        async for doc in cursor:
+            geometry = doc.get("geometry")
+            if not geometry or not isinstance(geometry, dict):
+                continue
+
+            properties = {
+                k: (str(v) if k == "_id" else v)
+                for k, v in doc.items()
+                if k != "geometry"
+            }
+
+            features.append({
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": properties
+            })
+
+        return {
+            "type": "FeatureCollection",
+            "features": features
+        }
