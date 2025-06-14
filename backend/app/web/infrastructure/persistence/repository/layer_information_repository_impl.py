@@ -1,6 +1,7 @@
 from collections import Counter
 from typing import Optional
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
 
 from app.shared.db.base import database
@@ -81,9 +82,12 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
             "features": features
         }
 
-    async def get_geojson(self, layer_id: str) -> dict:
-        collection: AsyncIOMotorCollection = database.get_collection(layer_id)
-        cursor = collection.find({})
+    async def get_geojson(self, layer_name: str, row_id: str) -> dict:
+        print(layer_name)
+        collection: AsyncIOMotorCollection = database.get_collection(layer_name)
+        cursor = collection.find({
+            "_id": ObjectId(row_id)
+        })
 
         features = []
         async for doc in cursor:

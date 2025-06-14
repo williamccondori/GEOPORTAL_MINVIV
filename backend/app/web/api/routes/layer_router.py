@@ -41,9 +41,10 @@ async def filter_table(
     return Response.correct(await service.filter_table(layer_id, filter_columns))
 
 
-@layer_router.get("/{layer_id}/geojson/", response_model=Response[dict])
+@layer_router.get("/{layer_id}/geojson/{row_id}", response_model=Response[dict])
 async def get_geojson(
         layer_id: str,
+        row_id: str,
         service=Depends(get_layer_service)
 ) -> Response[dict]:
-    return Response.correct(await service.get_geojson(layer_id))
+    return Response.correct(await service.get_geojson(layer_id, row_id))

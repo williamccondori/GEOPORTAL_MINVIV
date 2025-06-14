@@ -13,5 +13,5 @@ class LayerInformationRepository(ABC):
     async def get_geometry_and_table(self, collection_name, filters) -> dict:
         pass
 
-    async def get_geojson(self, layer_id):
+    async def get_geojson(self, layer_name: str, row_id: str):
         pass

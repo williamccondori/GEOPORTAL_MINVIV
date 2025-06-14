@@ -90,12 +90,12 @@ class LayerService:
 
         return result
 
-    async def get_geojson(self, layer_id: str) -> dict:
+    async def get_geojson(self, layer_id: str, row_id: str) -> dict:
         layer: Optional[Layer] = await self.layer_repository.get(layer_id)
         if not layer:
             raise ApplicationException("No se ha encontrado la capa solicitada")
 
-        geojson = await self.layer_information_repository.get_geojson(layer.id)
+        geojson = await self.layer_information_repository.get_geojson(layer.layer_information_name, row_id)
         if not geojson:
             raise ApplicationException("No se ha encontrado información geográfica para la capa solicitada")
 
