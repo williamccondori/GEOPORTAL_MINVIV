@@ -32,6 +32,7 @@
           <div class="app-form-group">
             <label for="layerId">Capa:</label>
             <p-select
+              id="layerId"
               formControlName="layerId"
               [options]="layers"
               optionValue="id"
@@ -60,9 +61,9 @@
         <tr>
           <th>Acciones</th>
           @for (column of columns; track column) {
-          @if (column !== '_id') {
-          <th>{{ column }}</th>
-          }
+            @if (column !== '_id') {
+              <th>{{ column }}</th>
+            }
           }
         </tr>
       </ng-template>
@@ -79,9 +80,9 @@
             ></p-button>
           </td>
           @for (column of columns; track column) {
-          @if (column !== '_id') {
-          <td>{{ view[column] }}</td>
-          }
+            @if (column !== '_id') {
+              <td>{{ view[column] }}</td>
+            }
           }
         </tr>
       </ng-template>

@@ -165,15 +165,15 @@ export class SearchTabularDrawerComponent implements OnInit {
 
   // lKmwu8R1REUJAd2AxqGr
   onShowMap(view: any) {
-    console.log(view);
+    const layerId = this.formGroup.get('layerId')?.value;
     if (view.hasOwnProperty('PROYECTO')) {
       this.dialogService.open(LayerTdComponent, {
         header: 'Información del terreno',
-        width: '30vw',
+        width: '50vw',
         modal: true,
         breakpoints: {
-          '1400px': '35vw',
-          '1200px': '40vw',
+          '1400px': '50vw',
+          '1200px': '50vw',
           '960px': '50vw',
           '640px': '80vw',
           '480px': '95vw',
@@ -181,6 +181,7 @@ export class SearchTabularDrawerComponent implements OnInit {
         closable: true,
         data: {
           id: view._id,
+          layerId: layerId,
         },
       });
     } else {

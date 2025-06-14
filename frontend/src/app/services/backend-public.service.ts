@@ -85,7 +85,7 @@ export class BackendPublicService {
     return this.apiService.post<unknown>(`layers/${layerId}/filter/`, filterColumns);
   }
 
-  getGeoJsonLayer(layerId: string): Observable<any> {
-    return this.apiService.get<any>(`layers/${layerId}/geojson/`);
+  getGeoJsonLayer(layerId: string, rowId: string): Observable<any> {
+    return this.apiService.get<any>(`layers/${layerId}/geojson/${rowId}`);
   }
 }

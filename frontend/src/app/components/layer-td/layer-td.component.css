@@ -1,9 +1,70 @@
-.map-container {
+.layer-td-container {
+  display: flex;
+  gap: 20px;
   width: 100%;
   height: 500px;
+}
+
+.map-section {
+  flex: 2;
+  min-width: 0;
+  height: 100%;
 }
 
 .map {
   width: 100%;
   height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.properties-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.properties-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+:host ::ng-deep .p-datatable {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layer-td-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .map-section {
+    height: 400px;
+  }
+
+  .properties-section {
+    max-width: none;
+    min-width: 0;
+  }
 }
