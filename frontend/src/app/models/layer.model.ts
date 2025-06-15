@@ -45,6 +45,7 @@ export interface ActiveWmsLayer {
 
 export interface ActiveGeoJsonLayer {
   id: string;
+  layerId: string;
   name: string;
   title: string;
   geojson: GeoJSON.FeatureCollection | GeoJSON.Feature; // GeoJSON data

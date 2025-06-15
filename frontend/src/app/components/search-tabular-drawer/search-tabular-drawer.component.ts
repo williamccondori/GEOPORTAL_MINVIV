@@ -170,7 +170,7 @@ export class SearchTabularDrawerComponent implements OnInit {
   onShowMap(view: any) {
     const layerId = this.formGroup.get('layerId')?.value;
     this.dialogService.open(LayerTdComponent, {
-      header: 'Información del terreno',
+      header: 'Información',
       width: '50vw',
       modal: true,
       breakpoints: {

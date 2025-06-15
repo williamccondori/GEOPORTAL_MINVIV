@@ -221,6 +221,7 @@ export class SearchDrawerComponent implements OnInit {
         if (result) {
           const filteredLayer = {
             id: `filtered_${layerId}_${Date.now()}`,
+            layerId: layerId,
             name: `${layerName} Filtrada`,
             title: `${layerName} Filtrada`,
             geojson: result,

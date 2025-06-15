@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import {AfterViewInit, Component, effect, inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, effect, inject, OnInit,} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import * as L from 'leaflet';
@@ -22,6 +22,8 @@ import {BackendPublicService} from '../../services/backend-public.service';
 import {ComponentInjectorService} from '../../services/component-injector.service';
 import {LayerService} from '../../services/layer.service';
 import {StateService} from '../../services/state.service';
+import {LayerTdComponent} from '../layer-td/layer-td.component';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   standalone: true,
@@ -40,6 +42,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly activeLayersMap = new Map<string, L.TileLayer.WMS>();
   private readonly activeGeoJsonLayersMap = new Map<string, L.GeoJSON>();
+  private readonly dialogService = inject(DialogService);
 
   map?: L.Map;
   rightClickLatLng?: L.LatLng;
@@ -53,7 +56,9 @@ export class MapComponent implements OnInit, AfterViewInit {
       const activeLayers: ActiveWmsLayer[] = this.layerService.activeLayers();
 
       if (this.map) {
-        const currentLayerIds = new Set(activeLayers.map((layer) => layer.name));
+        const currentLayerIds = new Set(
+          activeLayers.map((layer) => layer.name),
+        );
 
         // Remove layers that are no longer active.
         this.activeLayersMap.forEach((leafletLayer, layerId) => {
@@ -89,10 +94,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     // Effect for handling GeoJSON layers
     effect(() => {
-      const activeGeoJsonLayers: ActiveGeoJsonLayer[] = this.layerService.activeGeoJsonLayers();
+      const activeGeoJsonLayers: ActiveGeoJsonLayer[] =
+        this.layerService.activeGeoJsonLayers();
 
       if (this.map) {
-        const currentGeoJsonLayerIds = new Set(activeGeoJsonLayers.map((layer) => layer.id));
+        const currentGeoJsonLayerIds = new Set(
+          activeGeoJsonLayers.map((layer) => layer.id),
+        );
 
         // Remove GeoJSON layers that are no longer active.
         this.activeGeoJsonLayersMap.forEach((leafletLayer, layerId) => {
@@ -121,17 +129,40 @@ export class MapComponent implements OnInit, AfterViewInit {
                 fillOpacity: 0.2,
                 ...activeLayer.style,
               },
+              pointToLayer: (feature, latlng) => {
+                const customIcon = L.icon({
+                  iconUrl: 'https://i.postimg.cc/Cx43MmyF/marker-icon.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowUrl:
+                    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                  shadowSize: [41, 41],
+                  shadowAnchor: [12, 41],
+                });
+                return L.marker(latlng, {icon: customIcon});
+              },
               onEachFeature: (feature, layer) => {
-                if (feature.properties) {
-                  const tooltipContent = this.createTooltipContent(feature.properties);
-                  if (tooltipContent) {
-                    layer.bindTooltip(tooltipContent, {
-                      permanent: false,
-                      direction: 'auto',
-                      className: 'custom-tooltip',
-                    });
-                  }
-                }
+                layer.on('click', () => {
+                  const layerId = activeLayer.layerId;
+                  this.dialogService.open(LayerTdComponent, {
+                    header: 'Información',
+                    width: '50vw',
+                    modal: true,
+                    breakpoints: {
+                      '1400px': '50vw',
+                      '1200px': '50vw',
+                      '960px': '50vw',
+                      '640px': '80vw',
+                      '480px': '95vw',
+                    },
+                    closable: true,
+                    data: {
+                      id: feature.properties._id,
+                      layerId: layerId,
+                    },
+                  });
+                });
               },
             });
             this.map!.addLayer(layer);
@@ -196,9 +227,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(logoControl);
 
     // Coordinates control.
-    const {element: coordinatesElement} = this.componentInjectorService.createComponent(
-      CoordinatesControlComponent,
-    );
+    const {element: coordinatesElement} =
+      this.componentInjectorService.createComponent(
+        CoordinatesControlComponent,
+      );
     const coordinatesControl = new L.Control({position: 'bottomright'});
     coordinatesControl.onAdd = () => coordinatesElement;
     this.map.addControl(coordinatesControl);
@@ -211,9 +243,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addControl(scaleControl);
 
     // Layer tools control.
-    const {element: layerToolsElement} = this.componentInjectorService.createComponent(
-      LayerToolsControlComponent,
-    );
+    const {element: layerToolsElement} =
+      this.componentInjectorService.createComponent(LayerToolsControlComponent);
     const layerToolsControl = new L.Control({position: 'bottomleft'});
     layerToolsControl.onAdd = () => layerToolsElement;
     this.map.addControl(layerToolsControl);
@@ -250,7 +281,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   async getInitialSettings(): Promise<void> {
-    const initialSettings = await firstValueFrom(this.backendPublicService.getInitialSettings());
+    const initialSettings = await firstValueFrom(
+      this.backendPublicService.getInitialSettings(),
+    );
     this.loadInitialSettings(initialSettings);
   }
 
@@ -258,7 +291,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     if (this.map) {
       // Check for URL parameters first
       const urlParams = this.route.snapshot.queryParams;
-      const hasUrlParams = urlParams['lat'] && urlParams['lng'] && urlParams['zoom'];
+      const hasUrlParams =
+        urlParams['lat'] && urlParams['lng'] && urlParams['zoom'];
 
       let lat: number, lng: number, zoom: number;
 
@@ -303,7 +337,9 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.map.attributionControl.remove();
       }
 
-      const baseLayer = settings.baseLayers.find((x) => x.id === settings.defaultBaseLayerId);
+      const baseLayer = settings.baseLayers.find(
+        (x) => x.id === settings.defaultBaseLayerId,
+      );
 
       if (baseLayer) {
         this.baseLayerLeaflet = L.tileLayer(baseLayer.url, {
@@ -373,7 +409,9 @@ export class MapComponent implements OnInit, AfterViewInit {
         url,
         layers: layers.join(','),
       };
-      return firstValueFrom(this.backendPublicService.getWmsFeatureInformation(paramsToSend));
+      return firstValueFrom(
+        this.backendPublicService.getWmsFeatureInformation(paramsToSend),
+      );
     });
 
     try {
@@ -429,7 +467,12 @@ export class MapComponent implements OnInit, AfterViewInit {
             const layerInfo = JSON.parse(decodedLayer);
 
             // Validate that the layer has required properties
-            if (layerInfo.id && layerInfo.name && layerInfo.title && layerInfo.url) {
+            if (
+              layerInfo.id &&
+              layerInfo.name &&
+              layerInfo.title &&
+              layerInfo.url
+            ) {
               const activeLayer: ActiveWmsLayer = {
                 id: layerInfo.id,
                 name: layerInfo.name,
@@ -459,26 +502,5 @@ export class MapComponent implements OnInit, AfterViewInit {
         console.error('Failed to process layers from URL:', error);
       }
     }
-  }
-
-  private createTooltipContent(properties: Record<string, unknown>): string {
-    if (!properties || Object.keys(properties).length === 0) {
-      return '';
-    }
-
-    let content = '<div class="geojson-tooltip">';
-
-    // Add each property as a key-value pair
-    Object.entries(properties).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        content += `<div class="tooltip-row">`;
-        content += `<strong>${key}:</strong> ${value}`;
-        content += `</div>`;
-      }
-    });
-
-    content += '</div>';
-
-    return content;
   }
 }

@@ -266,7 +266,7 @@ export class ChatbotDrawerComponent implements OnInit {
       const filterColumns = chatResponse.data;
 
       const result = await firstValueFrom(
-        this.backendPublicService.getFilteredLayer('683c83d10cd4a888fb9a10c9', filterColumns),
+        this.backendPublicService.getFilteredLayer('684e4c876f591c3bcb14c01a', filterColumns),
       );
 
       // Check if there's an existing filtered layer and remove it
@@ -281,6 +281,7 @@ export class ChatbotDrawerComponent implements OnInit {
       if (result) {
         const filteredLayer = {
           id: `filtered_suelo_urbano_${Date.now()}`,
+          layerId: '684e4c876f591c3bcb14c01a',
           name: 'Suelo Urbano Filtrado',
           title: 'Suelo Urbano Filtrado',
           geojson: result,
