@@ -67,8 +67,8 @@ class LayerService:
             layer_form_dto.name
         )
 
-        wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wms"
-        wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wfs"
+        wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{registered_layer_dto.view_name}/wms"
+        wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{registered_layer_dto.view_name}/wfs"
 
         layer = Layer(
             # Campos principales.
@@ -237,18 +237,17 @@ class LayerService:
         try:
             df = pd.DataFrame(gdf.drop(columns='geometry'))
 
-            # ✅ Convierte todo a string excepto la geometría
+            # ✅ Mantiene tipos y pone null donde corresponde
             for col in df.columns:
-                df[col] = df[col].astype(str)
+                df[col] = df[col].where(pd.notnull(df[col]), None)
 
-            # ✅ Vuelve a insertar geometría como geojson
+            # ✅ Geometría en geojson
             df['geometry'] = gdf.geometry.apply(lambda geom: geom.__geo_interface__)
 
             dictionary = df.to_dict(orient='records')
 
             await self.layer_information_repository.save(code, dictionary)
 
-            # Columnas originales sin geometría
             columns = [col for col in df.columns if col != 'geometry']
             columns_with_prefix = [f'F_{col}' for col in columns]
             columns_status = {col: True for col in columns}
