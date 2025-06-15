@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';

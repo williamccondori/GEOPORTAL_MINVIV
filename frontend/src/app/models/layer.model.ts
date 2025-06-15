@@ -60,6 +60,7 @@ export interface LayerInformationOption {
 
 export interface LayerInformationFilter {
   name: string;
+  label: string;
   options: LayerInformationOption[];
 }
 

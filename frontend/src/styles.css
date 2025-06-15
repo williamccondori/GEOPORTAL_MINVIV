@@ -1,22 +1,23 @@
-@import 'primeicons/primeicons.css';
-@import 'responsive.css';
+@import "primeicons/primeicons.css";
+@import "responsive.css";
 
 html {
   font-size: 85%;
   font-style: normal;
-  font-family: -apple-system,
-  BlinkMacSystemFont,
-  Segoe UI,
-  PingFang SC,
-  Hiragino Sans GB,
-  Microsoft YaHei,
-  Helvetica Neue,
-  Helvetica,
-  Arial,
-  sans-serif,
-  Apple Color Emoji,
-  Segoe UI Emoji,
-  Segoe UI Symbol;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    PingFang SC,
+    Hiragino Sans GB,
+    Microsoft YaHei,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI Emoji,
+    Segoe UI Symbol;
 }
 
 body {
@@ -172,4 +173,31 @@ app-root,
 
 .app-description-error {
   color: red;
+}
+
+/* BLOQUEAR HORIZONTAL */
+.p-virtualscroller {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.p-selectpanel {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* ITEM FLEX PARA NO MOVER RIPLE */
+.custom-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* LABEL TRUNCADO Y FLEXIBLE */
+.custom-label {
+  flex: 1 1 auto;
+  min-width: 0; /* ¡SIN ESTO NO FUNCIONA! */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

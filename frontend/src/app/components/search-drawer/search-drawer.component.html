@@ -8,10 +8,7 @@
   <div class="drawer-content">
     <div class="app-space-vertical">
       <p-fieldset legend="Categorización">
-        <form
-          [formGroup]="formGroup"
-          class="responsive-form"
-        >
+        <form [formGroup]="formGroup" class="responsive-form">
           <div class="app-form-group">
             <label for="categoryParent">Categoría:</label>
             <p-tree-select
@@ -43,46 +40,59 @@
         </form>
       </p-fieldset>
       @if (layerInformationTable && layerInformationTable.filters.length > 0) {
-      <form
-        [formGroup]="filtersFormGroup"
-        (ngSubmit)="onSubmitFilters()"
-        class="responsive-form"
-      >
-        <p-fieldset legend="Filtros avanzados">
-          <div class="app-space-vertical">
-            @for (filter of layerInformationTable.filters; track filter.name) {
-      <div class="app-form-group">
-        <label [for]="filter.name">{{ filter.name }}:</label>
-        <p-select
-          [id]="filter.name"
-          [formControlName]="filter.name"
-          [style]="{ maxWidth: '22rem', width: '100%' }"
-          [options]="filter.options"
-          optionValue="id"
-          optionLabel="label"
-          filterBy="label"
-          appendTo="body"
-          fluid
-          filter
-          showClear
-          placeholder="Seleccione"
-        />
-      </div>
-      }
-      <div class="app-form-group">
-        <p-button
-          type="submit"
-          label="Buscar"
-          size="large"
-          severity="success"
-          icon="pi pi-search"
-          fluid
-          [disabled]="!filtersFormGroup.valid"
-        ></p-button>
-      </div>
-    </div>
-  </p-fieldset>
-</form>
+        <form
+          [formGroup]="filtersFormGroup"
+          (ngSubmit)="onSubmitFilters()"
+          class="responsive-form"
+        >
+          <p-fieldset legend="Filtros avanzados">
+            <div class="app-space-vertical">
+              @for (
+                filter of layerInformationTable.filters;
+                track filter.name
+              ) {
+                <div class="app-form-group">
+                  <label [for]="filter.name">{{ filter.label }}:</label>
+                  <p-select
+                    [id]="filter.name"
+                    [formControlName]="filter.name"
+                    [style]="{ maxWidth: '22rem', width: '100%' }"
+                    [options]="filter.options"
+                    optionValue="id"
+                    optionLabel="label"
+                    filterBy="label"
+                    appendTo="body"
+                    showClear
+                    filter
+                    scrollHeight="228px"
+                    placeholder="Seleccione"
+                  >
+                    <ng-template let-option pTemplate="item">
+                      <div class="custom-item">
+                        <span
+                          class="custom-label"
+                          [pTooltip]="option.label | uppercase"
+                          >{{ cut(option.label) | uppercase }}</span
+                        >
+                      </div>
+                    </ng-template>
+                  </p-select>
+                </div>
+              }
+              <div class="app-form-group">
+                <p-button
+                  type="submit"
+                  label="Buscar"
+                  size="large"
+                  severity="success"
+                  icon="pi pi-search"
+                  fluid
+                  [disabled]="!filtersFormGroup.valid"
+                ></p-button>
+              </div>
+            </div>
+          </p-fieldset>
+        </form>
       }
     </div>
   </div>
