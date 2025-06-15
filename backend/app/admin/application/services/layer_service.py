@@ -233,41 +233,29 @@ class LayerService:
             print(e)
             raise ApplicationException(f"Error al registrar la capa en Geoserver")
 
-    async def __save_to_mongo_db(self, code: str,
-                                 gdf: gpd.GeoDataFrame):
+    async def __save_to_mongo_db(self, code: str, gdf: gpd.GeoDataFrame):
         try:
             df = pd.DataFrame(gdf.drop(columns='geometry'))
 
-            for column in df.columns:
-                if column != 'geometry' and df[column].dtype == object:
-                    sample_values = df[column].dropna().head(5)
-                    if len(sample_values) > 0:
-                        try:
-                            pd.to_datetime(sample_values.iloc[0], dayfirst=True)
-                            df[column] = pd.to_datetime(df[column], errors='coerce', dayfirst=True)
-                            df[column] = df[column].where(df[column].notna(), None)
-                        except (ValueError, TypeError):
-                            df[column] = df[column].astype(str)
+            # ✅ Convierte todo a string excepto la geometría
+            for col in df.columns:
+                df[col] = df[col].astype(str)
 
+            # ✅ Vuelve a insertar geometría como geojson
             df['geometry'] = gdf.geometry.apply(lambda geom: geom.__geo_interface__)
 
             dictionary = df.to_dict(orient='records')
 
             await self.layer_information_repository.save(code, dictionary)
 
-            # Guardar las columnas del DataFrame en MongoDB originales y con el prefijo "F_" y un estado true/false para cada una con
-            # el fin de cambiar el nombre de las columnas en la vista del geoportal, identificar por code.
-
-            columns = df.columns.tolist()
-
-            columns = [col for col in columns if col != 'geometry']  # Excluir la columna de geometría
-
+            # Columnas originales sin geometría
+            columns = [col for col in df.columns if col != 'geometry']
             columns_with_prefix = [f'F_{col}' for col in columns]
-
             columns_status = {col: True for col in columns}
 
-            await self.layer_information_repository.save_columns(code, columns, columns_with_prefix, columns_status)
-
+            await self.layer_information_repository.save_columns(
+                code, columns, columns_with_prefix, columns_status
+            )
 
         except Exception as e:
             print(e)
