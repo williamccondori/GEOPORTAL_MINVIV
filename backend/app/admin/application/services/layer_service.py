@@ -67,8 +67,8 @@ class LayerService:
             layer_form_dto.name
         )
 
-        wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wms"
-        wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wfs"
+        wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wms"
+        wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wfs"
 
         layer = Layer(
             # Campos principales.
@@ -243,6 +243,21 @@ class LayerService:
             dictionary = df.to_dict(orient='records')
 
             await self.layer_information_repository.save(code, dictionary)
+
+            # Guardar las columnas del DataFrame en MongoDB originales y con el prefijo "F_" y un estado true/false para cada una con
+            # el fin de cambiar el nombre de las columnas en la vista del geoportal, identificar por code.
+
+            columns = df.columns.tolist()
+
+            columns = [col for col in columns if col != 'geometry']  # Excluir la columna de geometría
+
+            columns_with_prefix = [f'F_{col}' for col in columns]
+
+            columns_status = {col: True for col in columns_with_prefix}
+
+            await self.layer_information_repository.save_columns(code, columns, columns_with_prefix, columns_status)
+
+
         except Exception as e:
             print(e)
             raise ApplicationException("Error al guardar los datos en MongoDB.")
