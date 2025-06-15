@@ -1,4 +1,3 @@
-
 <div class="layer-td-container">
   <div class="map-section">
     <div #mapContainer class="map"></div>
@@ -7,9 +6,9 @@
   <div class="properties-section">
     <p-table
       [value]="properties"
-      [scrollable]="true"
-      scrollHeight="400px"
-      styleClass="p-datatable-sm">
+      showGridlines
+      stripedRows
+      scrollHeight="500px">
       <ng-template pTemplate="header">
         <tr>
           <th>Propiedad</th>
@@ -18,8 +17,8 @@
       </ng-template>
       <ng-template pTemplate="body" let-property>
         <tr>
-          <td><strong>{{property.key}}</strong></td>
-          <td>{{property.value}}</td>
+          <td><strong>{{ property.key }}</strong></td>
+          <td>{{ property.value }}</td>
         </tr>
       </ng-template>
     </p-table>

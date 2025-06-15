@@ -51,6 +51,12 @@ export class StateService {
   layerPropertyDrawerState$ = this.layerPropertyDrawerStateSubject.asObservable();
   layerLegendDrawerStateSubject = new BehaviorSubject<boolean>(false);
   layerLegendDrawerState$ = this.layerLegendDrawerStateSubject.asObservable();
+  summaryDrawerStateSubject = new BehaviorSubject<boolean>(false);
+  summaryDrawerState$ = this.summaryDrawerStateSubject.asObservable();
+  graphDrawerStateSubject = new BehaviorSubject<boolean>(false);
+  graphDrawerState$ = this.graphDrawerStateSubject.asObservable();
+  tendencyDrawerStateSubject = new BehaviorSubject<boolean>(false);
+  tendencyDrawerState$ = this.tendencyDrawerStateSubject.asObservable();
 
   setSearchDrawerState(state: boolean): void {
     this.searchDrawerStateSubject.next(state);
@@ -94,6 +100,18 @@ export class StateService {
 
   setLayerLegendDrawerState(state: boolean): void {
     this.layerLegendDrawerStateSubject.next(state);
+  }
+
+  setSummaryDrawerState(state: boolean): void {
+    this.summaryDrawerStateSubject.next(state);
+  }
+
+  setGraphDrawerState(state: boolean): void {
+    this.graphDrawerStateSubject.next(state);
+  }
+
+  setTendencyDrawerState(state: boolean): void {
+    this.tendencyDrawerStateSubject.next(state);
   }
 
   // Map states.

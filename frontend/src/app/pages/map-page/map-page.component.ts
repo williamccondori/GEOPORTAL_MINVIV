@@ -13,6 +13,9 @@ import {SearchTabularDrawerComponent} from '../../components/search-tabular-draw
 import {ViewDrawerComponent} from '../../components/view-drawer/view-drawer.component';
 import {WmsLayerDrawerComponent} from '../../components/wms-layer-drawer/wms-layer-drawer.component';
 import {LayerLegendDrawerComponent} from '../../components/layer-legend-drawer/layer-legend-drawer.component';
+import {SummaryDrawerComponent} from '../../components/summary-drawer/summary-drawer.component';
+import {GraphDrawerComponent} from '../../components/graph-drawer/graph-drawer.component';
+import {TendencyDrawerComponent} from '../../components/tendency-drawer/tendency-drawer.component';
 
 @Component({
   standalone: true,
@@ -31,6 +34,9 @@ import {LayerLegendDrawerComponent} from '../../components/layer-legend-drawer/l
     MapSidebarComponent,
     LayerPropertyDrawerComponent,
     LayerLegendDrawerComponent,
+    SummaryDrawerComponent,
+    GraphDrawerComponent,
+    TendencyDrawerComponent,
   ],
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.css'],
