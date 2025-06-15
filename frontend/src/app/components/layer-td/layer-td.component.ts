@@ -1,5 +1,5 @@
 import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Map, LngLatBounds} from 'maplibre-gl';
+import {LngLatBounds, Map} from 'maplibre-gl';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {TableModule} from 'primeng/table';
 import {firstValueFrom} from 'rxjs';
@@ -24,20 +24,27 @@ export class LayerTdComponent implements OnInit, OnDestroy {
 
   private map!: Map;
   public properties: PropertyItem[] = [];
+
   ngOnInit() {
     // Usar setTimeout para asegurar que el DOM esté completamente renderizado
     setTimeout(() => {
       this.initializeMap();
     }, 100);
-  }ngOnDestroy() {
+  }
+
+  ngOnDestroy() {
     console.log('Destruyendo componente LayerTd...');
 
     if (this.map) {
       try {
-        // Remover fuentes y capas si existen
-        if (this.map.getLayer('geojson-outline')) {
-          this.map.removeLayer('geojson-outline');
-        }
+        // Remover todas las capas posibles
+        const layersToRemove = ['geojson-points', 'geojson-lines', 'geojson-fill', 'geojson-outline'];
+
+        layersToRemove.forEach(layerId => {
+          if (this.map.getLayer(layerId)) {
+            this.map.removeLayer(layerId);
+          }
+        });
 
         if (this.map.getSource('geojson-data')) {
           this.map.removeSource('geojson-data');
@@ -61,7 +68,9 @@ export class LayerTdComponent implements OnInit, OnDestroy {
     if (this.mapContainer?.nativeElement) {
       this.mapContainer.nativeElement.innerHTML = '';
     }
-  }  private async initializeMap() {
+  }
+
+  private async initializeMap() {
     try {
       // Verificar que el contenedor esté disponible y tenga dimensiones
       if (!this.mapContainer?.nativeElement) {
@@ -91,11 +100,7 @@ export class LayerTdComponent implements OnInit, OnDestroy {
         this.backendService.getGeoJsonLayer(layerId, rowId)
       );
 
-      console.log('GeoJSON cargado:', geojson);
-
-      // Verificar que no haya un mapa existente antes de crear uno nuevo
       if (this.map) {
-        console.warn('Ya existe un mapa, destruyendo el anterior...');
         this.map.remove();
       }
 
@@ -104,9 +109,8 @@ export class LayerTdComponent implements OnInit, OnDestroy {
         style: 'https://api.maptiler.com/maps/satellite/style.json?key=lKmwu8R1REUJAd2AxqGr',
         center: [-77.0365, -12.0464], // Lima, Perú
         zoom: 13,
-        pitch: 45, // Vista 3D
+        pitch: 50,
         bearing: 0,
-        //show attribution control
         attributionControl: false
       });
 
@@ -121,46 +125,207 @@ export class LayerTdComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
-  }  private addGeoJSON(geojsonData: any) {
+  }
+
+  /**
+   * Carga un icono personalizado para los puntos
+   */
+  private async loadPointIcon(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.map.hasImage('custom-point-icon')) {
+        resolve();
+        return;
+      }
+
+      // Crear un icono SVG personalizado
+      const size = 32;
+      const svg = `
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}" fill="#ff0000" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="${size/2}" cy="${size/2}" r="6" fill="#ffffff"/>
+        </svg>
+      `;
+
+      // Convertir SVG a imagen
+      const img = new Image(size, size);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, size, size);
+        this.map.addImage('custom-point-icon', imageData);
+        resolve();
+      };
+
+      img.onerror = () => {
+        console.error('Error al cargar el icono personalizado');
+        // Fallback: usar un icono simple
+        this.createFallbackIcon();
+        resolve();
+      };
+
+      img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+    });
+  }
+
+  /**
+   * Crea un icono de fallback simple
+   */
+  private createFallbackIcon(): void {
+    const size = 20;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d')!;
+
+    // Dibujar un círculo rojo con borde blanco
+    ctx.fillStyle = '#ff0000';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
+    // Punto blanco en el centro
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, 3, 0, 2 * Math.PI);
+    ctx.fill();
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    this.map.addImage('custom-point-icon', imageData);
+  }
+
+  private addGeoJSON(geojsonData: any) {
     this.map.addSource('geojson-data', {
       type: 'geojson',
       data: geojsonData
     });
 
-    // Agregar capa de línea para los bordes rojos
-    this.map.addLayer({
-      id: 'geojson-outline',
-      type: 'line',
-      source: 'geojson-data',
-      layout: {},
-      paint: {
-        'line-color': '#ff0000',
-        'line-width': 2,
-        'line-opacity': 1
+    // Cargar icono personalizado para puntos
+    this.loadPointIcon().then(() => {
+      // Determinar qué tipos de geometría están presentes
+      const geometryTypes = this.getGeometryTypes(geojsonData);
+
+      // Agregar capas según los tipos de geometría encontrados
+      if (geometryTypes.has('Point') || geometryTypes.has('MultiPoint')) {
+        // Capa para puntos con icono
+        this.map.addLayer({
+          id: 'geojson-points',
+          type: 'symbol',
+          source: 'geojson-data',
+          filter: ['in', '$type', 'Point'],
+          layout: {
+            'icon-image': 'custom-point-icon',
+            'icon-size': 1.2,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true
+          }
+        });
       }
+
+      if (geometryTypes.has('LineString') || geometryTypes.has('MultiLineString')) {
+        // Capa para líneas
+        this.map.addLayer({
+          id: 'geojson-lines',
+          type: 'line',
+          source: 'geojson-data',
+          filter: ['in', '$type', 'LineString'],
+          paint: {
+            'line-color': '#ff0000',
+            'line-width': 3,
+            'line-opacity': 0.8
+          }
+        });
+      }
+
+      if (geometryTypes.has('Polygon') || geometryTypes.has('MultiPolygon')) {
+        // Capa de relleno para polígonos
+        this.map.addLayer({
+          id: 'geojson-fill',
+          type: 'fill',
+          source: 'geojson-data',
+          filter: ['in', '$type', 'Polygon'],
+          paint: {
+            'fill-color': '#ff0000',
+            'fill-opacity': 0.3
+          }
+        });
+
+        // Capa de borde para polígonos
+        this.map.addLayer({
+          id: 'geojson-outline',
+          type: 'line',
+          source: 'geojson-data',
+          filter: ['in', '$type', 'Polygon'],
+          paint: {
+            'line-color': '#ff0000',
+            'line-width': 2,
+            'line-opacity': 1
+          }
+        });
+      }
+
+      // Extraer propiedades del GeoJSON
+      this.extractProperties(geojsonData);
+
+      // Hacer zoom automático a la geometría
+      this.zoomToGeoJSON(geojsonData);
     });
+  }
 
-    // Extraer propiedades del GeoJSON
-    this.extractProperties(geojsonData);
+  /**
+   * Determina qué tipos de geometría están presentes en el GeoJSON
+   */
+  private getGeometryTypes(geojsonData: any): Set<string> {
+    const types = new Set<string>();
 
-    // Hacer zoom automático a la geometría
-    this.zoomToGeoJSON(geojsonData);
+    const addGeometryType = (geometry: any) => {
+      if (geometry && geometry.type) {
+        types.add(geometry.type);
+      }
+    };
+
+    if (geojsonData.type === 'FeatureCollection') {
+      geojsonData.features?.forEach((feature: any) => {
+        if (feature.geometry) {
+          addGeometryType(feature.geometry);
+        }
+      });
+    } else if (geojsonData.type === 'Feature') {
+      if (geojsonData.geometry) {
+        addGeometryType(geojsonData.geometry);
+      }
+    } else {
+      // Es una geometría directa
+      addGeometryType(geojsonData);
+    }
+
+    return types;
   }
 
   /**
    * Calcula los bounds de una geometría GeoJSON y hace zoom a ella
-   */  private zoomToGeoJSON(geojsonData: any, options: {
+   */
+  private zoomToGeoJSON(geojsonData: any, options: {
     padding?: number;
     duration?: number;
-  } = {}) {const defaultOptions = {
+  } = {}) {
+    const defaultOptions = {
       padding: 50,
       duration: 1500
     };
 
-    const opts = { ...defaultOptions, ...options };
+    const opts = {...defaultOptions, ...options};
 
     try {
-      const bounds = new LngLatBounds();      // Función recursiva para procesar diferentes tipos de geometría
+      const bounds = new LngLatBounds();
+
+      // Función recursiva para procesar diferentes tipos de geometría
       const addCoordinatesToBounds = (geometry: any) => {
         switch (geometry.type) {
           case 'Point':
@@ -227,11 +392,14 @@ export class LayerTdComponent implements OnInit, OnDestroy {
       if (bounds.isEmpty()) {
         console.warn('No se pudieron calcular los bounds para la geometría GeoJSON');
         return;
-      }      // Manejar caso especial para puntos únicos
+      }
+
+      // Manejar caso especial para puntos únicos
       const sw = bounds.getSouthWest();
       const ne = bounds.getNorthEast();
 
-      if (sw.lng === ne.lng && sw.lat === ne.lat) {        // Es un punto único, usar flyTo en lugar de fitBounds
+      if (sw.lng === ne.lng && sw.lat === ne.lat) {
+        // Es un punto único, usar flyTo en lugar de fitBounds
         this.map.flyTo({
           center: [sw.lng, sw.lat],
           zoom: 15,
@@ -252,6 +420,7 @@ export class LayerTdComponent implements OnInit, OnDestroy {
       // Fallback: mantener el zoom actual
     }
   }
+
   /**
    * Método público para hacer zoom a la geometría actual
    */
@@ -296,19 +465,19 @@ export class LayerTdComponent implements OnInit, OnDestroy {
 
         // Agregar información adicional sobre la colección
         this.properties.push(
-          { key: 'Tipo', value: 'FeatureCollection' },
-          { key: 'Número de Features', value: geojsonData.features.length }
+          {key: 'Tipo', value: 'FeatureCollection'},
+          {key: 'Número de Features', value: geojsonData.features.length}
         );
 
       } else if (geojsonData.type === 'Feature') {
         if (geojsonData.properties) {
           this.processProperties(geojsonData.properties);
         }
-        this.properties.push({ key: 'Tipo', value: 'Feature' });
+        this.properties.push({key: 'Tipo', value: 'Feature'});
 
       } else {
         // Es una geometría directa
-        this.properties.push({ key: 'Tipo', value: geojsonData.type || 'Geometría' });
+        this.properties.push({key: 'Tipo', value: geojsonData.type || 'Geometría'});
       }
 
       // Agregar información sobre la geometría
@@ -316,7 +485,7 @@ export class LayerTdComponent implements OnInit, OnDestroy {
 
     } catch (error) {
       console.error('Error al extraer propiedades:', error);
-      this.properties.push({ key: 'Error', value: 'No se pudieron cargar las propiedades' });
+      this.properties.push({key: 'Error', value: 'No se pudieron cargar las propiedades'});
     }
   }
 
@@ -339,7 +508,7 @@ export class LayerTdComponent implements OnInit, OnDestroy {
           value = value.toLocaleString();
         }
 
-        this.properties.push({ key, value: value.toString() });
+        this.properties.push({key, value: value.toString()});
       });
     }
   }
@@ -360,22 +529,22 @@ export class LayerTdComponent implements OnInit, OnDestroy {
       }
 
       if (geometry) {
-        this.properties.push({ key: 'Tipo de Geometría', value: geometry.type });
+        this.properties.push({key: 'Tipo de Geometría', value: geometry.type});
 
         // Información específica según el tipo de geometría
         if (geometry.coordinates) {
           switch (geometry.type) {
             case 'Point':
               this.properties.push(
-                { key: 'Longitud', value: geometry.coordinates[0].toFixed(6) },
-                { key: 'Latitud', value: geometry.coordinates[1].toFixed(6) }
+                {key: 'Longitud', value: geometry.coordinates[0].toFixed(6)},
+                {key: 'Latitud', value: geometry.coordinates[1].toFixed(6)}
               );
               break;
             case 'LineString':
-              this.properties.push({ key: 'Puntos en línea', value: geometry.coordinates.length });
+              this.properties.push({key: 'Puntos en línea', value: geometry.coordinates.length});
               break;
             case 'Polygon':
-              this.properties.push({ key: 'Anillos', value: geometry.coordinates.length });
+              this.properties.push({key: 'Anillos', value: geometry.coordinates.length});
               break;
           }
         }
