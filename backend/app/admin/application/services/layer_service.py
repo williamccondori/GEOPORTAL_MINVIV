@@ -237,9 +237,11 @@ class LayerService:
         try:
             df = pd.DataFrame(gdf.drop(columns='geometry'))
 
-            # ✅ Mantiene tipos y pone null donde corresponde
+            # ✅ TODO como string, pero NaN y NaT como null
             for col in df.columns:
-                df[col] = df[col].where(pd.notnull(df[col]), None)
+                if col != 'geometry':
+                    df[col] = df[col].astype(str)
+                    df[col] = df[col].replace(['nan', 'NaT', 'None'], None)
 
             # ✅ Geometría en geojson
             df['geometry'] = gdf.geometry.apply(lambda geom: geom.__geo_interface__)
