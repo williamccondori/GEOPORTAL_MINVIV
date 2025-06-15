@@ -6,7 +6,7 @@ import pandas as pd
 import psycopg2
 from geo.Geoserver import Geoserver
 from psycopg2.extras import RealDictCursor
-from sqlalchemy import make_url, create_engine
+from sqlalchemy import make_url, create_engine, text
 
 from app.admin.application.dtos.layer_dto import LayerFormDTO, RegisteredLayerDTO, LayerDTO
 from app.admin.domain.models.layer import Layer
@@ -96,6 +96,39 @@ class LayerService:
 
         layer = await self.layer_repository.save(layer)
         return layer.id
+
+    async def delete(self, layer_id: str) -> str:
+        layer = await self.layer_repository.get(layer_id)
+        if not layer:
+            raise ApplicationException("La capa no existe o ha sido eliminada.")
+
+        # Eliminar la capa de la base de datos PostGIS.
+        cur, conn = await self.get_cursor(settings.POSTGIS_DATABASE_NAME)
+        try:
+            cur.execute(f'DROP TABLE IF EXISTS "{layer.table_name}" CASCADE;')
+            conn.commit()
+        except Exception as e:
+            print(e)
+            raise ApplicationException("Error al eliminar la capa de la base de datos PostGIS.")
+        finally:
+            cur.close()
+            conn.close()
+
+        # Eliminar la capa de Geoserver.
+        try:
+            geoserver = Geoserver(
+                settings.GEOSERVER_URL,
+                username=settings.GEOSERVER_USER,
+                password=settings.GEOSERVER_PASSWORD,
+            )
+            geoserver.delete_featurestore(
+                featurestore_name=settings.GEOSERVER_FEATURESTORE_NAME,
+                workspace=settings.GEOSERVER_WORKSPACE
+            )
+            geoserver.reload()
+        except Exception as e:
+            print(e)
+            raise ApplicationException("Error al eliminar la capa de Geoserver.")
 
     @staticmethod
     async def get_cursor(database_name: str):
@@ -200,7 +233,7 @@ class LayerService:
             raise ApplicationException(f"Error al registrar la capa en Geoserver")
 
     async def __save_to_mongo_db(self, code: str,
-                           gdf: gpd.GeoDataFrame):
+                                 gdf: gpd.GeoDataFrame):
         try:
             df = pd.DataFrame(gdf.drop(columns='geometry'))
 
@@ -245,13 +278,13 @@ class LayerService:
                 # Ejecutar la consulta SQL para crear la vista
                 engine = create_engine(settings.POSTGIS_STRING_CONNECTION)
                 with engine.connect() as connection:
-                    connection.execute(view_query)
+                    connection.execute(text(view_query))
                     connection.commit()
                 engine.dispose()
             except Exception as e:
-                print(f"Error al crear la vista: {e}")
-                # Continuamos con el proceso aunque falle la creación de la vista
-
+                print(e)
+                raise ApplicationException(
+                    "No se pudo crear la vista en la base de datos PostGIS. Asegúrese de que el código sea válido.")
 
             await self.__save_to_mongo_db(
                 layer_information_name,
