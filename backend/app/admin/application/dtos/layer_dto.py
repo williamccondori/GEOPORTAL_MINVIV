@@ -16,6 +16,7 @@ class LayerFormDTO(BaseDTO):
     categoryId: str
     code: str
     name: str
+    view_name: Optional[str] = None
     description: str
     shape_file_name: str
 

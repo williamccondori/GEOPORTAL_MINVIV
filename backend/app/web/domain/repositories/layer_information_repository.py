@@ -15,3 +15,6 @@ class LayerInformationRepository(ABC):
 
     async def get_geojson(self, layer_name: str, row_id: str):
         pass
+
+    async def get_columns(self, layer_information_name) -> Optional[dict]:
+        pass

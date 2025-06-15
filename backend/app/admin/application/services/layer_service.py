@@ -62,10 +62,10 @@ class LayerService:
 
         # Se registra en GEOSERVER.
 
-        self.__register_in_geoserver(
-            registered_layer_dto.view_name,
-            layer_form_dto.name
-        )
+        # self.__register_in_geoserver(
+        #     registered_layer_dto.view_name,
+        #     layer_form_dto.name
+        # )
 
         wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wms"
         wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.view_name}/wfs"
@@ -253,7 +253,7 @@ class LayerService:
 
             columns_with_prefix = [f'F_{col}' for col in columns]
 
-            columns_status = {col: True for col in columns_with_prefix}
+            columns_status = {col: True for col in columns}
 
             await self.layer_information_repository.save_columns(code, columns, columns_with_prefix, columns_status)
 

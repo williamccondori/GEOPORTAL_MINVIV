@@ -111,3 +111,17 @@ class LayerInformationRepositoryImpl(LayerInformationRepository):
             "type": "FeatureCollection",
             "features": features
         }
+
+    async def get_columns(self, layer_information_name: str) -> Optional[dict]:
+        collection: AsyncIOMotorCollection = database.get_collection("layer_columns")
+        doc = await collection.find_one({"code": layer_information_name})
+
+        if not doc:
+            return None
+
+        return {
+            "code": doc.get("code"),
+            "columns": doc.get("columns", []),
+            "columns_with_prefix": doc.get("columns_with_prefix", []),
+            "columns_status": doc.get("columns_status", []),
+        }

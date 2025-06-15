@@ -12,6 +12,6 @@ class LayerInformationFilterDTO(BaseDTO):
 
 
 class LayerInformationTableDTO(BaseDTO):
-    columns: list[str] = []
+    columns: list[dict] = []
     data: list[dict] = []
     filters: list[LayerInformationFilterDTO]

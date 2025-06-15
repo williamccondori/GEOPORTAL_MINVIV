@@ -106,14 +106,40 @@ class LayerService:
         if not layer:
             raise ApplicationException("No se ha encontrado la capa solicitada")
 
+        columns = await self.layer_information_repository.get_columns(layer.layer_information_name)
+        if not columns:
+            raise ApplicationException("No se ha encontrado información de columnas para la capa solicitada")
+
         table_information: Optional[LayerInformationTable] = await self.layer_information_repository.get_table(
             layer.layer_information_name)
         if not table_information:
             raise ApplicationException("No se ha encontrado información tabular para la capa solicitada")
 
+        # 1) Construye la lista filtrada con mapeo
+        columns_with_mapping = [
+            {
+                "name": pref,  # columna con prefijo (header)
+                "original": base  # columna real (dato)
+            }
+            for base, pref in zip(columns['columns'], columns['columns_with_prefix'])
+            if columns['columns_status'].get(base, False)
+        ]
+
+        # 2) Lista de columnas originales permitidas
+        allowed_original_columns = [c["original"] for c in columns_with_mapping]
+
+        # 3) Recorta cada fila de data a solo esas columnas
+        filtered_data = []
+        for row in table_information.data:
+            filtered_row = {key: row[key] for key in allowed_original_columns if key in row}
+            if '_id' in row:
+                filtered_row['_id'] = row['_id']
+            filtered_data.append(filtered_row)
+
+        # 4) Devuelve todo listo
         return LayerInformationTableDTO(
-            columns=table_information.columns,
-            data=table_information.data,
+            columns=columns_with_mapping,
+            data=filtered_data,
             filters=[
                 LayerInformationFilterDTO(
                     name=x.name,
