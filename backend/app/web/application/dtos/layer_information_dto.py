@@ -7,6 +7,7 @@ class LayerInformationOptionDTO(BaseDTO):
 
 
 class LayerInformationFilterDTO(BaseDTO):
+    label: str
     name: str
     options: list[LayerInformationOptionDTO] = []
 

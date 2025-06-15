@@ -6,14 +6,8 @@
   (onShow)="onDrawerOpen()"
 >
   <div class="app-space-vertical">
-    <p-fieldset
-      legend="Categorización"
-      [toggleable]="true"
-    >
-      <form
-        class="row"
-        [formGroup]="formGroup"
-      >
+    <p-fieldset legend="Categorización" [toggleable]="true">
+      <form class="row" [formGroup]="formGroup">
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
           <div class="app-form-group">
             <label for="categoryParent">Categoría:</label>
@@ -61,16 +55,12 @@
         <tr>
           <th>Acciones</th>
           @for (column of columns; track column) {
-            @if (column !== '_id') {
-              <th>{{ column }}</th>
-            }
+            <th>{{ column.name }}</th>
           }
         </tr>
       </ng-template>
-      <ng-template
-        pTemplate="body"
-        let-view
-      >
+
+      <ng-template pTemplate="body" let-view>
         <tr>
           <td>
             <p-button
@@ -80,9 +70,7 @@
             ></p-button>
           </td>
           @for (column of columns; track column) {
-            @if (column !== '_id') {
-              <td>{{ view[column] }}</td>
-            }
+            <td>{{ view[column.original] }}</td>
           }
         </tr>
       </ng-template>

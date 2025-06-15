@@ -64,7 +64,7 @@ export interface LayerInformationFilter {
 }
 
 export interface LayerInformationTable {
-  columns: string[];
+  columns: { original: string; name: string }[];
   data: [];
   filters: LayerInformationFilter[];
 }

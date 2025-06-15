@@ -136,12 +136,17 @@ class LayerService:
                 filtered_row['_id'] = row['_id']
             filtered_data.append(filtered_row)
 
+        # Los filtros también necesitan analogía.
+        base_to_pref = {c["original"]: c["name"] for c in columns_with_mapping}
+
+
         # 4) Devuelve todo listo
         return LayerInformationTableDTO(
             columns=columns_with_mapping,
             data=filtered_data,
             filters=[
                 LayerInformationFilterDTO(
+                    label=base_to_pref.get(x.name, x.name),
                     name=x.name,
                     options=[LayerInformationOptionDTO(id=label.id, label=label.label) for label in x.options]
                 )
