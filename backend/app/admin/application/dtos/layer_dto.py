@@ -24,3 +24,4 @@ class RegisteredLayerDTO(BaseDTO):
     layer_information_name: str
     schema_name: str
     table_name: str
+    view_name: str

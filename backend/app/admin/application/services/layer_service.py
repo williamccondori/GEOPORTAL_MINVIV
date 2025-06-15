@@ -62,10 +62,10 @@ class LayerService:
 
         # Se registra en GEOSERVER.
 
-        # self.__register_in_geoserver(
-        #     registered_layer_dto.table_name,
-        #     layer_form_dto.name
-        # )
+        self.__register_in_geoserver(
+            registered_layer_dto.view_name,
+            layer_form_dto.name
+        )
 
         wms_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wms"
         wfs_url = f"{settings.GEOSERVER_URL}/{settings.GEOSERVER_WORKSPACE}/{layer_form_dto.code}/wfs"
@@ -230,6 +230,29 @@ class LayerService:
 
             layer_information_name = f"geo_{code}"
 
+            # Generar una vista para PostgresSQL con el objetivo de cambiar el nombre de las columnas.
+            view_name = f"view_{code}"
+            try:
+                # Obtener las columnas del DataFrame
+                columns = gdf.columns.tolist()
+                # Filtrar la columna de geometría
+                columns = [col for col in columns if col != 'geometry']
+
+                # Crear la definición de la vista
+                columns_definition = ", ".join([f'"{col}" AS "{col}"' for col in columns])
+                view_query = f'CREATE OR REPLACE VIEW public.{view_name} AS SELECT {columns_definition}, geometry FROM public.{code};'
+
+                # Ejecutar la consulta SQL para crear la vista
+                engine = create_engine(settings.POSTGIS_STRING_CONNECTION)
+                with engine.connect() as connection:
+                    connection.execute(view_query)
+                    connection.commit()
+                engine.dispose()
+            except Exception as e:
+                print(f"Error al crear la vista: {e}")
+                # Continuamos con el proceso aunque falle la creación de la vista
+
+
             await self.__save_to_mongo_db(
                 layer_information_name,
                 gdf
@@ -239,6 +262,7 @@ class LayerService:
                 layer_information_name=layer_information_name,
                 table_name=code,
                 schema_name="public",
+                view_name=view_name
             )
 
             return registered_layer
