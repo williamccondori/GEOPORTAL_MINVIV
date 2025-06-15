@@ -238,6 +238,17 @@ class LayerService:
         try:
             df = pd.DataFrame(gdf.drop(columns='geometry'))
 
+            for column in df.columns:
+                if column != 'geometry' and df[column].dtype == object:
+                    sample_values = df[column].dropna().head(5)
+                    if len(sample_values) > 0:
+                        try:
+                            pd.to_datetime(sample_values.iloc[0], dayfirst=True)
+                            df[column] = pd.to_datetime(df[column], errors='coerce', dayfirst=True)
+                            df[column] = df[column].where(df[column].notna(), None)
+                        except (ValueError, TypeError):
+                            df[column] = df[column].astype(str)
+
             df['geometry'] = gdf.geometry.apply(lambda geom: geom.__geo_interface__)
 
             dictionary = df.to_dict(orient='records')
