@@ -60,7 +60,7 @@ class LayerService:
             result.append(LayerDTO(
                 id=layer.id,
                 category_name=category_name,
-                name=layer.code,
+                name=layer.view_name,
                 title=layer.name,
                 description=layer.description,
                 url=layer.wms_url,

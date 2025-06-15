@@ -12,6 +12,7 @@ class Layer(Base):
     shape_file_name: str
     layer_information_name: str
     table_name: str
+    view_name: str
     schema_name: str
     wms_url: str
     wfs_url: str

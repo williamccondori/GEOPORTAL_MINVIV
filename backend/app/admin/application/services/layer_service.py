@@ -81,6 +81,7 @@ class LayerService:
             # Campos de la publicación.
             layer_information_name=registered_layer_dto.layer_information_name,
             table_name=registered_layer_dto.table_name,
+            view_name=registered_layer_dto.view_name,
             schema_name=registered_layer_dto.schema_name,
 
             # Campos por defecto.
@@ -272,7 +273,7 @@ class LayerService:
                 columns = [col for col in columns if col != 'geometry']
 
                 # Crear la definición de la vista
-                columns_definition = ", ".join([f'"{col}" AS "{col}"' for col in columns])
+                columns_definition = ", ".join([f'"{col}" AS "F_{col}"' for col in columns])
                 view_query = f'CREATE OR REPLACE VIEW public.{view_name} AS SELECT {columns_definition}, geometry FROM public.{code};'
 
                 # Ejecutar la consulta SQL para crear la vista
