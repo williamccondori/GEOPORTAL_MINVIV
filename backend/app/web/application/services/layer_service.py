@@ -95,11 +95,30 @@ class LayerService:
         if not layer:
             raise ApplicationException("No se ha encontrado la capa solicitada")
 
-        geojson = await self.layer_information_repository.get_geojson(layer.layer_information_name, row_id)
-        if not geojson:
+        columns = await self.layer_information_repository.get_columns(layer.layer_information_name)
+        if not columns:
+            raise ApplicationException("No se ha encontrado información de columnas para la capa solicitada")
+
+        row = await self.layer_information_repository.get_geojson(layer.layer_information_name, row_id)
+        if not row:
             raise ApplicationException("No se ha encontrado información geográfica para la capa solicitada")
 
-        return geojson
+        allowed_columns = [
+            base for base in columns['columns']
+            if columns['columns_status'].get(base, False)
+        ]
+
+        for feature in row.get("features", []):
+            properties = feature.get("properties", {})
+            for property in list(properties.keys()):
+                if property in allowed_columns:
+                    new_name = columns['columns_with_prefix'][columns['columns'].index(property)]
+                    properties[new_name] = properties.pop(property)
+                else:
+                    # Si no está permitido, lo eliminamos
+                    properties.pop(property)
+
+        return row
 
     async def get_table(self, layer_id: str) -> LayerInformationTableDTO:
         layer: Optional[Layer] = await self.layer_repository.get(layer_id)
@@ -139,7 +158,6 @@ class LayerService:
         # Los filtros también necesitan analogía.
         base_to_pref = {c["original"]: c["name"] for c in columns_with_mapping}
 
-
         # 4) Devuelve todo listo
         return LayerInformationTableDTO(
             columns=columns_with_mapping,
@@ -158,6 +176,10 @@ class LayerService:
         layer: Optional[Layer] = await self.layer_repository.get(layer_id)
         if not layer:
             raise ApplicationException("No se ha encontrado la capa solicitada")
+
+        columns = await self.layer_information_repository.get_columns(layer.layer_information_name)
+        if not columns:
+            raise ApplicationException("No se ha encontrado información de columnas para la capa solicitada")
 
         results = await self.layer_information_repository.get_geometry_and_table(
             layer.layer_information_name, filter_columns)
