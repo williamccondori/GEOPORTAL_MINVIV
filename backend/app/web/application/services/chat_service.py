@@ -170,8 +170,8 @@ class ChatService:
     @staticmethod
     def __get_layer_id_by_df_name(df_name: str) -> str:
         equivalents = {
-            "proyectos_suelo_urbano": "683bfcadaf8482aec0c2a0d4",
-            "directorio_municipalidades": "683bfcb4af8482aec0c2a0d5",
+            "proyectos_suelo_urbano": "684e4c876f591c3bcb14c01a",
+            "directorio_municipalidades": "684e4ff66f591c3bcb14c798",
         }
         return equivalents.get(df_name, "")
 
