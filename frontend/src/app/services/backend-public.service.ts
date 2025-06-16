@@ -88,4 +88,16 @@ export class BackendPublicService {
   getGeoJsonLayer(layerId: string, rowId: string): Observable<any> {
     return this.apiService.get<any>(`layers/${layerId}/geojson/${rowId}`);
   }
+
+  getTendencies(layerId: string): Observable<any> {
+    return this.apiService.get<any>(`layers/${layerId}/tendencies/`);
+  }
+
+  getGraphs(layerId: string): Observable<any> {
+    return this.apiService.get<any>(`layers/${layerId}/graphs/`);
+  }
+
+  getSummary(layerId: string): Observable<any> {
+    return this.apiService.get<any>(`layers/${layerId}/summary/`);
+  }
 }

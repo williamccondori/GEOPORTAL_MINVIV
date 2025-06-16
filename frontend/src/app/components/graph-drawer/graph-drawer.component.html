@@ -5,4 +5,57 @@
   (onHide)="onHide()"
   (onShow)="onDrawerOpen()"
 >
+  <form [formGroup]="formGroup">
+    <div class="app-form-group">
+      <label for="categoryParent">Categoría:</label>
+      <p-tree-select
+        id="categoryParent"
+        formControlName="categoryParent"
+        [options]="categoryTree"
+        appendTo="body"
+        fluid
+        showClear
+        placeholder="Seleccione una categoría"
+      ></p-tree-select>
+    </div>
+    <div class="app-form-group">
+      <label for="layerId">Capa:</label>
+      <p-select
+        id="layerId"
+        formControlName="layerId"
+        [options]="layers"
+        optionValue="id"
+        optionLabel="title"
+        filterBy="label"
+        appendTo="body"
+        fluid
+        filter
+        showClear
+        placeholder="Seleccione"
+      />
+    </div>
+  </form>
+  <div class="app-space-vertical">
+    @for (graph of graphs; track graph.title) {
+      <p-card [header]="graph.title">
+        <p-chart
+          [type]="graph.type"
+          [data]="{
+          labels: graph.labels,
+          datasets: graph.datasets
+        }"
+          [options]="{
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            title: {
+              display: false
+            }
+          }
+    }"
+          style="display: block;"
+        ></p-chart>
+      </p-card>
+    }
+  </div>
 </p-drawer>

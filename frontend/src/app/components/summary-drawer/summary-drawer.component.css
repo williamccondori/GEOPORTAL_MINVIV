@@ -1,0 +1,20 @@
+.app-space-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+p-card {
+  text-align: center;
+}
+
+.summary-value {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+.summary-description {
+  font-size: 1rem;
+  opacity: 0.9;
+}

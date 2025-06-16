@@ -5,4 +5,42 @@
   (onHide)="onHide()"
   (onShow)="onDrawerOpen()"
 >
+  <form [formGroup]="formGroup">
+    <div class="app-form-group">
+      <label for="categoryParent">Categoría:</label>
+      <p-tree-select
+        id="categoryParent"
+        formControlName="categoryParent"
+        [options]="categoryTree"
+        appendTo="body"
+        fluid
+        showClear
+        placeholder="Seleccione una categoría"
+      ></p-tree-select>
+    </div>
+    <div class="app-form-group">
+      <label for="layerId">Capa:</label>
+      <p-select
+        id="layerId"
+        formControlName="layerId"
+        [options]="layers"
+        optionValue="id"
+        optionLabel="title"
+        filterBy="label"
+        appendTo="body"
+        fluid
+        filter
+        showClear
+        placeholder="Seleccione"
+      />
+    </div>
+  </form>
+  <div class="app-space-vertical">
+    @for (summary of summaries; track summary) {
+      <p-card [header]="summary.name" [style]="{'background-color': summary.color, 'color': '#fff'}">
+        <div class="summary-value">{{ summary.value | number }}</div>
+        <p class="summary-description">{{ summary.description }}</p>
+      </p-card>
+    }
+  </div>
 </p-drawer>

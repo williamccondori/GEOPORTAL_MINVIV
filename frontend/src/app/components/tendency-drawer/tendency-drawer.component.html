@@ -5,4 +5,70 @@
   (onHide)="onHide()"
   (onShow)="onDrawerOpen()"
 >
+  <form [formGroup]="formGroup">
+    <div class="app-form-group">
+      <label for="categoryParent">Categoría:</label>
+      <p-tree-select
+        id="categoryParent"
+        formControlName="categoryParent"
+        [options]="categoryTree"
+        appendTo="body"
+        fluid
+        showClear
+        placeholder="Seleccione una categoría"
+      ></p-tree-select>
+    </div>
+    <div class="app-form-group">
+      <label for="layerId">Capa:</label>
+      <p-select
+        id="layerId"
+        formControlName="layerId"
+        [options]="layers"
+        optionValue="id"
+        optionLabel="title"
+        filterBy="label"
+        appendTo="body"
+        fluid
+        filter
+        showClear
+        placeholder="Seleccione"
+      />
+    </div>
+  </form>
+
+  <div class="app-space-vertical">
+    @if (regressionData) {
+      <p-card header="Regresión lineal">
+        <p-chart
+          type="line"
+          [data]="regressionData"
+          [options]="regressionOptions">
+        </p-chart>
+      </p-card>
+    }
+
+    @if (clustersData) {
+      <p-card header="Clusters">
+        <p-chart
+          type="scatter"
+          [data]="clustersData"
+          [options]="clustersOptions">
+        </p-chart>
+      </p-card>
+    }
+
+    @if (pcaData) {
+      <p-card header="Análisis de componentes principales">
+        <p-chart
+          type="scatter"
+          [data]="pcaData"
+          [options]="pcaOptions">
+        </p-chart>
+      </p-card>
+    }
+
+    @if (!regressionData && !clustersData && !pcaData) {
+      <p-message severity="info" text="Seleccione una categoría y una capa disponible para ver las tendencias."></p-message>
+    }
+  </div>
 </p-drawer>
