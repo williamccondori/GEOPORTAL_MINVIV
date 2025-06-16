@@ -48,3 +48,27 @@ async def get_geojson(
         service=Depends(get_layer_service)
 ) -> Response[dict]:
     return Response.correct(await service.get_geojson(layer_id, row_id))
+
+
+@layer_router.get("/{layer_id}/summary/", response_model=Response[dict])
+async def get_summary(
+        layer_id: str,
+        service=Depends(get_layer_service)
+) -> Response[dict]:
+    return Response.correct(await service.get_summary(layer_id))
+
+
+@layer_router.get("/{layer_id}/graphs/", response_model=Response[dict])
+async def get_graphs(
+        layer_id: str,
+        service=Depends(get_layer_service)
+) -> Response[dict]:
+    return Response.correct(await service.get_graphs(layer_id))
+
+
+@layer_router.get("/{layer_id}/tendencies/", response_model=Response[dict])
+async def get_tendencies(
+        layer_id: str,
+        service=Depends(get_layer_service)
+) -> Response[dict]:
+    return Response.correct(await service.get_tendencies(layer_id))
