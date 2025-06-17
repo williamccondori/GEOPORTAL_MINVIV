@@ -195,24 +195,20 @@ class ChatService:
     async def get_voice_query(self, session_id: str, audio: UploadFile) -> list[ChatResponseDTO]:
         nombre_archivo, contenido_archivo = await self.__convertir_y_almacenar_audio(audio)
 
+        texto_transcripcion: str | None = None  # asegúrate de definirlo antes del try
         try:
-            # El archivo se convierte a formato WAV porque el servicio de deteccion solo trabaja con ese formato.
-            audio = AudioSegment.from_file(io.BytesIO(contenido_archivo), format="webm")
-            audio.export(nombre_archivo, format="wav")
-
-            # Se realiza la conversion de audio a texto.
-            texto_transcripcion: str = await self.__obtener_texto_transcripcion(nombre_archivo)
+            texto_transcripcion = await self.__obtener_texto_transcripcion(nombre_archivo)
         except Exception as e:
             print(e)
             raise ApplicationException("Ha ocurrido un error al procesar el audio")
         finally:
-            # Una vez terminada la conversion de audio a texto, se elimina el archivo temporal.
             if os.path.exists(nombre_archivo):
                 os.remove(nombre_archivo)
 
-            # Con el mensaje obtenido de la transcripcion, se realiza la consulta.
-        message: str = texto_transcripcion.lower()
+        if not texto_transcripcion:
+            raise ApplicationException("No se pudo transcribir el audio")
 
+        message: str = texto_transcripcion.lower()
         return await self.get_query(session_id, message)
 
     @staticmethod
