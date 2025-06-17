@@ -1,22 +1,37 @@
 /* eslint-disable complexity */
-import {AsyncPipe} from '@angular/common';
-import {Component, inject, OnInit} from '@angular/core';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
-import {DrawerModule} from 'primeng/drawer';
+import { DrawerModule } from 'primeng/drawer';
 
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {MessageService} from 'primeng/api';
-import {ButtonModule} from 'primeng/button';
-import {InputGroupModule} from 'primeng/inputgroup';
-import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
-import {InputTextModule} from 'primeng/inputtext';
-import {firstValueFrom, Observable} from 'rxjs';
-import {v4 as uuidv4} from 'uuid';
-import {ChatMessage, ChatResponse} from '../../models/chatbot.model';
-import {Constants} from '../../models/constants';
-import {BackendPublicService} from '../../services/backend-public.service';
-import {LayerService} from '../../services/layer.service';
-import {StateService} from '../../services/state.service';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
+import { firstValueFrom, Observable } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import { ChatMessage, ChatResponse } from '../../models/chatbot.model';
+import { Constants } from '../../models/constants';
+import { BackendPublicService } from '../../services/backend-public.service';
+import { LayerService } from '../../services/layer.service';
+import { StateService } from '../../services/state.service';
 
 @Component({
   standalone: true,
@@ -24,25 +39,32 @@ import {StateService} from '../../services/state.service';
   imports: [
     DrawerModule,
     AsyncPipe,
+    DatePipe,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
+    InputSwitchModule,
   ],
   templateUrl: './chatbot-drawer.component.html',
   styleUrls: ['./chatbot-drawer.component.css'],
 })
-export class ChatbotDrawerComponent implements OnInit {
+export class ChatbotDrawerComponent
+  implements OnInit, OnDestroy, AfterViewChecked
+{
   private readonly stateService = inject(StateService);
   private readonly messageService = inject(MessageService);
   private readonly backendPublicService = inject(BackendPublicService);
   private readonly layerService = inject(LayerService);
-
   sessionId: string | null = null;
   mediaRecorder: MediaRecorder | null = null;
   conversation: ChatMessage[] = [];
+  isSpeechEnabled = true; // Activado por defecto
+  isSpeaking = false;
+  speechSynthesis = window.speechSynthesis;
+  private shouldScrollToBottom = false;
 
   formGroup = new FormGroup({
     message: new FormControl<string>('', [Validators.required]),
@@ -50,17 +72,53 @@ export class ChatbotDrawerComponent implements OnInit {
 
   isRecording = false;
 
+  @ViewChild('chatContainer') private chatContainer!: ElementRef;
+  @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
+
   ngOnInit(): void {
     this.sessionId = uuidv4();
     // Initialize with a welcome message
-    this.conversation = [
-      {
-        id: uuidv4(),
-        content: 'Hola, ¿en qué puedo ayudarte?',
-        isUser: false,
-        timestamp: new Date(),
-      },
-    ];
+    this.conversation = [];
+
+    // Initialize speech synthesis
+    this.initializeSpeechSynthesis();
+  }
+  ngOnDestroy(): void {
+    // Cancel any ongoing speech synthesis when component is destroyed
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+      this.isSpeaking = false;
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+      this.shouldScrollToBottom = false;
+    }
+  }
+  private scrollToBottom(): void {
+    try {
+      if (this.chatMessagesContainer) {
+        const element = this.chatMessagesContainer.nativeElement;
+        element.scrollTop = element.scrollHeight;
+      }
+    } catch (err) {
+      // Error handling without console log
+    }
+  }
+
+  private triggerScrollToBottom(): void {
+    this.shouldScrollToBottom = true;
+  }  private initializeSpeechSynthesis(): void {
+    if (this.speechSynthesis) {
+      // Load voices if not already loaded
+      if (this.speechSynthesis.getVoices().length === 0) {
+        this.speechSynthesis.addEventListener('voiceschanged', () => {
+          // Voices loaded without logging
+        });
+      }
+    }
   }
 
   get isVisible(): Observable<boolean> {
@@ -69,6 +127,70 @@ export class ChatbotDrawerComponent implements OnInit {
 
   onHide(): void {
     this.stateService.setChatbotDrawerState(false);
+  }
+
+  // Método de prueba para verificar que la síntesis de voz funciona
+  testSpeech(): void {
+    if (!this.speechSynthesis) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'ERROR',
+        detail: 'La síntesis de voz no está disponible en tu navegador',
+      });
+      return;
+    }    // Test con la mejor voz femenina disponible
+    const testText =
+      'Hola, soy tu asistente virtual del Ministerio de Vivienda. Esta es una prueba de mi voz.';
+
+    this.speechSynthesis.cancel();
+
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(testText);
+
+      // Usar la misma lógica de selección de voz que el chat
+      const selectedVoice = this.getBestFemaleVoice();
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      } else {
+        utterance.lang = 'es-ES';
+      }
+
+      utterance.rate = 0.8;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.9;
+
+      utterance.onstart = () => {
+        this.isSpeaking = true;
+      };
+
+      utterance.onend = () => {
+        this.isSpeaking = false;
+      };
+
+      utterance.onerror = (event) => {
+        this.isSpeaking = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ERROR',
+          detail: `Error de síntesis de voz: ${event.error}`,
+        });
+      };
+
+      try {
+        this.speechSynthesis.speak(utterance);
+        this.messageService.add({
+          severity: 'info',
+          summary: 'INFO',
+          detail: 'Probando síntesis de voz (forzado)...',
+        });
+      } catch (error) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'ERROR',
+          detail: 'Error al reproducir la voz',
+        });
+      }
+    }, 100);
   }
 
   async onRecordAudio(): Promise<void> {
@@ -117,7 +239,9 @@ export class ChatbotDrawerComponent implements OnInit {
           formData.append('session_id', this.sessionId ?? '');
           formData.append('audio', audioBlob, 'audio.webm');
 
-          const response = await firstValueFrom(this.backendPublicService.getVoiceQuery(formData));
+          const response = await firstValueFrom(
+            this.backendPublicService.getVoiceQuery(formData),
+          );
 
           // Handle voice response similar to text response
           if (response && response.length > 0) {
@@ -132,9 +256,8 @@ export class ChatbotDrawerComponent implements OnInit {
                 timestamp: new Date(),
               };
               this.conversation.push(userMessage);
-            }
-
-            // Add bot response with typing effect
+              this.triggerScrollToBottom();
+            } // Add bot response with typing effect
             if (chatResponse.message) {
               const botMessage: ChatMessage = {
                 id: uuidv4(),
@@ -144,11 +267,10 @@ export class ChatbotDrawerComponent implements OnInit {
                 isTyping: true,
               };
               this.conversation.push(botMessage);
+              this.triggerScrollToBottom();
               this.typeMessage(botMessage, chatResponse.message);
             }
-          }
-        } catch (e) {
-          console.error(e);
+          }        } catch (e) {
           this.messageService.add({
             severity: 'error',
             summary: 'ERROR',
@@ -159,7 +281,6 @@ export class ChatbotDrawerComponent implements OnInit {
         }
       });
     } catch (e) {
-      console.error(e);
       this.messageService.add({
         severity: 'error',
         summary: 'ERROR',
@@ -174,9 +295,7 @@ export class ChatbotDrawerComponent implements OnInit {
         this.stateService.setIsLoadingState(true);
 
         const formValues = this.formGroup.getRawValue();
-        const {message} = formValues;
-
-        // Add user message to conversation immediately
+        const { message } = formValues; // Add user message to conversation immediately
         if (message) {
           const userMessage: ChatMessage = {
             id: uuidv4(),
@@ -185,18 +304,18 @@ export class ChatbotDrawerComponent implements OnInit {
             timestamp: new Date(),
           };
           this.conversation.push(userMessage);
+          this.triggerScrollToBottom();
         }
 
         const formData = new FormData();
         formData.append('session_id', this.sessionId ?? '');
         formData.append('message', message ?? '');
 
-        const response = await firstValueFrom(this.backendPublicService.getQuery(formData));
-
-        // Only add bot response to conversation
+        const response = await firstValueFrom(
+          this.backendPublicService.getQuery(formData),
+        ); // Only add bot response to conversation
         if (response && response.length > 0) {
-          const chatResponse = response[0];
-          if (chatResponse.message) {
+          const chatResponse = response[0];          if (chatResponse.message) {
             await this.manageIntent(chatResponse);
             const botMessage: ChatMessage = {
               id: uuidv4(),
@@ -206,13 +325,12 @@ export class ChatbotDrawerComponent implements OnInit {
               isTyping: true,
             };
             this.conversation.push(botMessage);
+            this.triggerScrollToBottom();
+
             this.typeMessage(botMessage, chatResponse.message);
           }
-        }
-
-        this.formGroup.reset();
+        }        this.formGroup.reset();
       } catch (e) {
-        console.error(e);
         this.messageService.add({
           severity: 'error',
           summary: 'ERROR',
@@ -226,26 +344,229 @@ export class ChatbotDrawerComponent implements OnInit {
       this.formGroup.updateValueAndValidity();
     }
   }
+  // Limpiar todo el chat
+  onClearChat(): void {
+    this.conversation = [];
+    this.sessionId = uuidv4(); // Generar nueva sesión
+  }
+  // Remover emojis para mejor síntesis de voz
+  private removeEmojis(text: string): string {
+    return text
+      .replace(
+        /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu,
+        '',
+      )
+      .replace(
+        /🤝|�|�|�|�|�🚀|�|🔍|📈|📉|📋|💡|⚠️|✅|❌|�|�|🌟|💰|📱|🔧|🛠️|🎨|📝|🎁|🎉|🔔|📢|🎪|🎭|🎶|🎸|🎤|🎧|🎬|🎮|🃏|🎲|🎯|🎳|🎯|🎺|🎻|🎹|🥁|🎸|🎵|🎼|🎭|🎪|🎨|🖼️|🎬|📷|📹|📺|📻|📱|💻|🖥️|⌨️|🖱️|🖨️|💾|💿|📀|🎥|📽️|📞|☎️|📠|📧|📨|📩|📤|📥|📦|📫|📪|📬|📭|📮|🗳️|✏️|✒️|🗑️|🔒|🔓|🔏|🔐|🔑|🗝️|🔨|⛏️|⚒️|🛠️|🗡️|⚔️|🔫|🏹|🛡️|🔧|🔩|⚙️|🗜️|⚖️|🔗|⛓️|🧰|🧲|⚗️|🧪|🧫|🧬|🔬|🔭|📡|💉|💊|🩹|🩺|🚪|🛏️|🛋️|🚽|🚿|🛁|🧴|🧷|🧹|🧺|🧻|🧼|🧽|�|🛒|🚬|⚰️|⚱️|�|�|🪓|🪔|🪕|🪗|🪘|🪙|🪚|🪛|🪜|🪝|🪞|🪟|🪠|🪡|🪢|🪣|🪤|🪥|🪦|🪧|🪨|🪩|🪪|🪫|🪬|🪭|🪮|🪯|🪰|🪱|🪲|🪳|🪴|🪵|🪶|🪷|🪸|🪹|🪺|🫀|🫁|🫂|🫃|🫄|🫅|🫐|🫑|🫒|🫓|🫔|🫕|🫖|🫗|🫘|🫙|🫚|🫛|🫜|🫝|🫞|🫟|🫠|🫡|🫢|🫣|🫤|🫥|🫦|🫧|🫨|🫩|🫪|🫫|🫬|🫭|🫮|🫯|🫰|🫱|🫲|🫳|🫴|🫵|🫶|🫷|🫸/g,
+        '',
+      )
+      .trim();
+  }
 
   private typeMessage(message: ChatMessage, fullText: string): void {
     let currentIndex = 0;
-    const typingSpeed = 50; // milliseconds per character
+    const typingSpeed = 30; // Más rápido para mejor experiencia
 
     const typeInterval = setInterval(() => {
       if (currentIndex < fullText.length) {
         message.content += fullText.charAt(currentIndex);
         currentIndex++;
-      } else {
-        message.isTyping = false;
+        // Scroll suave mientras se escribe
+        if (currentIndex % 10 === 0) {
+          // Cada 10 caracteres
+          this.triggerScrollToBottom();
+        }
+      } else {        message.isTyping = false;
         clearInterval(typeInterval);
+        this.triggerScrollToBottom(); // Scroll final
+
+        if (this.isSpeechEnabled) {
+          setTimeout(() => {
+            this.speakMessage(fullText);
+          }, 100); // Pequeña pausa antes de hablar
+        }
       }
-    }, typingSpeed);
+    }, typingSpeed);  }
+    private getBestFemaleVoice(): SpeechSynthesisVoice | null {
+    if (!this.speechSynthesis) return null;
+
+    const voices = this.speechSynthesis.getVoices();
+
+    // Nombres femeninos comunes en español
+    const femaleNames = [
+      'Sabina',
+      'maria',
+      'lucia',
+      'carmen',
+      'esperanza',
+      'pilar',
+      'monica',
+      'alejandra',
+      'carolina',
+      'valentina',
+      'sofia',
+      'paula',
+      'elena',
+      'cristina',
+      'isabela',
+      'fernanda',
+    ];
+
+    // Palabras clave que indican voz femenina
+    const femaleKeywords = [
+      'Sabina',
+      'female',
+      'mujer',
+      'femenina',
+      'woman',
+      'hembra',
+      'ella',
+      'señora',
+      'lady',
+      'girl',
+      'chica',
+    ];
+
+    // 1. Buscar voces españolas con nombres femeninos explícitos
+    let bestVoice = voices.find((voice) => {
+      const nameLower = voice.name.toLowerCase();
+      const isSpanish =
+        voice.lang.startsWith('es') ||
+        nameLower.includes('spanish') ||
+        nameLower.includes('español');
+      const hasFemaleNames = femaleNames.some((name) =>
+        nameLower.includes(name),
+      );      const hasFemaleKeywords = femaleKeywords.some((keyword) =>
+        nameLower.includes(keyword),
+      );
+
+      if (isSpanish && (hasFemaleNames || hasFemaleKeywords)) {
+        return true;
+      }
+      return false;
+    });
+
+    // 2. Si no encontramos, buscar voces que NO sean explícitamente masculinas en español
+    if (!bestVoice) {
+      bestVoice = voices.find((voice) => {
+        const nameLower = voice.name.toLowerCase();
+        const isSpanish =
+          voice.lang.startsWith('es') ||
+          nameLower.includes('spanish') ||
+          nameLower.includes('español');
+        const isMale =
+          nameLower.includes('male') ||
+          nameLower.includes('hombre') ||
+          nameLower.includes('masculino') ||
+          nameLower.includes('man') ||
+          nameLower.includes('carlos') ||
+          nameLower.includes('juan') ||
+          nameLower.includes('miguel') ||
+          nameLower.includes('antonio');        if (isSpanish && !isMale) {
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // 3. Como último recurso, cualquier voz en español
+    if (!bestVoice) {      bestVoice = voices.find(
+        (voice) =>
+          voice.lang.startsWith('es') ||
+          voice.name.toLowerCase().includes('spanish'),
+      );
+    }
+
+    // 4. Si no hay voces en español, buscar cualquier voz femenina
+    if (!bestVoice) {
+      bestVoice = voices.find((voice) => {
+        const nameLower = voice.name.toLowerCase();
+        const hasFemaleNames = femaleNames.some((name) =>
+          nameLower.includes(name),
+        );
+        const hasFemaleKeywords = femaleKeywords.some((keyword) =>
+          nameLower.includes(keyword),
+        );
+        const isMale = nameLower.includes('male') || nameLower.includes('man');        return (hasFemaleNames || hasFemaleKeywords) && !isMale;
+      });
+    }
+
+    return bestVoice || null;
   }
 
+  private speakMessage(text: string): void {
+    if (!this.speechSynthesis || !this.isSpeechEnabled || !text) {
+      return;
+    }
+
+    this.speechSynthesis.cancel();
+
+    setTimeout(() => {
+      try {
+        // Remove emojis for better speech synthesis
+        const cleanText = this.removeEmojis(text);
+        const utterance = new SpeechSynthesisUtterance(cleanText);        // Get the best female voice available
+        const selectedVoice = this.getBestFemaleVoice();
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+        } else {
+          utterance.lang = 'es-ES';
+        }
+
+        utterance.rate = 0.8;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.9;
+
+        utterance.onstart = () => {
+          this.isSpeaking = true;
+        };
+
+        utterance.onend = () => {
+          this.isSpeaking = false;
+        };
+
+        utterance.onerror = () => {
+          this.isSpeaking = false;
+        };
+
+        this.speechSynthesis.speak(utterance);
+      } catch (error) {
+        this.isSpeaking = false;
+      }
+    }, 150);
+  }
+
+  stopSpeaking(): void {
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+      this.isSpeaking = false;
+    }
+  }
+  onToggleSpeech(): void {
+    setTimeout(() => {
+      if (!this.isSpeechEnabled && this.speechSynthesis) {
+        this.speechSynthesis.cancel();
+        this.isSpeaking = false;
+      } else if (this.isSpeechEnabled) {
+        // When enabling speech, speak the last bot message if available
+        const lastBotMessage = this.conversation
+          .filter((msg) => !msg.isUser && !msg.isTyping)
+          .pop();
+
+        if (lastBotMessage && lastBotMessage.content) {
+          setTimeout(() => {
+            this.speakMessage(lastBotMessage.content);
+          }, 300);
+        }
+      }
+    }, 10);
+  }
   private async manageIntent(chatResponse: ChatResponse): Promise<void> {
     if (chatResponse.action === 'activar_capa') {
       const layerId: string = chatResponse.data?.layerId as string;
-      const layer = await firstValueFrom(this.backendPublicService.getLayerById(layerId));
+      const layer = await firstValueFrom(
+        this.backendPublicService.getLayerById(layerId),
+      );
       if (layer) {
         const activeLayer = {
           id: layer.id,
@@ -266,7 +587,10 @@ export class ChatbotDrawerComponent implements OnInit {
       const filterColumns = chatResponse.data;
 
       const result = await firstValueFrom(
-        this.backendPublicService.getFilteredLayer('684e4c876f591c3bcb14c01a', filterColumns),
+        this.backendPublicService.getFilteredLayer(
+          '684e4c876f591c3bcb14c01a',
+          filterColumns,
+        ),
       );
 
       // Check if there's an existing filtered layer and remove it

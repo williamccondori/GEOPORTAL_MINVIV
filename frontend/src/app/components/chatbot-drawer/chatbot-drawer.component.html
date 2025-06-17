@@ -8,18 +8,74 @@
   <div
     class="app-space-vertical"
     [style]="{ height: '100%' }"
-  >
-    <div class="chat-messages">
-      @for (message of conversation; track message.id) {
-      <div [class]="message.isUser ? 'message-user' : 'message-me'">
-        <div class="message-content">
-          <p>{{ message.content }}</p>
-            @if (message.isTyping) {
-      <span class="typing-indicator">...</span>
-      }
+  >    <!-- Speech synthesis toggle -->
+    <div class="speech-toggle-container">
+      <label for="speech-toggle" class="speech-toggle-label">
+        <i class="pi pi-volume-up"></i>
+        Leer mensajes en voz alta
+        @if (isSpeaking) {
+          <span class="speaking-indicator">🔊</span>
+        }
+      </label>      <div class="speech-controls">        @if (isSpeaking) {
+          <p-button
+            icon="pi pi-stop"
+            size="small"
+            severity="secondary"
+            [text]="true"
+            (onClick)="stopSpeaking()"
+            title="Detener reproducción"
+          />
+        }
+        <p-button
+          icon="pi pi-trash"
+          size="small"
+          severity="danger"
+          [text]="true"
+          (onClick)="onClearChat()"
+          title="Limpiar chat"
+        />        <p-button
+          icon="pi pi-play"
+          size="small"
+          severity="info"
+          [text]="true"
+          (onClick)="testSpeech()"
+          title="Probar voz"
+        />
+        <p-inputSwitch
+          id="speech-toggle"
+          [(ngModel)]="isSpeechEnabled"
+          (onChange)="onToggleSpeech()"
+        />
       </div>
-    </div>
-      }
+    </div><div class="chat-container">
+      <div class="chat-messages" #chatMessages>
+        @for (message of conversation; track message.id) {
+          <div class="message-wrapper" [class.user-message]="message.isUser" [class.bot-message]="!message.isUser">
+            <div class="message-avatar">
+              @if (message.isUser) {
+                <i class="pi pi-user avatar-icon user-avatar"></i>
+              } @else {
+                <i class="pi pi-home avatar-icon bot-avatar"></i>
+              }
+            </div>
+            <div class="message-bubble" [class.user-bubble]="message.isUser" [class.bot-bubble]="!message.isUser">
+              <div class="message-content">
+                <p>{{ message.content }}</p>
+                @if (message.isTyping) {
+                  <span class="typing-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                  </span>
+                }
+              </div>
+              <div class="message-time">
+                {{ message.timestamp | date:'HH:mm' }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
     <form
       [formGroup]="formGroup"
