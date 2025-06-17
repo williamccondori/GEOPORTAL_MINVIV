@@ -1,4 +1,6 @@
 import io
+import os
+import uuid
 from typing import Optional
 
 import google.cloud.dialogflow_v2 as dialogflow
@@ -40,7 +42,7 @@ class ChatService:
 
         intent = result.intent.display_name
 
-        responses = []
+        responses: list[ChatResponseDTO] = []
 
         # INTENCIÓN: consultar_suelo_urbano_inicial o consultar_suelo_urbano.
         if intent in ["consultar_suelo_urbano_inicial", "consultar_suelo_urbano"]:
@@ -53,6 +55,12 @@ class ChatService:
                 region = result.parameters.get("region", None)
                 servicios = result.parameters.get("servicios", None)
                 zonificacion = result.parameters.get("zonificacion", None)
+
+                # si categoria es array, convertirlo a string
+                if categoria:
+                    categoria = list(categoria)
+                if isinstance(categoria, list):
+                    categoria = ", ".join(categoria)
 
                 mensaje = "🔍 Se ha filtrado el suelo urbano con los siguientes criterios:\n"
                 if categoria:
@@ -125,7 +133,7 @@ class ChatService:
 
         else:
             responses = [ChatResponseDTO(
-                message=result.fulfillment_text,
+                message=str(result.fulfillment_text),
                 initial_message=initial_message
             )]
 
@@ -137,33 +145,68 @@ class ChatService:
         except Exception as e:
             print(e)
             raise ApplicationException("Ha ocurrido un error al consultar el asistente virtual")
-        return await self.__generate_result(result)
+        resulta = await self.__generate_result(result)
+
+        return resulta
+
+    @staticmethod
+    async def __convertir_y_almacenar_audio(audio: UploadFile) -> tuple[str, bytes]:
+        """
+        Almacena y convierte el audio a formato WAV.
+        Args:
+            audio (UploadFile): Archivo de audio.
+        Returns:
+            tuple[str, bytes]: Ruta del archivo y bytes del archivo.
+        """
+        tipos_validos = ["audio/webm"]
+        if audio.content_type not in tipos_validos:
+            raise ApplicationException("El archivo de audio debe ser válido")
+        audio_bytes: bytes = await audio.read()
+        # Se obtiene el texto de la transcripción.
+        return os.path.join("/temp", uuid.uuid4().hex + ".wav"), audio_bytes
+
+    @staticmethod
+    async def __obtener_texto_transcripcion(nombre_archivo: str) -> str:
+        """
+        Obtiene el texto de la transcripcion de un archivo de audio.
+        Args:
+            nombre_archivo (str): Nombre del archivo de audio.
+        Returns:
+            str: Texto de la transcripcion.
+        """
+        try:
+            recognizer = sr.Recognizer()
+            audio_file = sr.AudioFile(nombre_archivo)
+            with audio_file as source:
+                data = recognizer.record(source)
+            # Se obtiene el texto de la transcripcion en espaniol.
+            texto_transcripcion = recognizer.recognize_google(
+                data,
+                language="es-ES"
+            )
+        except sr.UnknownValueError:
+            return " "
+        return texto_transcripcion
 
     async def get_voice_query(self, session_id: str, audio: UploadFile) -> list[ChatResponseDTO]:
+        nombre_archivo, contenido_archivo = await self.__convertir_y_almacenar_audio(audio)
+
         try:
-            audio_segment = AudioSegment.from_file(io.BytesIO(await audio.read()), format="webm")  # noqa
-        except Exception as e:
-            print(e)
-            raise ApplicationException("El archivo de audio debe ser válido")
+            # El archivo se convierte a formato WAV porque el servicio de deteccion solo trabaja con ese formato.
+            audio = AudioSegment.from_file(io.BytesIO(contenido_archivo), format="webm")
+            audio.export(nombre_archivo, format="wav")
 
-        message: str = ""
+            # Se realiza la conversion de audio a texto.
+            texto_transcripcion: str = await self.__obtener_texto_transcripcion(nombre_archivo)
+        except Exception:
+            raise ApplicationException("Ha ocurrido un error al procesar el audio")
+        finally:
+            # Una vez terminada la conversion de audio a texto, se elimina el archivo temporal.
+            if os.path.exists(nombre_archivo):
+                os.remove(nombre_archivo)
 
-        with io.BytesIO() as wav_io:
-            audio_segment.export(wav_io, format="wav")
-            wav_io.seek(0)
-
-            r = sr.Recognizer()
-
-            try:
-                with sr.AudioFile(wav_io) as source:
-                    audio_data = r.record(source)
-                message = r.recognize_google(audio_data, language="es-ES")  # noqa
-            except sr.UnknownValueError:
-                message = "_"
-            except sr.RequestError as e:
-                print(e)
-                raise ApplicationException(
-                    f"Error al procesar el audio, no se pudo conectar al servicio de reconocimiento.")
+            # Con el mensaje obtenido de la transcripcion, se realiza la consulta.
+        message: str = texto_transcripcion.lower()
 
         return await self.get_query(session_id, message)
 
