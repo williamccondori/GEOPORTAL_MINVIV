@@ -195,6 +195,10 @@ class ChatService:
     async def get_voice_query(self, session_id: str, audio: UploadFile) -> list[ChatResponseDTO]:
         nombre_archivo, contenido_archivo = await self.__convertir_y_almacenar_audio(audio)
 
+        #guardar
+        with open(nombre_archivo, "wb") as f:
+            f.write(contenido_archivo)
+
         texto_transcripcion: str | None = None  # asegúrate de definirlo antes del try
         try:
             texto_transcripcion = await self.__obtener_texto_transcripcion(nombre_archivo)
