@@ -167,41 +167,29 @@ class ChatService:
 
     @staticmethod
     async def __obtener_texto_transcripcion(nombre_archivo: str) -> str:
-        """
-        Obtiene el texto de la transcripcion de un archivo de audio.
-        Args:
-            nombre_archivo (str): Nombre del archivo de audio.
-        Returns:
-            str: Texto de la transcripcion.
-        """
-        try:
-            recognizer = sr.Recognizer()
+        recognizer = sr.Recognizer()
 
-            # ✅ 1) Abrir y procesar con pydub
-            audio = AudioSegment.from_file(nombre_archivo)
-            audio = audio.set_channels(1)
-            audio = audio.set_frame_rate(16000)
-            audio = audio + 6  # aumentar volumen +6 dB
+        # ✅ 1) Abrir y procesar con pydub
+        audio = AudioSegment.from_file(nombre_archivo)
+        audio = audio.set_channels(1)
+        audio = audio.set_frame_rate(16000)
+        audio = audio + 6  # aumentar volumen +6 dB
 
-            # ✅ 2) Exportar a WAV en buffer en memoria
-            wav_buffer = io.BytesIO()
-            audio.export(wav_buffer, format="wav")
-            wav_buffer.seek(0)
+        # ✅ 2) Exportar a WAV en buffer en memoria
+        wav_buffer = io.BytesIO()
+        audio.export(wav_buffer, format="wav")
+        wav_buffer.seek(0)
 
-            # ✅ 3) Usar AudioFile con buffer en memoria
-            with sr.AudioFile(wav_buffer) as source:
-                audio_data = recognizer.record(source)
+        # ✅ 3) Usar AudioFile con buffer en memoria
+        with sr.AudioFile(wav_buffer) as source:
+            audio_data = recognizer.record(source)
 
-            # ✅ 4) Usar API oficial (credentials_json usa GOOGLE_APPLICATION_CREDENTIALS por defecto)
-            texto_transcripcion = recognizer.recognize_google(
-                audio_data,
-                language="es-ES",
-            )
+        # ✅ 4) Usar API oficial (credentials_json usa GOOGLE_APPLICATION_CREDENTIALS por defecto)
+        texto_transcripcion = recognizer.recognize_google(
+            audio_data,
+            language="es-ES",
+        )
 
-            print(texto_transcripcion)
-        except sr.UnknownValueError as e:
-            print(e)
-            return " "
         return texto_transcripcion
 
     async def get_voice_query(self, session_id: str, audio: UploadFile) -> list[ChatResponseDTO]:
