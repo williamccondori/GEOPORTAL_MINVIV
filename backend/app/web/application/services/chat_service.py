@@ -163,7 +163,7 @@ class ChatService:
             raise ApplicationException("El archivo de audio debe ser válido")
         audio_bytes: bytes = await audio.read()
         # Se obtiene el texto de la transcripción.
-        return os.path.join("/temp", uuid.uuid4().hex + ".wav"), audio_bytes
+        return os.path.join(uuid.uuid4().hex + ".wav"), audio_bytes
 
     @staticmethod
     async def __obtener_texto_transcripcion(nombre_archivo: str) -> str:
@@ -176,15 +176,31 @@ class ChatService:
         """
         try:
             recognizer = sr.Recognizer()
-            audio_file = sr.AudioFile(nombre_archivo)
-            with audio_file as source:
-                data = recognizer.record(source)
-            # Se obtiene el texto de la transcripcion en espaniol.
+
+            # ✅ 1) Abrir y procesar con pydub
+            audio = AudioSegment.from_file(nombre_archivo)
+            audio = audio.set_channels(1)
+            audio = audio.set_frame_rate(16000)
+            audio = audio + 6  # aumentar volumen +6 dB
+
+            # ✅ 2) Exportar a WAV en buffer en memoria
+            wav_buffer = io.BytesIO()
+            audio.export(wav_buffer, format="wav")
+            wav_buffer.seek(0)
+
+            # ✅ 3) Usar AudioFile con buffer en memoria
+            with sr.AudioFile(wav_buffer) as source:
+                audio_data = recognizer.record(source)
+
+            # ✅ 4) Usar API oficial (credentials_json usa GOOGLE_APPLICATION_CREDENTIALS por defecto)
             texto_transcripcion = recognizer.recognize_google(
-                data,
-                language="es-ES"
+                audio_data,
+                language="es-ES",
             )
-        except sr.UnknownValueError:
+
+            print(texto_transcripcion)
+        except sr.UnknownValueError as e:
+            print(e)
             return " "
         return texto_transcripcion
 
@@ -198,7 +214,8 @@ class ChatService:
 
             # Se realiza la conversion de audio a texto.
             texto_transcripcion: str = await self.__obtener_texto_transcripcion(nombre_archivo)
-        except Exception:
+        except Exception as e:
+            print(e)
             raise ApplicationException("Ha ocurrido un error al procesar el audio")
         finally:
             # Una vez terminada la conversion de audio a texto, se elimina el archivo temporal.
